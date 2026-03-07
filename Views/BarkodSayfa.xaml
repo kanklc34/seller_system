@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.BarkodSayfa"
+             Title="Barkod Okut">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Barkod Okutma"
+               FontSize="22" FontAttributes="Bold"
+               TextColor="#1A3A5C"/>
+
+        <Entry x:Name="BarkodEntry"
+               Placeholder="Barkod numarası girin veya okutun"
+               Keyboard="Numeric"/>
+
+        <Button Text="Ürünü Getir"
+                BackgroundColor="#2E75B6" TextColor="White"
+                CornerRadius="8" HeightRequest="50"
+                Clicked="UrunGetirClicked"/>
+
+        <VerticalStackLayout x:Name="UrunBilgiFrame" IsVisible="False"
+                             Spacing="8" Padding="15"
+                             BackgroundColor="#EEF4FF">
+            <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold"/>
+            <Label x:Name="UrunFiyatLabel" FontSize="16" TextColor="#166534"/>
+            <Label x:Name="UrunKategoriLabel" FontSize="14" TextColor="Gray"/>
+            <Entry x:Name="AdetEntry" Placeholder="Adet" Keyboard="Numeric" Text="1"/>
+            <Button Text="✅ Satışa Ekle"
+                    BackgroundColor="#166534" TextColor="White"
+                    CornerRadius="8" HeightRequest="45"
+                    Clicked="SatisaEkleClicked"/>
+        </VerticalStackLayout>
+
+        <Label x:Name="MesajLabel" TextColor="Green"
+               HorizontalOptions="Center" IsVisible="False"/>
+
+        <Button Text="⬅ Geri"
+                BackgroundColor="Gray" TextColor="White"
+                CornerRadius="8" HeightRequest="45"
+                Clicked="GeriClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>
