@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.UrunEkle"
+             Title="Yeni Ürün Ekle">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="📦 Yeni Ürün Ekle"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="#1A3A5C"/>
+
+            <Label Text="Ürün Adı" TextColor="Gray"/>
+            <Entry x:Name="AdEntry" Placeholder="Ürün adını girin"/>
+
+            <Label Text="Barkod" TextColor="Gray"/>
+            <Entry x:Name="BarkodEntry" Placeholder="Barkod numarası"/>
+
+            <Label Text="Fiyat" TextColor="Gray"/>
+            <Entry x:Name="FiyatEntry" Placeholder="0.00" Keyboard="Numeric"/>
+
+            <Label Text="Kategori" TextColor="Gray"/>
+            <Entry x:Name="KategoriEntry" Placeholder="Örn: Et, Tavuk, Şarküteri"/>
+
+            <Button Text="💾 Kaydet"
+                    BackgroundColor="#166534" TextColor="White"
+                    CornerRadius="8" HeightRequest="50"
+                    Clicked="KaydetClicked"/>
+
+            <Label x:Name="MesajLabel" TextColor="Green"
+                   HorizontalOptions="Center" IsVisible="False"/>
+
+            <Button Text="⬅ Geri"
+                    BackgroundColor="Gray" TextColor="White"
+                    CornerRadius="8" HeightRequest="45"
+                    Clicked="GeriClicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

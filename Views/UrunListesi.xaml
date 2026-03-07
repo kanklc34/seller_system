@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Saller_System.Models"
+             x:Class="Saller_System.Views.UrunListesi"
+             Title="Ürün Listesi">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="📦 Ürün Listesi"
+               FontSize="22" FontAttributes="Bold"
+               TextColor="#1A3A5C"/>
+
+        <Button Text="+ Yeni Ürün Ekle"
+                BackgroundColor="#166534" TextColor="White"
+                CornerRadius="8" HeightRequest="50"
+                Clicked="YeniUrunClicked"/>
+
+        <CollectionView x:Name="UrunlerListesi">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Urun">
+                    <VerticalStackLayout Padding="10" Spacing="4">
+                        <Label Text="{Binding Ad}"
+                               FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
+                               TextColor="Gray"/>
+                        <Label Text="{Binding Fiyat, StringFormat='Fiyat: {0:C2}'}"
+                               TextColor="#166534"/>
+                        <BoxView HeightRequest="1" Color="#CCCCCC" Margin="0,5"/>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="⬅ Geri"
+                BackgroundColor="Gray" TextColor="White"
+                CornerRadius="8" HeightRequest="45"
+                Clicked="GeriClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>

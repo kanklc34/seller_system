@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             x:Class="Saller_System.Views.BarkodSayfa"
+             Title="Barkod Okut">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Barkod Okutma"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="#1A3A5C"/>
+
+            <zxing:CameraBarcodeReaderView
+                x:Name="BarkodOkuyucu"
+                HeightRequest="250"
+                IsDetecting="False"
+                BarcodesDetected="BarkodOkundu"/>
+
+            <Button Text="🔦 Kamerayı Aç/Kapat"
+                    BackgroundColor="#2E75B6" TextColor="White"
+                    CornerRadius="8" HeightRequest="45"
+                    Clicked="KameraToggleClicked"/>
+
+            <Entry x:Name="BarkodEntry"
+                   Placeholder="veya barkod numarası yazın"
+                   Keyboard="Numeric"/>
+
+            <Button Text="Ürünü Getir"
+                    BackgroundColor="#2E75B6" TextColor="White"
+                    CornerRadius="8" HeightRequest="50"
+                    Clicked="UrunGetirClicked"/>
+
+            <VerticalStackLayout x:Name="UrunBilgiFrame" IsVisible="False"
+                                 Spacing="8" Padding="15"
+                                 BackgroundColor="#EEF4FF">
+                <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold"/>
+                <Label x:Name="UrunFiyatLabel" FontSize="16" TextColor="#166534"/>
+                <Label x:Name="UrunKategoriLabel" FontSize="14" TextColor="Gray"/>
+                <Entry x:Name="AdetEntry" Placeholder="Adet" Keyboard="Numeric" Text="1"/>
+                <Button Text="✅ Satışa Ekle"
+                        BackgroundColor="#166534" TextColor="White"
+                        CornerRadius="8" HeightRequest="45"
+                        Clicked="SatisaEkleClicked"/>
+            </VerticalStackLayout>
+
+            <Label x:Name="MesajLabel" TextColor="Green"
+                   HorizontalOptions="Center" IsVisible="False"/>
+
+            <Button Text="⬅ Geri"
+                    BackgroundColor="Gray" TextColor="White"
+                    CornerRadius="8" HeightRequest="45"
+                    Clicked="GeriClicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.LoginPage"
+             Title="Giriş">
+
+    <VerticalStackLayout Padding="40" Spacing="20" VerticalOptions="Center">
+
+        <Label Text="🛒 Saller System"
+               FontSize="28" FontAttributes="Bold"
+               HorizontalOptions="Center" TextColor="#1A3A5C"/>
+
+        <Label Text="Kullanıcı Adı" FontSize="14" TextColor="Gray"/>
+        <Entry x:Name="KullaniciAdiEntry" Placeholder="Kullanıcı adınızı girin"/>
+
+        <Label Text="Şifre" FontSize="14" TextColor="Gray"/>
+        <Entry x:Name="SifreEntry" Placeholder="Şifrenizi girin" IsPassword="True"/>
+
+        <Button Text="Giriş Yap"
+                BackgroundColor="#2E75B6" TextColor="White"
+                CornerRadius="8"
+                Clicked="GirisYapClicked"/>
+
+        <Label x:Name="HataLabel" TextColor="Red"
+               HorizontalOptions="Center" IsVisible="False"/>
+
+    </VerticalStackLayout>
+</ContentPage>

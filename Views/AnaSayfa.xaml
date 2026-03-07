@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.AnaSayfa"
+             Title="Ana Sayfa">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Hoş Geldiniz 👋"
+               FontSize="24" FontAttributes="Bold"
+               TextColor="#1A3A5C"/>
+
+        <Button Text="📷 Barkod Okut"
+                BackgroundColor="#2E75B6" TextColor="White"
+                CornerRadius="8" HeightRequest="55"
+                Clicked="BarkodOkutClicked"/>
+
+        <Button Text="📦 Ürün Listesi"
+                BackgroundColor="#166534" TextColor="White"
+                CornerRadius="8" HeightRequest="55"
+                Clicked="UrunListesiClicked"/>
+
+        <Button Text="📊 Raporlar"
+                BackgroundColor="#1A3A5C" TextColor="White"
+                CornerRadius="8" HeightRequest="55"
+                Clicked="RaporlarClicked"/>
+
+        <Button Text="🚪 Çıkış"
+                BackgroundColor="#DC2626" TextColor="White"
+                CornerRadius="8" HeightRequest="55"
+                Clicked="CikisClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>

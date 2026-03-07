@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="Saller_System.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Saller_System"
-    Title="Saller_System">
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:Saller_System.Views"
+       x:Class="Saller_System.AppShell"
+       Shell.NavBarIsVisible="False">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellContent Route="LoginPage"
+                  ContentTemplate="{DataTemplate views:LoginPage}"/>
 
+    <ShellContent Route="AnaSayfa"
+                  ContentTemplate="{DataTemplate views:AnaSayfa}"/>
+    <ShellContent Route="BarkodSayfa"
+              ContentTemplate="{DataTemplate views:BarkodSayfa}"/>
+    <ShellContent Route="UrunListesi"
+              ContentTemplate="{DataTemplate views:UrunListesi}"/>
+
+    <ShellContent Route="Raporlar"
+              ContentTemplate="{DataTemplate views:Raporlar}"/>
+    <ShellContent Route="UrunEkle"
+              ContentTemplate="{DataTemplate views:UrunEkle}"/>
 </Shell>
