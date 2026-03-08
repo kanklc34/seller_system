@@ -27,8 +27,13 @@
                                    FontSize="16" FontAttributes="Bold"/>
                             <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
                                    TextColor="{StaticResource TextSecondary}"/>
-                            <Label Text="{Binding Fiyat, StringFormat='₺{0:N2}'}"
-                                   TextColor="{StaticResource Success}"/>
+                            <Label TextColor="{StaticResource Success}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding GramajliMi, Converter={StaticResource GramajFiyatConverter}}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
                         </VerticalStackLayout>
                         <Button Grid.Column="1"
                                 Text="📈"
