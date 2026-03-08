@@ -3,21 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.AnaSayfa"
              Title="Ana Sayfa"
-             BackgroundColor="{StaticResource PageBg}">
-
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
 
-            <Label Text="🛒 Saller System"
-                   FontSize="26" FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="{StaticResource PrimaryDark}"/>
+            <!-- Başlık kartı -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    StrokeShape="RoundRectangle 16"
+                    Stroke="Transparent"
+                    Padding="24,20"
+                    Margin="0,0,0,8">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="🥩 Kasap Pro"
+                           FontSize="26" FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="{StaticResource Primary}"/>
+                    <Label x:Name="HosgeldinLabel"
+                           FontSize="14" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                </VerticalStackLayout>
+            </Border>
 
-            <Label x:Name="HosgeldinLabel"
-                   FontSize="14" HorizontalOptions="Center"
-                   TextColor="{StaticResource TextSecondary}"
-                   Margin="0,0,0,20"/>
-
+            <!-- Ana butonlar -->
             <Button x:Name="BarkodBtn"
                     Text="📷  Barkod Okut"
                     Style="{StaticResource PrimaryBtn}"
@@ -30,34 +37,37 @@
 
             <Button x:Name="RaporlarBtn"
                     Text="📊  Raporlar"
-                    BackgroundColor="{StaticResource PrimaryDark}"
-                    TextColor="White" CornerRadius="10"
-                    HeightRequest="52" FontSize="15" FontAttributes="Bold"
+                    Style="{StaticResource AccentBtn}"
                     Clicked="RaporlarClicked"/>
 
             <Button x:Name="KullaniciYonetimiBtn"
                     Text="👥  Kullanıcı Yönetimi"
-                    BackgroundColor="#7C3AED"
-                    TextColor="White" CornerRadius="10"
-                    HeightRequest="52" FontSize="15" FontAttributes="Bold"
+                    BackgroundColor="{AppThemeBinding Light=#7C3AED, Dark=#6D28D9}"
+                    TextColor="White" CornerRadius="12"
+                    HeightRequest="54" FontSize="15" FontAttributes="Bold"
                     Clicked="KullaniciYonetimiClicked"/>
 
-            <!-- Dark mode toggle -->
-            <HorizontalStackLayout HorizontalOptions="Center"
-                                   Spacing="12" Margin="0,16,0,0">
-                <Label Text="🌙 Koyu Tema"
-                       VerticalOptions="Center"
-                       TextColor="{StaticResource TextSecondary}"/>
-                <Switch x:Name="DarkModeSwitch"
-                        Toggled="DarkModeToggled"/>
-            </HorizontalStackLayout>
             <Button x:Name="AyarlarBtn"
-        Text="⚙️ Ayarlar"
-        BackgroundColor="#6B7280" TextColor="White"
-        CornerRadius="10" HeightRequest="52"
-        FontSize="15" FontAttributes="Bold"
-        Clicked="AyarlarClicked"/>
-            
+                    Text="⚙️  Ayarlar"
+                    Style="{StaticResource GrayBtn}"
+                    Clicked="AyarlarClicked"/>
+
+            <!-- Dark mode toggle -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="Transparent"
+                    Padding="16,12"
+                    Margin="0,8,0,0">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                    <Label Text="🌙 Koyu Tema"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                    <Switch x:Name="DarkModeSwitch"
+                            Toggled="DarkModeToggled"
+                            OnColor="{StaticResource Primary}"/>
+                </HorizontalStackLayout>
+            </Border>
+
             <Button Text="🚪  Çıkış"
                     Style="{StaticResource DangerBtn}"
                     Margin="0,8,0,0"

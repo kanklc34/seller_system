@@ -4,61 +4,55 @@
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.SepetSayfa"
              Title="Sepet"
-             BackgroundColor="{StaticResource PageBg}">
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20" RowSpacing="12">
 
-        <Label Text="🛒 Sepet"
+        <Label Grid.Row="0" Text="🛒 Sepet"
                FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource PrimaryDark}"/>
+               TextColor="{StaticResource Primary}"/>
 
-        <CollectionView x:Name="SepetListesi">
+        <CollectionView Grid.Row="1" x:Name="SepetListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SepetItem">
-                    <Grid ColumnDefinitions="*,Auto" Padding="10" ColumnSpacing="10">
-                        <VerticalStackLayout Grid.Column="0" Spacing="2">
-                            <Label Text="{Binding Urun.Ad}"
-                                   FontSize="16" FontAttributes="Bold"/>
-                            <Label Text="{Binding Adet, StringFormat='Adet: {0}'}"
-                                   TextColor="{StaticResource TextSecondary}"/>
-                            <Label Text="{Binding Toplam, StringFormat='₺{0:N2}'}"
-                                   TextColor="{StaticResource Success}"/>
-                        </VerticalStackLayout>
-                        <Button Grid.Column="1"
-                                Text="🗑️"
-                                BackgroundColor="{StaticResource Danger}"
-                                TextColor="White"
-                                CornerRadius="8"
-                                HeightRequest="40" WidthRequest="44"
-                                CommandParameter="{Binding .}"
-                                Clicked="ItemSilClicked"/>
-                    </Grid>
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeShape="RoundRectangle 10" Stroke="Transparent"
+                            Padding="12" Margin="0,3">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding Urun.Ad}" FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="{Binding Adet, StringFormat='Adet: {0}'}"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding Toplam, StringFormat='₺{0:N2}'}"
+                                       TextColor="{StaticResource Success}" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1" Text="🗑️"
+                                    BackgroundColor="{StaticResource Danger}"
+                                    TextColor="White" CornerRadius="8"
+                                    HeightRequest="40" WidthRequest="44"
+                                    CommandParameter="{Binding .}"
+                                    Clicked="ItemSilClicked"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <BoxView HeightRequest="1" Color="{StaticResource Border}"/>
+        <VerticalStackLayout Grid.Row="2" Spacing="10">
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    StrokeShape="RoundRectangle 12" Stroke="Transparent" Padding="16">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0" Text="Toplam:"
+                           FontSize="18" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" x:Name="ToplamLabel"
+                           Text="₺0,00" FontSize="18" FontAttributes="Bold"
+                           TextColor="{StaticResource Success}"/>
+                </Grid>
+            </Border>
+            <Button Text="✅ Satışı Tamamla" Style="{StaticResource SuccessBtn}" Clicked="SatisiTamamlaClicked"/>
+            <Button Text="🗑️ Sepeti Temizle" Style="{StaticResource DangerBtn}" Clicked="SepetiTemizleClicked"/>
+            <Button Text="⬅ Geri" Style="{StaticResource GrayBtn}" Clicked="GeriClicked"/>
+        </VerticalStackLayout>
 
-        <Grid ColumnDefinitions="*,Auto">
-            <Label Grid.Column="0" Text="Toplam:"
-                   FontSize="18" FontAttributes="Bold"/>
-            <Label Grid.Column="1" x:Name="ToplamLabel"
-                   Text="₺0,00" FontSize="18"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource Success}"/>
-        </Grid>
-
-        <Button Text="✅ Satışı Tamamla"
-                Style="{StaticResource SuccessBtn}"
-                Clicked="SatisiTamamlaClicked"/>
-
-        <Button Text="🗑️ Sepeti Temizle"
-                Style="{StaticResource DangerBtn}"
-                Clicked="SepetiTemizleClicked"/>
-
-        <Button Text="⬅ Geri"
-                Style="{StaticResource GrayBtn}"
-                Clicked="GeriClicked"/>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

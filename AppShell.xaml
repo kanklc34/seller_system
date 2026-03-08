@@ -34,6 +34,8 @@
                   ContentTemplate="{DataTemplate views:FiyatGecmisiSayfa}"/>
     <ShellContent Route="KurulumSihirbazi"
               ContentTemplate="{DataTemplate views:KurulumSihirbazi}"/>
+    <ShellContent Route="SatisGecmisiSayfa"
+              ContentTemplate="{DataTemplate views:SatisGecmisiSayfa}"/>
     <Shell.Resources>
         <ResourceDictionary>
             <Style TargetType="Shell" ApplyToDerivedTypes="True">
