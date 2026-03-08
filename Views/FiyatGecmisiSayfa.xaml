@@ -3,53 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.FiyatGecmisiSayfa"
-             Title="Fiyat Geçmişi">
+             Title="Fiyat Geçmişi"
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="12">
 
-        <Label Text="📈 Fiyat Geçmişi"
+        <Label Grid.Row="0" Text="📈 Fiyat Geçmişi"
                FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource PrimaryDark}"/>
+               TextColor="{StaticResource Primary}"/>
 
-        <Label x:Name="UrunAdLabel"
-               FontSize="16" TextColor="{StaticResource TextSecondary}"/>
+        <Label Grid.Row="1" x:Name="UrunAdLabel"
+               FontSize="16" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
 
-        <CollectionView x:Name="GecmisListesi">
+        <CollectionView Grid.Row="2" x:Name="GecmisListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:FiyatGecmisi">
-                    <Grid ColumnDefinitions="*,*,*" Padding="10" ColumnSpacing="8">
-                        <VerticalStackLayout Grid.Column="0" Spacing="2">
-                            <Label Text="Eski Fiyat"
-                                   FontSize="11"
-                                   TextColor="{StaticResource TextSecondary}"/>
-                            <Label Text="{Binding EskiFiyat, StringFormat='₺{0:N2}'}"
-                                   FontAttributes="Bold"
-                                   TextColor="{StaticResource Danger}"/>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="Yeni Fiyat"
-                                   FontSize="11"
-                                   TextColor="{StaticResource TextSecondary}"/>
-                            <Label Text="{Binding YeniFiyat, StringFormat='₺{0:N2}'}"
-                                   FontAttributes="Bold"
-                                   TextColor="{StaticResource Success}"/>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Column="2" Spacing="2">
-                            <Label Text="{Binding Tarih, StringFormat='{0:dd/MM/yy HH:mm}'}"
-                                   FontSize="11"
-                                   TextColor="{StaticResource TextSecondary}"/>
-                            <Label Text="{Binding DegistirenKullanici}"
-                                   FontSize="12"
-                                   TextColor="{StaticResource Primary}"/>
-                        </VerticalStackLayout>
-                    </Grid>
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeShape="RoundRectangle 10" Stroke="Transparent"
+                            Padding="12" Margin="0,3">
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="Eski Fiyat" FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding EskiFiyat, StringFormat='₺{0:N2}'}"
+                                       FontAttributes="Bold" TextColor="{StaticResource Danger}"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Yeni Fiyat" FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding YeniFiyat, StringFormat='₺{0:N2}'}"
+                                       FontAttributes="Bold" TextColor="{StaticResource Success}"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                <Label Text="{Binding Tarih, StringFormat='{0:dd/MM/yy HH:mm}'}"
+                                       FontSize="11" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding DegistirenKullanici}"
+                                       FontSize="12" TextColor="{StaticResource Primary}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="⬅ Geri"
-                Style="{StaticResource GrayBtn}"
-                Clicked="GeriClicked"/>
+        <Button Grid.Row="3" Text="⬅ Geri" Style="{StaticResource GrayBtn}" Clicked="GeriClicked"/>
 
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

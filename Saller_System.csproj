@@ -100,6 +100,9 @@
 	  <MauiXaml Update="Views\Raporlar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\SatisGecmisiSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\SepetSayfa.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
