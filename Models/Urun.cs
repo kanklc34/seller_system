@@ -11,5 +11,7 @@ namespace Saller_System.Models
         public string Ad { get; set; } = string.Empty;
         public decimal Fiyat { get; set; }
         public string Kategori { get; set; } = string.Empty;
+        public bool GramajliMi { get; set; } = false;
+        public decimal KgFiyati { get; set; } = 0;
     }
 }
