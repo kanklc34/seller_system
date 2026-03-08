@@ -34,9 +34,8 @@
             <Label Text="Mağaza Adı *" TextColor="{StaticResource TextSecondary}"/>
             <Entry x:Name="MagazaAdiEntry" Placeholder="Örn: Ali Usta Kasap"/>
             <Label Text="Telefon (isteğe bağlı)" TextColor="{StaticResource TextSecondary}"/>
-            <Entry x:Name="TelefonEntry" Placeholder="0544 444 44 44" 
-       Keyboard="Telephone" MaxLength="13"
-       Unfocused="TelefonUnfocused"/>
+            <Entry x:Name="TelefonEntry" Placeholder="0544 444 44 44" Keyboard="Telephone"/>
+           
             <Label x:Name="TelefonHataLabel" IsVisible="False"
            TextColor="Red" FontSize="12"/>
             <Button Text="Devam →" Style="{StaticResource PrimaryBtn}"

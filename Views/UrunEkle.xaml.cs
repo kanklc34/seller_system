@@ -12,7 +12,19 @@ namespace Saller_System.Views
             InitializeComponent();
             _db = db;
         }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _db.InitAsync();
 
+            // Hızlı ekleme — barkod dolu gelsin
+            if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
+            {
+                BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
+                UrunDuzenleServisi.HizliEkleBarkod = null;
+                AdEntry.Focus(); // Ad alanına odaklan
+            }
+        }
         private void GramajliChanged(object sender, CheckedChangedEventArgs e)
         {
             KgFiyatPanel.IsVisible = e.Value;

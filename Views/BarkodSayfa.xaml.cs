@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using Saller_System.Services;
 using ZXing.Net.Maui;
 
@@ -11,11 +11,31 @@ namespace Saller_System.Views
         private Urun? _bulunanUrun;
         private decimal _hesaplananFiyat = 0;
         private decimal _kg = 0;
+
         public BarkodSayfa(DatabaseService db, SepetServisi sepet)
         {
             InitializeComponent();
             _db = db;
             _sepet = sepet;
+
+            BarkodOkuyucu.Options = new ZXing.Net.Maui.BarcodeReaderOptions
+            {
+                Formats = ZXing.Net.Maui.BarcodeFormat.QrCode |
+          ZXing.Net.Maui.BarcodeFormat.Ean13 |
+          ZXing.Net.Maui.BarcodeFormat.Ean8 |
+          ZXing.Net.Maui.BarcodeFormat.Code128 |
+          ZXing.Net.Maui.BarcodeFormat.Code39 |
+          ZXing.Net.Maui.BarcodeFormat.Code93 |
+          ZXing.Net.Maui.BarcodeFormat.Codabar |
+          ZXing.Net.Maui.BarcodeFormat.Pdf417 |
+          ZXing.Net.Maui.BarcodeFormat.DataMatrix |
+          ZXing.Net.Maui.BarcodeFormat.UpcA |
+          ZXing.Net.Maui.BarcodeFormat.UpcE |
+          ZXing.Net.Maui.BarcodeFormat.Itf |
+          ZXing.Net.Maui.BarcodeFormat.Msi,
+                AutoRotate = true,
+                Multiple = false
+            };
         }
 
         private async void UrunGetirClicked(object sender, EventArgs e)
@@ -62,6 +82,7 @@ namespace Saller_System.Views
             BarkodOkuyucu.IsDetecting = !BarkodOkuyucu.IsDetecting;
             KameraBtn.Text = BarkodOkuyucu.IsDetecting ? "🔦 Kamerayı Kapat" : "🔦 Kamerayı Aç";
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -74,6 +95,7 @@ namespace Saller_System.Views
             base.OnDisappearing();
             BarkodOkuyucu.IsDetecting = false;
         }
+
         private async void BarkodOkundu(object sender, BarcodeDetectionEventArgs e)
         {
             var ilkSonuc = e.Results.FirstOrDefault();
@@ -98,7 +120,6 @@ namespace Saller_System.Views
 
             if (tartiMi)
             {
-                // Tartı ürünü — ürün koduna göre ara
                 bulunanUrun = await _db.BarkodIleGetirAsync(urunKodu);
 
                 if (bulunanUrun != null && bulunanUrun.GramajliMi)
@@ -112,14 +133,13 @@ namespace Saller_System.Views
                     UrunFiyatLabel.Text = $"Fiyat: ₺{hesaplananFiyat:N2} ({kg:N3} kg × ₺{bulunanUrun.KgFiyati:N2}/kg)";
                     UrunKategoriLabel.Text = $"Kategori: {bulunanUrun.Kategori}";
                     AdetEntry.Text = "1";
-                    AdetEntry.IsEnabled = false; // Gramajlı üründe adet değiştirilmez
+                    AdetEntry.IsEnabled = false;
                     UrunBilgiFrame.IsVisible = true;
                     MesajLabel.IsVisible = false;
                     return;
                 }
             }
 
-            // Normal barkod
             bulunanUrun = await _db.BarkodIleGetirAsync(barkod);
             _hesaplananFiyat = 0;
             _kg = 0;
@@ -136,7 +156,17 @@ namespace Saller_System.Views
             }
             else
             {
-                await DisplayAlert("Bulunamadı", "Bu barkoda ait ürün bulunamadı!", "Tamam");
+                // Ürün bulunamadı — hızlı ekle seçeneği sun
+                bool ekle = await DisplayAlert(
+                    "Ürün Bulunamadı",
+                    $"'{barkod}' barkodlu ürün sistemde yok. Hemen eklemek ister misiniz?",
+                    "Ekle", "İptal");
+
+                if (ekle)
+                {
+                    UrunDuzenleServisi.HizliEkleBarkod = barkod;
+                    await Shell.Current.GoToAsync("//UrunEkle");
+                }
             }
         }
 

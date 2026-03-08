@@ -1,4 +1,4 @@
-﻿using Saller_System.Services;
+using Saller_System.Services;
 
 namespace Saller_System.Views
 {
@@ -12,28 +12,27 @@ namespace Saller_System.Views
             _ayarlar = ayarlar;
         }
 
+        private bool _temaYukleniyor = false;
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            _temaYukleniyor = true;
             HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi} 👋";
             RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
             KullaniciYonetimiBtn.IsVisible = OturumServisi.YoneticiMi;
+            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi;
 
-
-            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi; 
-                                                             
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            _temaYukleniyor = false;
         }
 
         private async void DarkModeToggled(object sender, ToggledEventArgs e)
         {
-            if (e.Value)
-                Application.Current!.UserAppTheme = AppTheme.Dark;
-            else
-                Application.Current!.UserAppTheme = AppTheme.Light;
-
+            if (_temaYukleniyor) return;
+            Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
             await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
         }
 
