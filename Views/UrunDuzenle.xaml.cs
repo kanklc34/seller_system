@@ -1,3 +1,4 @@
+using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -20,11 +21,37 @@ namespace Saller_System.Views
 
             AdEntry.Text = urun.Ad;
             BarkodEntry.Text = urun.Barkod;
-            FiyatEntry.Text = urun.Fiyat.ToString();
             KategoriEntry.Text = urun.Kategori;
+            GramajliCheckBox.IsChecked = urun.GramajliMi;
+
+            if (urun.GramajliMi)
+            {
+                KgFiyatiEntry.Text = urun.KgFiyati.ToString();
+                KgAlisFiyatiEntry.Text = urun.KgAlisFiyati.ToString();
+                NormalFiyatPanel.IsVisible = false;
+                AlisFiyatPanel.IsVisible = false;
+                KgFiyatPanel.IsVisible = true;
+                KgAlisFiyatPanel.IsVisible = true;
+            }
+            else
+            {
+                FiyatEntry.Text = urun.Fiyat.ToString();
+                AlisFiyatiEntry.Text = urun.AlisFiyati.ToString();
+                NormalFiyatPanel.IsVisible = true;
+                AlisFiyatPanel.IsVisible = true;
+                KgFiyatPanel.IsVisible = false;
+                KgAlisFiyatPanel.IsVisible = false;
+            }
         }
-        private async void GeriClicked(object sender, EventArgs e)
-    => await Shell.Current.GoToAsync("//UrunListesi");
+
+        private void GramajliChanged(object sender, CheckedChangedEventArgs e)
+        {
+            KgFiyatPanel.IsVisible = e.Value;
+            KgAlisFiyatPanel.IsVisible = e.Value;
+            NormalFiyatPanel.IsVisible = !e.Value;
+            AlisFiyatPanel.IsVisible = !e.Value;
+        }
+
         private async void KaydetClicked(object sender, EventArgs e)
         {
             var eskiUrun = UrunDuzenleServisi.SeciliUrun;
@@ -39,29 +66,52 @@ namespace Saller_System.Views
                 return;
             }
 
-            if (!decimal.TryParse(FiyatEntry.Text, out decimal fiyat) || fiyat < 0)
+            bool gramajli = GramajliCheckBox.IsChecked;
+            decimal fiyat = 0;
+            decimal kgFiyati = 0;
+            decimal alisFiyati = 0;
+            decimal kgAlisFiyati = 0;
+
+            if (gramajli)
             {
-                await DisplayAlert("Hata", "Geçerli bir fiyat girin!", "Tamam");
-                return;
+                if (!decimal.TryParse(KgFiyatiEntry.Text, out kgFiyati) || kgFiyati <= 0)
+                {
+                    await DisplayAlert("Hata", "GeÃ§erli bir kg fiyatÄ± girin!", "Tamam");
+                    return;
+                }
+                decimal.TryParse(KgAlisFiyatiEntry.Text, out kgAlisFiyati);
+            }
+            else
+            {
+                if (!decimal.TryParse(FiyatEntry.Text, out fiyat) || fiyat < 0)
+                {
+                    await DisplayAlert("Hata", "GeÃ§erli bir fiyat girin!", "Tamam");
+                    return;
+                }
+                decimal.TryParse(AlisFiyatiEntry.Text, out alisFiyati);
             }
 
-            // Eski ürünü kopyala, orijinalini koru
-            var yeniUrun = new Saller_System.Models.Urun
+            var yeniUrun = new Urun
             {
                 Id = eskiUrun.Id,
                 Ad = ad,
                 Barkod = barkod,
-                Fiyat = fiyat,
+                Fiyat = gramajli ? 0 : fiyat,
+                AlisFiyati = alisFiyati,
                 Kategori = KategoriEntry.Text?.Trim() ?? "",
-                GramajliMi = eskiUrun.GramajliMi,
-                KgFiyati = eskiUrun.KgFiyati
+                GramajliMi = gramajli,
+                KgFiyati = kgFiyati,
+                KgAlisFiyati = kgAlisFiyati
             };
 
             await _db.InitAsync();
             await _db.UrunGuncelleAsync(yeniUrun, eskiUrun);
 
-            await DisplayAlert("Baþarýlý", "Ürün güncellendi!", "Tamam");
+            await DisplayAlert("BaÅŸarÄ±lÄ±", "ÃœrÃ¼n gÃ¼ncellendi!", "Tamam");
             await Shell.Current.GoToAsync("//UrunListesi");
         }
+
+        private async void GeriClicked(object sender, EventArgs e)
+            => await Shell.Current.GoToAsync("//UrunListesi");
     }
 }

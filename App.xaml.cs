@@ -1,22 +1,37 @@
-﻿namespace Saller_System
+using Saller_System.Services;
+
+namespace Saller_System
 {
     public partial class App : Application
     {
-        public App(Saller_System.Services.AyarlarServisi ayarlar)
+        private readonly AyarlarServisi _ayarlar;
+
+        public App(AyarlarServisi ayarlar)
         {
             InitializeComponent();
-            _ = TemaYukleAsync(ayarlar);
-        }
-
-        private async Task TemaYukleAsync(Saller_System.Services.AyarlarServisi ayarlar)
-        {
-            var darkMode = await ayarlar.GetAsync("DarkMode", "0");
-            UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            _ayarlar = ayarlar;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            var shell = new AppShell();
+            var window = new Window(shell);
+
+            // Shell hazır olduktan sonra kontrol et
+            shell.Loaded += async (s, e) =>
+            {
+                var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
+                UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+
+                var kurulum = await _ayarlar.GetAsync("KurulumTamamlandi", "0");
+
+                if (kurulum != "1")
+                    await Shell.Current.GoToAsync("//KurulumSihirbazi");
+                else
+                    await Shell.Current.GoToAsync("//LoginPage");
+            };
+
+            return window;
         }
     }
 }

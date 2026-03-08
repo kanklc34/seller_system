@@ -4,10 +4,8 @@
              x:Class="Saller_System.Views.UrunDuzenle"
              Title="Ürün Düzenle"
              BackgroundColor="{StaticResource PageBg}">
-
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-
             <Label Text="✏️ Ürün Düzenle"
                    FontSize="22" FontAttributes="Bold"
                    TextColor="{StaticResource PrimaryDark}"/>
@@ -18,20 +16,38 @@
             <Label Text="Barkod" TextColor="{StaticResource TextSecondary}"/>
             <Entry x:Name="BarkodEntry" Placeholder="Barkod"/>
 
-            <Label Text="Fiyat" TextColor="{StaticResource TextSecondary}"/>
-            <Entry x:Name="FiyatEntry" Placeholder="0.00" Keyboard="Numeric"/>
-
             <Label Text="Kategori" TextColor="{StaticResource TextSecondary}"/>
             <Entry x:Name="KategoriEntry" Placeholder="Kategori"/>
 
+            <HorizontalStackLayout Spacing="10">
+                <CheckBox x:Name="GramajliCheckBox" CheckedChanged="GramajliChanged"/>
+                <Label Text="Gramajlı ürün (kg bazlı fiyat)" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout x:Name="NormalFiyatPanel" Spacing="8">
+                <Label Text="Fiyat" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="FiyatEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="KgFiyatPanel" IsVisible="False" Spacing="8">
+                <Label Text="Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="KgFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout x:Name="AlisFiyatPanel" Spacing="8">
+                <Label Text="Alış Fiyatı (₺)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="AlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="KgAlisFiyatPanel" IsVisible="False" Spacing="8">
+                <Label Text="Alış Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="KgAlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
             <Button Text="💾 Kaydet"
                     Style="{StaticResource SuccessBtn}"
                     Clicked="KaydetClicked"/>
-
             <Button Text="⬅ Geri"
                     Style="{StaticResource GrayBtn}"
                     Clicked="GeriClicked"/>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

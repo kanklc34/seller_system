@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -35,11 +35,25 @@ namespace Saller_System.Views
 
             foreach (var item in _sepet.Items)
             {
+                decimal alisFiyati = 0;
+
+                if (item.Urun.GramajliMi && item.OzelFiyat > 0)
+                {
+                    // Gramajlı ürün — kg alış fiyatı × gram
+                    decimal kg = item.OzelFiyat / (item.Urun.KgFiyati > 0 ? item.Urun.KgFiyati : 1);
+                    alisFiyati = item.Urun.KgAlisFiyati * kg;
+                }
+                else
+                {
+                    alisFiyati = item.Urun.AlisFiyati * item.Adet;
+                }
+
                 var satis = new Satis
                 {
                     UrunId = item.Urun.Id,
                     UrunAd = item.Urun.Ad,
-                    Fiyat = item.Urun.Fiyat,
+                    Fiyat = item.Toplam,
+                    AlisFiyati = alisFiyati,
                     Adet = item.Adet,
                     Tarih = DateTime.Now,
                     KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Kasiyer"
@@ -49,7 +63,6 @@ namespace Saller_System.Views
 
             decimal toplam = _sepet.Toplam;
             _sepet.Temizle();
-
             await DisplayAlert("Başarılı", $"Satış tamamlandı!\nToplam: ₺{toplam:N2}", "Tamam");
             await Shell.Current.GoToAsync("//BarkodSayfa");
         }
