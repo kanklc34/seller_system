@@ -38,22 +38,26 @@ namespace Saller_System.Views
                 return;
             }
 
+            // Yönetici Admin ekleyemesin
+            if (!OturumServisi.AdminMi && rol == "Admin")
+            {
+                await DisplayAlert("Yetkisiz", "Admin eklemek için admin yetkisi gerekli!", "Tamam");
+                return;
+            }
+
             var yeniKullanici = new Kullanici
             {
                 KullaniciAdi = ad,
-                Sifre = GuvenlikServisi.Hashle(sifre), // ← bunu güncelle
+                Sifre = GuvenlikServisi.Hashle(sifre),
                 Rol = rol
             };
 
             await _db.KullaniciEkleAsync(yeniKullanici);
-
             YeniKullaniciAdiEntry.Text = "";
             YeniSifreEntry.Text = "";
             RolPicker.SelectedIndex = -1;
-
             await ListeyiYukle();
             await DisplayAlert("Başarılı", $"{ad} eklendi!", "Tamam");
-
         }
 
         private async void KullaniciSilClicked(object sender, EventArgs e)

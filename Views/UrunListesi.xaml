@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.UrunListesi"
+             x:Name="ThisPage"
              Title="Ürün Listesi"
              BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
@@ -12,7 +13,8 @@
                FontSize="22" FontAttributes="Bold"
                TextColor="{StaticResource PrimaryDark}"/>
 
-        <Button Text="+ Yeni Ürün Ekle"
+        <Button x:Name="YeniUrunBtn"
+                Text="+ Yeni Ürün Ekle"
                 Style="{StaticResource SuccessBtn}"
                 Clicked="YeniUrunClicked"/>
 
@@ -28,11 +30,20 @@
                             <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
                                    TextColor="{StaticResource TextSecondary}"/>
                             <Label TextColor="{StaticResource Success}">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding GramajliMi, Converter={StaticResource GramajFiyatConverter}}"/>
-                                    </FormattedString>
-                                </Label.FormattedText>
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding GramajliMi}"
+                                                 Value="True">
+                                        <Setter Property="Text"
+                                                Value="{Binding KgFiyati, StringFormat='₺{0:N2}/kg'}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding GramajliMi}"
+                                                 Value="False">
+                                        <Setter Property="Text"
+                                                Value="{Binding Fiyat, StringFormat='₺{0:N2}'}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
                             </Label>
                         </VerticalStackLayout>
                         <Button Grid.Column="1"
@@ -44,21 +55,23 @@
                                 CommandParameter="{Binding .}"
                                 Clicked="FiyatGecmisiClicked"/>
                         <Button Grid.Column="2"
-                                Text="✏️"
-                                BackgroundColor="{StaticResource Primary}"
-                                TextColor="White"
-                                CornerRadius="8"
-                                HeightRequest="40" WidthRequest="44"
-                                CommandParameter="{Binding .}"
-                                Clicked="UrunDuzenleClicked"/>
+        Text="✏️"
+        IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
+        BackgroundColor="{StaticResource Primary}"
+        TextColor="White"
+        CornerRadius="8"
+        HeightRequest="40" WidthRequest="44"
+        CommandParameter="{Binding .}"
+        Clicked="UrunDuzenleClicked"/>
                         <Button Grid.Column="3"
-                                Text="🗑️"
-                                BackgroundColor="{StaticResource Danger}"
-                                TextColor="White"
-                                CornerRadius="8"
-                                HeightRequest="40" WidthRequest="44"
-                                CommandParameter="{Binding .}"
-                                Clicked="UrunSilClicked"/>
+        Text="🗑️"
+        IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
+        BackgroundColor="{StaticResource Danger}"
+        TextColor="White"
+        CornerRadius="8"
+        HeightRequest="40" WidthRequest="44"
+        CommandParameter="{Binding .}"
+        Clicked="UrunSilClicked"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
