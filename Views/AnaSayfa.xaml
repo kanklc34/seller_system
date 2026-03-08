@@ -2,33 +2,65 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.AnaSayfa"
-             Title="Ana Sayfa">
+             Title="Ana Sayfa"
+             BackgroundColor="{StaticResource PageBg}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
 
-        <Label Text="Hoş Geldiniz 👋"
-               FontSize="24" FontAttributes="Bold"
-               TextColor="#1A3A5C"/>
+            <Label Text="🛒 Saller System"
+                   FontSize="26" FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource PrimaryDark}"/>
 
-        <Button Text="📷 Barkod Okut"
-                BackgroundColor="#2E75B6" TextColor="White"
-                CornerRadius="8" HeightRequest="55"
-                Clicked="BarkodOkutClicked"/>
+            <Label x:Name="HosgeldinLabel"
+                   FontSize="14" HorizontalOptions="Center"
+                   TextColor="{StaticResource TextSecondary}"
+                   Margin="0,0,0,20"/>
 
-        <Button Text="📦 Ürün Listesi"
-                BackgroundColor="#166534" TextColor="White"
-                CornerRadius="8" HeightRequest="55"
-                Clicked="UrunListesiClicked"/>
+            <Button x:Name="BarkodBtn"
+                    Text="📷  Barkod Okut"
+                    Style="{StaticResource PrimaryBtn}"
+                    Clicked="BarkodOkutClicked"/>
 
-        <Button Text="📊 Raporlar"
-                BackgroundColor="#1A3A5C" TextColor="White"
-                CornerRadius="8" HeightRequest="55"
-                Clicked="RaporlarClicked"/>
+            <Button x:Name="UrunListesiBtn"
+                    Text="📦  Ürün Listesi"
+                    Style="{StaticResource SuccessBtn}"
+                    Clicked="UrunListesiClicked"/>
 
-        <Button Text="🚪 Çıkış"
-                BackgroundColor="#DC2626" TextColor="White"
-                CornerRadius="8" HeightRequest="55"
-                Clicked="CikisClicked"/>
+            <Button x:Name="RaporlarBtn"
+                    Text="📊  Raporlar"
+                    BackgroundColor="{StaticResource PrimaryDark}"
+                    TextColor="White" CornerRadius="10"
+                    HeightRequest="52" FontSize="15" FontAttributes="Bold"
+                    Clicked="RaporlarClicked"/>
 
-    </VerticalStackLayout>
+            <Button x:Name="KullaniciYonetimiBtn"
+                    Text="👥  Kullanıcı Yönetimi"
+                    BackgroundColor="#7C3AED"
+                    TextColor="White" CornerRadius="10"
+                    HeightRequest="52" FontSize="15" FontAttributes="Bold"
+                    Clicked="KullaniciYonetimiClicked"/>
+
+            <!-- Dark mode toggle -->
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="12" Margin="0,16,0,0">
+                <Label Text="🌙 Koyu Tema"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource TextSecondary}"/>
+                <Switch x:Name="DarkModeSwitch"
+                        Toggled="DarkModeToggled"/>
+            </HorizontalStackLayout>
+            <Button Text="⚙️  Ayarlar"
+        BackgroundColor="#6B7280" TextColor="White"
+        CornerRadius="10" HeightRequest="52"
+        FontSize="15" FontAttributes="Bold"
+        Clicked="AyarlarClicked"/>
+            <Button Text="🚪  Çıkış"
+                    Style="{StaticResource DangerBtn}"
+                    Margin="0,8,0,0"
+                    Clicked="CikisClicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

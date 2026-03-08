@@ -2,27 +2,61 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.LoginPage"
-             Title="Giriş">
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
-    <VerticalStackLayout Padding="40" Spacing="20" VerticalOptions="Center">
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
 
-        <Label Text="🛒 Saller System"
+    <VerticalStackLayout Padding="32" Spacing="0" VerticalOptions="Center">
+
+        <Label Text="🛒" FontSize="56" HorizontalOptions="Center"/>
+        <Label Text="Saller System"
                FontSize="28" FontAttributes="Bold"
-               HorizontalOptions="Center" TextColor="#1A3A5C"/>
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light=#1A3A5C, Dark=#F3F4F6}"
+               Margin="0,8,0,4"/>
+        <Label Text="Kasap Yönetim Sistemi"
+               FontSize="14" HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+               Margin="0,0,0,40"/>
 
-        <Label Text="Kullanıcı Adı" FontSize="14" TextColor="Gray"/>
-        <Entry x:Name="KullaniciAdiEntry" Placeholder="Kullanıcı adınızı girin"/>
+        <VerticalStackLayout
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+            Padding="24" Spacing="16">
 
-        <Label Text="Şifre" FontSize="14" TextColor="Gray"/>
-        <Entry x:Name="SifreEntry" Placeholder="Şifrenizi girin" IsPassword="True"/>
+            <Label Text="Kullanıcı Adı"
+                   FontAttributes="Bold" FontSize="13"
+                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"/>
+            <Border Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+        StrokeShape="RoundRectangle 8"
+        Padding="4,0">
+                <Entry x:Name="KullaniciAdiEntry"
+           Placeholder="Kullanıcı adınızı girin"/>
+            </Border>
 
-        <Button Text="Giriş Yap"
-                BackgroundColor="#2E75B6" TextColor="White"
-                CornerRadius="8"
-                Clicked="GirisYapClicked"/>
+            <Label Text="Şifre"
+                   FontAttributes="Bold" FontSize="13"
+                   TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}"
+                   Margin="0,8,0,0"/>
+            <Border Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}"
+        StrokeShape="RoundRectangle 8"
+        Padding="4,0"
+        Margin="0,8,0,0">
+                <Entry x:Name="SifreEntry"
+           Placeholder="Şifrenizi girin"
+           IsPassword="True"/>
+            </Border>
 
-        <Label x:Name="HataLabel" TextColor="Red"
-               HorizontalOptions="Center" IsVisible="False"/>
+            <Button Text="Giriş Yap"
+                    Style="{StaticResource PrimaryBtn}"
+                    Margin="0,8,0,0"
+                    Clicked="GirisYapClicked"/>
 
+            <Label x:Name="HataLabel"
+                   TextColor="{StaticResource Danger}"
+                   HorizontalOptions="Center"
+                   IsVisible="False"
+                   Margin="0,4,0,0"/>
+
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

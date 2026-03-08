@@ -44,7 +44,11 @@
                         CornerRadius="8" HeightRequest="45"
                         Clicked="SatisaEkleClicked"/>
             </VerticalStackLayout>
-
+            <Button Text="🛒 Sepete Git"
+        BackgroundColor="#7C3AED" TextColor="White"
+        CornerRadius="10" HeightRequest="52"
+        FontSize="15" FontAttributes="Bold"
+        Clicked="SepeteGitClicked"/>
             <Label x:Name="MesajLabel" TextColor="Green"
                    HorizontalOptions="Center" IsVisible="False"/>
 
