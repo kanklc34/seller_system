@@ -51,11 +51,13 @@
                 <Switch x:Name="DarkModeSwitch"
                         Toggled="DarkModeToggled"/>
             </HorizontalStackLayout>
-            <Button Text="⚙️  Ayarlar"
+            <Button x:Name="AyarlarBtn"
+        Text="⚙️ Ayarlar"
         BackgroundColor="#6B7280" TextColor="White"
         CornerRadius="10" HeightRequest="52"
         FontSize="15" FontAttributes="Bold"
         Clicked="AyarlarClicked"/>
+            
             <Button Text="🚪  Çıkış"
                     Style="{StaticResource DangerBtn}"
                     Margin="0,8,0,0"

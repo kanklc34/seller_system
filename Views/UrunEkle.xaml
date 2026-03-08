@@ -10,7 +10,7 @@
             <Label Text="📦 Yeni Ürün Ekle"
                    FontSize="22" FontAttributes="Bold"
                    TextColor="#1A3A5C"/>
-
+             
             <Label Text="Ürün Adı" TextColor="Gray"/>
             <Entry x:Name="AdEntry" Placeholder="Ürün adını girin"/>
 
@@ -39,7 +39,7 @@
 
             <Label x:Name="MesajLabel" TextColor="Green"
                    HorizontalOptions="Center" IsVisible="False"/>
-
+              
             <Button Text="⬅ Geri"
                     BackgroundColor="Gray" TextColor="White"
                     CornerRadius="8" HeightRequest="45"

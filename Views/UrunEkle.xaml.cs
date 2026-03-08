@@ -75,7 +75,14 @@ namespace Saller_System.Views
             FiyatEntry.Text = "";
             KategoriEntry.Text = "";
         }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _db.InitAsync();
+            // UrunlerListesi ve YeniUrunBtn bu sayfada YOK, kaldırın
+        }
 
+       
         private async void GeriClicked(object sender, EventArgs e)
             => await Shell.Current.GoToAsync("//UrunListesi");
     }

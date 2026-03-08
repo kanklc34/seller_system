@@ -15,12 +15,13 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
             HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi} 👋";
             RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
+            KullaniciYonetimiBtn.IsVisible = OturumServisi.YoneticiMi;
 
-            // Dark mode ayarını yükle
+
+            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi; 
+                                                             
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
@@ -50,6 +51,7 @@ namespace Saller_System.Views
 
         private async void AyarlarClicked(object sender, EventArgs e)
             => await Shell.Current.GoToAsync("//AyarlarSayfa");
+
 
         private async void CikisClicked(object sender, EventArgs e)
         {
