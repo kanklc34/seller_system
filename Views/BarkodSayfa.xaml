@@ -3,60 +3,94 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              x:Class="Saller_System.Views.BarkodSayfa"
-             Title="Barkod Okut">
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid RowDefinitions="Auto,*">
 
-            <Label Text="Barkod Okutma"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="#1A3A5C"/>
-
+        <!-- Üst kısım — kamera -->
+        <Grid Grid.Row="0" HeightRequest="280">
             <zxing:CameraBarcodeReaderView
-                x:Name="BarkodOkuyucu"
-                HeightRequest="250"
-                IsDetecting="False"
-                BarcodesDetected="BarkodOkundu"/>
+        x:Name="BarkodOkuyucu"
+        IsDetecting="False"
+        BarcodesDetected="BarkodOkundu"/>
+            <Label Text="📷 Barkodu kameraya tutun"
+           HorizontalOptions="Center"
+           VerticalOptions="End"
+           Margin="0,0,0,10"
+           TextColor="White"
+           FontSize="13"
+           BackgroundColor="#80000000"
+           Padding="8,4"/>
+        </Grid>
 
-            <Button Text="🔦 Kamerayı Aç/Kapat"
-                    BackgroundColor="#2E75B6" TextColor="White"
-                    CornerRadius="8" HeightRequest="45"
-                    Clicked="KameraToggleClicked"/>
 
-            <Entry x:Name="BarkodEntry"
-                   Placeholder="veya barkod numarası yazın"
-                   Keyboard="Numeric"/>
+        <!-- Alt kısım — kontroller -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="12">
 
-            <Button Text="Ürünü Getir"
-                    BackgroundColor="#2E75B6" TextColor="White"
-                    CornerRadius="8" HeightRequest="50"
-                    Clicked="UrunGetirClicked"/>
+                <Button x:Name="KameraBtn"
+                        Text="🔦 Kamerayı Aç"
+                        Style="{StaticResource PrimaryBtn}"
+                        Clicked="KameraToggleClicked"/>
 
-            <VerticalStackLayout x:Name="UrunBilgiFrame" IsVisible="False"
-                                 Spacing="8" Padding="15"
-                                 BackgroundColor="#EEF4FF">
-                <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold"/>
-                <Label x:Name="UrunFiyatLabel" FontSize="16" TextColor="#166534"/>
-                <Label x:Name="UrunKategoriLabel" FontSize="14" TextColor="Gray"/>
-                <Entry x:Name="AdetEntry" Placeholder="Adet" Keyboard="Numeric" Text="1"/>
-                <Button Text="✅ Satışa Ekle"
-                        BackgroundColor="#166534" TextColor="White"
-                        CornerRadius="8" HeightRequest="45"
-                        Clicked="SatisaEkleClicked"/>
+                <Label Text="— veya barkod yazın —"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource TextSecondary}"
+                       FontSize="12"/>
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Entry Grid.Column="0"
+                           x:Name="BarkodEntry"
+                           Placeholder="Barkod numarası"
+                           Keyboard="Numeric"/>
+                    <Button Grid.Column="1"
+                            Text="Getir"
+                            Style="{StaticResource PrimaryBtn}"
+                            WidthRequest="80"
+                            Clicked="UrunGetirClicked"/>
+                </Grid>
+
+                <!-- Ürün bilgi kartı -->
+                <VerticalStackLayout x:Name="UrunBilgiFrame"
+                                     IsVisible="False"
+                                     Spacing="8" Padding="16"
+                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}">
+                    <Label x:Name="UrunAdLabel"
+                           FontSize="18" FontAttributes="Bold"/>
+                    <Label x:Name="UrunFiyatLabel"
+                           FontSize="16"
+                           TextColor="{StaticResource Success}"/>
+                    <Label x:Name="UrunKategoriLabel"
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"/>
+                    <Entry x:Name="AdetEntry"
+                           Placeholder="Adet"
+                           Keyboard="Numeric"
+                           Text="1"/>
+                    <Button Text="✅ Sepete Ekle"
+                            Style="{StaticResource SuccessBtn}"
+                            Clicked="SatisaEkleClicked"/>
+                </VerticalStackLayout>
+
+                <Label x:Name="MesajLabel"
+                       TextColor="{StaticResource Success}"
+                       HorizontalOptions="Center"
+                       IsVisible="False"/>
+
+                <Button Text="🛒 Sepete Git"
+                        BackgroundColor="#7C3AED"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="52"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        Clicked="SepeteGitClicked"/>
+
+                <Button Text="⬅ Geri"
+                        Style="{StaticResource GrayBtn}"
+                        Clicked="GeriClicked"/>
+
             </VerticalStackLayout>
-            <Button Text="🛒 Sepete Git"
-        BackgroundColor="#7C3AED" TextColor="White"
-        CornerRadius="10" HeightRequest="52"
-        FontSize="15" FontAttributes="Bold"
-        Clicked="SepeteGitClicked"/>
-            <Label x:Name="MesajLabel" TextColor="Green"
-                   HorizontalOptions="Center" IsVisible="False"/>
-
-            <Button Text="⬅ Geri"
-                    BackgroundColor="Gray" TextColor="White"
-                    CornerRadius="8" HeightRequest="45"
-                    Clicked="GeriClicked"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </Grid>
 </ContentPage>

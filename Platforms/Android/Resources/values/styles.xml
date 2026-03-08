@@ -13,7 +13,7 @@
 		<item name="android:windowActionBar">false</item>
 	</style>
 
-	<style name="Maui.SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-		<item name="android:windowBackground">@drawable/maui_splash_screen</item>
+	<style name="Maui.SplashTheme" parent="Maui.MainTheme">
+		<item name="android:windowBackground">@color/colorPrimary</item>
 	</style>
 </resources>
