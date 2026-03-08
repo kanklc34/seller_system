@@ -1,4 +1,4 @@
-using Saller_System.Models;
+ï»¿using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -7,10 +7,13 @@ namespace Saller_System.Views
     {
         private readonly DatabaseService _db;
 
+        public bool YoneticiMi => OturumServisi.YoneticiMi;
+
         public UrunListesi(DatabaseService db)
         {
             InitializeComponent();
             _db = db;
+            BindingContext = this;
         }
 
         protected override async void OnAppearing()
@@ -19,6 +22,8 @@ namespace Saller_System.Views
             await _db.InitAsync();
             var urunler = await _db.TumUrunleriGetirAsync();
             UrunlerListesi.ItemsSource = urunler;
+            YeniUrunBtn.IsVisible = OturumServisi.YoneticiMi;
+            OnPropertyChanged(nameof(YoneticiMi));
         }
 
         private async void YeniUrunClicked(object sender, EventArgs e)
@@ -28,7 +33,7 @@ namespace Saller_System.Views
         {
             if (!OturumServisi.YoneticiMi)
             {
-                await DisplayAlert("Yetkisiz", "Düzenleme için yönetici yetkisi gerekli!", "Tamam");
+                await DisplayAlert("Yetkisiz", "DÃ¼zenleme iÃ§in yÃ¶netici yetkisi gerekli!", "Tamam");
                 return;
             }
             if (sender is Button btn && btn.CommandParameter is Urun urun)
@@ -42,12 +47,12 @@ namespace Saller_System.Views
         {
             if (!OturumServisi.YoneticiMi)
             {
-                await DisplayAlert("Yetkisiz", "Silme için yönetici yetkisi gerekli!", "Tamam");
+                await DisplayAlert("Yetkisiz", "Silme iÃ§in yÃ¶netici yetkisi gerekli!", "Tamam");
                 return;
             }
             if (sender is Button btn && btn.CommandParameter is Urun urun)
             {
-                bool onay = await DisplayAlert("Onay", $"{urun.Ad} silinsin mi?", "Evet", "Hayýr");
+                bool onay = await DisplayAlert("Onay", $"{urun.Ad} silinsin mi?", "Evet", "HayÄ±r");
                 if (onay)
                 {
                     await _db.UrunSilAsync(urun);
