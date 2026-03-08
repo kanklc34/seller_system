@@ -61,8 +61,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidResource Remove="Platforms\Android\Resources\drawable\entry_background.xml" />
-	  <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
+		<AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -110,6 +109,14 @@
 	  <MauiXaml Update="Views\UrunListesi.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\Mrt\Source\Repos2\sales_system\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\Mrt\Source\Repos2\sales_system\.editorconfig" />
 	</ItemGroup>
 
 </Project>

@@ -17,7 +17,8 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
             await _db.InitAsync();
-            UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
+            var urunler = await _db.TumUrunleriGetirAsync();
+            UrunlerListesi.ItemsSource = urunler;
         }
 
         private async void YeniUrunClicked(object sender, EventArgs e)

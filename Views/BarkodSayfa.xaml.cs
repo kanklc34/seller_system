@@ -60,11 +60,22 @@ namespace Saller_System.Views
         private void KameraToggleClicked(object sender, EventArgs e)
         {
             BarkodOkuyucu.IsDetecting = !BarkodOkuyucu.IsDetecting;
+            KameraBtn.Text = BarkodOkuyucu.IsDetecting ? "🔦 Kamerayı Kapat" : "🔦 Kamerayı Aç";
+        }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            BarkodOkuyucu.IsDetecting = true;
+            KameraBtn.Text = "🔦 Kamerayı Kapat";
         }
 
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            BarkodOkuyucu.IsDetecting = false;
+        }
         private async void BarkodOkundu(object sender, BarcodeDetectionEventArgs e)
         {
-            BarkodOkuyucu.IsDetecting = false;
             var ilkSonuc = e.Results.FirstOrDefault();
             if (ilkSonuc == null) return;
 
@@ -72,6 +83,8 @@ namespace Saller_System.Views
             {
                 BarkodEntry.Text = ilkSonuc.Value;
                 await UrunGetirAsync(ilkSonuc.Value);
+                BarkodOkuyucu.IsDetecting = false;
+                KameraBtn.Text = "🔦 Kamerayı Aç";
             });
         }
 

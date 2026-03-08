@@ -32,6 +32,7 @@ namespace Saller_System
             builder.Services.AddTransient<AyarlarSayfa>();
             builder.Services.AddTransient<FiyatGecmisiSayfa>();
             builder.Services.AddSingleton<App>();
+            builder.Services.AddTransient<BarkodSayfa>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
