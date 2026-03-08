@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.SatisGecmisiSayfa"
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
+
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="12">
+
+        <!-- Başlık + breadcrumb -->
+        <VerticalStackLayout Grid.Row="0" Spacing="4">
+            <Label Text="📅 Satış Geçmişi"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="{StaticResource Primary}"/>
+            <Label x:Name="BreadcrumbLabel"
+                   FontSize="13"
+                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+        </VerticalStackLayout>
+
+        <!-- Geri butonu (yıl/ay/hafta görünümünde) -->
+        <Button Grid.Row="1"
+                x:Name="UstSeviyeBtn"
+                Text="⬆ Üst Seviye"
+                Style="{StaticResource GrayBtn}"
+                HeightRequest="42"
+                IsVisible="False"
+                Clicked="UstSeviyeClicked"/>
+
+        <!-- Liste -->
+        <CollectionView Grid.Row="2" x:Name="GecmisListesi"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSecimDegisti">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeShape="RoundRectangle 12" Stroke="Transparent"
+                            Padding="16" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label Text="{Binding Baslik}"
+                                       FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="{Binding AltBaslik}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="End">
+                                <Label Text="{Binding Ciro, StringFormat='₺{0:N2}'}"
+                                       FontSize="16" FontAttributes="Bold"
+                                       TextColor="{StaticResource Success}"
+                                       HorizontalOptions="End"/>
+                                <Label Text="{Binding Kar, StringFormat='Kar: ₺{0:N2}'}"
+                                       FontSize="12"
+                                       TextColor="{StaticResource Primary}"
+                                       HorizontalOptions="End"/>
+                                <Label Text="{Binding SatisSayisi, StringFormat='{0} satış'}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                                       HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Alt butonlar -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="10">
+            <Button Grid.Column="0"
+                    x:Name="ExcelBtn"
+                    Text="📥 Excel'e Aktar"
+                    Style="{StaticResource SuccessBtn}"
+                    IsVisible="False"
+                    Clicked="ExcelAktarClicked"/>
+            <Button Grid.Column="1"
+                    Text="⬅ Geri"
+                    Style="{StaticResource GrayBtn}"
+                    Clicked="GeriClicked"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

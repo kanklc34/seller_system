@@ -5,81 +5,88 @@
              x:Class="Saller_System.Views.UrunListesi"
              x:Name="ThisPage"
              Title="Ürün Listesi"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="12">
 
-        <Label Text="📦 Ürün Listesi"
+        <Label Grid.Row="0"
+               Text="📦 Ürün Listesi"
                FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource PrimaryDark}"/>
+               TextColor="{StaticResource Primary}"/>
 
-        <Button x:Name="YeniUrunBtn"
+        <Button Grid.Row="1"
+                x:Name="YeniUrunBtn"
                 Text="+ Yeni Ürün Ekle"
                 Style="{StaticResource SuccessBtn}"
                 Clicked="YeniUrunClicked"/>
 
-        <CollectionView x:Name="UrunlerListesi">
+        <CollectionView Grid.Row="2" x:Name="UrunlerListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Urun">
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto"
-                          Padding="10" ColumnSpacing="8"
-                          BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
-                        <VerticalStackLayout Grid.Column="0" Spacing="2">
-                            <Label Text="{Binding Ad}"
-                                   FontSize="16" FontAttributes="Bold"/>
-                            <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
-                                   TextColor="{StaticResource TextSecondary}"/>
-                            <Label TextColor="{StaticResource Success}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label"
-                                                 Binding="{Binding GramajliMi}"
-                                                 Value="True">
-                                        <Setter Property="Text"
-                                                Value="{Binding KgFiyati, StringFormat='₺{0:N2}/kg'}"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Label"
-                                                 Binding="{Binding GramajliMi}"
-                                                 Value="False">
-                                        <Setter Property="Text"
-                                                Value="{Binding Fiyat, StringFormat='₺{0:N2}'}"/>
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </VerticalStackLayout>
-                        <Button Grid.Column="1"
-                                Text="📈"
-                                BackgroundColor="#6B7280"
-                                TextColor="White"
-                                CornerRadius="8"
-                                HeightRequest="40" WidthRequest="44"
-                                CommandParameter="{Binding .}"
-                                Clicked="FiyatGecmisiClicked"/>
-                        <Button Grid.Column="2"
-        Text="✏️"
-        IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
-        BackgroundColor="{StaticResource Primary}"
-        TextColor="White"
-        CornerRadius="8"
-        HeightRequest="40" WidthRequest="44"
-        CommandParameter="{Binding .}"
-        Clicked="UrunDuzenleClicked"/>
-                        <Button Grid.Column="3"
-        Text="🗑️"
-        IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
-        BackgroundColor="{StaticResource Danger}"
-        TextColor="White"
-        CornerRadius="8"
-        HeightRequest="40" WidthRequest="44"
-        CommandParameter="{Binding .}"
-        Clicked="UrunSilClicked"/>
-                    </Grid>
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="Transparent"
+                            Padding="12" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding Ad}"
+                                       FontSize="16" FontAttributes="Bold"/>
+                                <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                                       FontSize="12"/>
+                                <Label TextColor="{StaticResource Success}" FontAttributes="Bold">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding GramajliMi}"
+                                                     Value="True">
+                                            <Setter Property="Text"
+                                                    Value="{Binding KgFiyati, StringFormat='₺{0:N2}/kg'}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding GramajliMi}"
+                                                     Value="False">
+                                            <Setter Property="Text"
+                                                    Value="{Binding Fiyat, StringFormat='₺{0:N2}'}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1"
+                                    Text="📈"
+                                    BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                                    TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                                    CornerRadius="8"
+                                    HeightRequest="40" WidthRequest="44"
+                                    CommandParameter="{Binding .}"
+                                    Clicked="FiyatGecmisiClicked"/>
+                            <Button Grid.Column="2"
+                                    Text="✏️"
+                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    TextColor="White"
+                                    CornerRadius="8"
+                                    HeightRequest="40" WidthRequest="44"
+                                    CommandParameter="{Binding .}"
+                                    Clicked="UrunDuzenleClicked"/>
+                            <Button Grid.Column="3"
+                                    Text="🗑️"
+                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
+                                    BackgroundColor="{StaticResource Danger}"
+                                    TextColor="White"
+                                    CornerRadius="8"
+                                    HeightRequest="40" WidthRequest="44"
+                                    CommandParameter="{Binding .}"
+                                    Clicked="UrunSilClicked"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="⬅ Geri"
+        <Button Grid.Row="3"
+                Text="⬅ Geri"
                 Style="{StaticResource GrayBtn}"
                 Clicked="GeriClicked"/>
 
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
