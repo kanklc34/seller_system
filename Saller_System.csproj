@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net9.0-android;net9.0-ios17.0;net9.0-maccatalyst17.0</TargetFrameworks>
 		<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -61,6 +61,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\drawable\entry_background.xml" />
+	  <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.105.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
@@ -75,13 +80,28 @@
 	  <MauiXaml Update="Views\AnaSayfa.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\AyarlarSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\BarkodSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\FiyatGecmisiSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\KullaniciYonetimi.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Raporlar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SepetSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\UrunDuzenle.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\UrunEkle.xaml">

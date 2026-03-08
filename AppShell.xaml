@@ -3,20 +3,41 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:Saller_System.Views"
        x:Class="Saller_System.AppShell"
-       Shell.NavBarIsVisible="False">
+       Shell.NavBarIsVisible="False"
+       Shell.TabBarIsVisible="False"
+       Shell.BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}"
+       FlyoutBehavior="Disabled">
 
     <ShellContent Route="LoginPage"
                   ContentTemplate="{DataTemplate views:LoginPage}"/>
-
     <ShellContent Route="AnaSayfa"
                   ContentTemplate="{DataTemplate views:AnaSayfa}"/>
     <ShellContent Route="BarkodSayfa"
-              ContentTemplate="{DataTemplate views:BarkodSayfa}"/>
+                  ContentTemplate="{DataTemplate views:BarkodSayfa}"/>
     <ShellContent Route="UrunListesi"
-              ContentTemplate="{DataTemplate views:UrunListesi}"/>
-
+                  ContentTemplate="{DataTemplate views:UrunListesi}"/>
     <ShellContent Route="Raporlar"
-              ContentTemplate="{DataTemplate views:Raporlar}"/>
+                  ContentTemplate="{DataTemplate views:Raporlar}"/>
     <ShellContent Route="UrunEkle"
-              ContentTemplate="{DataTemplate views:UrunEkle}"/>
+                  ContentTemplate="{DataTemplate views:UrunEkle}"/>
+    <ShellContent Route="KullaniciYonetimi"
+                  ContentTemplate="{DataTemplate views:KullaniciYonetimi}"/>
+    <ShellContent Route="UrunDuzenle"
+                  ContentTemplate="{DataTemplate views:UrunDuzenle}"/>
+    <ShellContent Route="SepetSayfa"
+                  ContentTemplate="{DataTemplate views:SepetSayfa}"/>
+    <ShellContent Route="AyarlarSayfa"
+                  ContentTemplate="{DataTemplate views:AyarlarSayfa}"/>
+    <ShellContent Route="FiyatGecmisiSayfa"
+                  ContentTemplate="{DataTemplate views:FiyatGecmisiSayfa}"/>
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <Setter Property="Shell.NavBarIsVisible" Value="False"/>
+                <Setter Property="Shell.TabBarIsVisible" Value="False"/>
+                <Setter Property="Shell.TitleColor" Value="Transparent"/>
+                <Setter Property="Shell.BackgroundColor" Value="Transparent"/>
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
 </Shell>

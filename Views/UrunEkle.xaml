@@ -22,6 +22,15 @@
 
             <Label Text="Kategori" TextColor="Gray"/>
             <Entry x:Name="KategoriEntry" Placeholder="Örn: Et, Tavuk, Şarküteri"/>
+            <HorizontalStackLayout Spacing="10">
+                <CheckBox x:Name="GramajliCheckBox" CheckedChanged="GramajliChanged"/>
+                <Label Text="Gramajlı ürün (kg bazlı fiyat)" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout x:Name="KgFiyatPanel" IsVisible="False" Spacing="8">
+                <Label Text="Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="KgFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
 
             <Button Text="💾 Kaydet"
                     BackgroundColor="#166534" TextColor="White"
@@ -35,7 +44,6 @@
                     BackgroundColor="Gray" TextColor="White"
                     CornerRadius="8" HeightRequest="45"
                     Clicked="GeriClicked"/>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

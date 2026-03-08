@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Maui.MainTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+		<item name="colorPrimary">#2E75B6</item>
+		<item name="colorPrimaryDark">#1A3A5C</item>
+		<item name="colorAccent">#2E75B6</item>
+		<item name="colorSurface">#FFFFFF</item>
+		<item name="colorOnSurface">#1A1A2E</item>
+		<item name="android:colorBackground">#F8F9FA</item>
+		<item name="android:textColorPrimary">#1A1A2E</item>
+		<item name="android:textColorHint">#6B7280</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+	</style>
+
+	<style name="Maui.SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+		<item name="android:windowBackground">@drawable/maui_splash_screen</item>
+	</style>
+</resources>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.AyarlarSayfa"
+             Title="Ayarlar">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="⚙️ Ayarlar"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="{StaticResource PrimaryDark}"/>
+
+            <!-- Terazi Ayarları -->
+            <VerticalStackLayout Spacing="10" Padding="16"
+                                 BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+                <Label Text="🔧 Terazi Ayarları"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"/>
+
+                <Label Text="Terazinizin ürettiği bir barkodu okutun, sistem prefix'i otomatik algılar."
+                       TextColor="{StaticResource TextSecondary}"/>
+
+                <Entry x:Name="TestBarkodEntry"
+                       Placeholder="Test barkodunu buraya girin"/>
+
+                <Button Text="🔍 Prefix Algıla"
+                        Style="{StaticResource PrimaryBtn}"
+                        Clicked="PrefixAlgilaClicked"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Algılanan Prefix:" VerticalOptions="Center"/>
+                    <Label x:Name="PrefixLabel"
+                           Text="Henüz algılanmadı"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+
+                <Button Text="💾 Prefix'i Kaydet"
+                        Style="{StaticResource SuccessBtn}"
+                        x:Name="PrefixKaydetBtn"
+                        IsVisible="False"
+                        Clicked="PrefixKaydetClicked"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Kayıtlı Prefix:" VerticalOptions="Center"
+                           TextColor="{StaticResource TextSecondary}"/>
+                    <Label x:Name="KayitliPrefixLabel"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Success}"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!-- Mağaza Bilgileri -->
+            <VerticalStackLayout Spacing="10" Padding="16"
+                                 BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+
+                <Label Text="🏪 Mağaza Bilgileri"
+                       FontSize="16" FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"/>
+
+                <Label Text="Mağaza Adı" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="MagazaAdiEntry" Placeholder="Mağaza adınız"/>
+
+                <Label Text="Telefon" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="TelefonEntry" Placeholder="0555 000 00 00" Keyboard="Telephone"/>
+
+                <Button Text="💾 Bilgileri Kaydet"
+                        Style="{StaticResource SuccessBtn}"
+                        Clicked="BilgileriKaydetClicked"/>
+
+            </VerticalStackLayout>
+
+            <Button Text="⬅ Geri"
+                    Style="{StaticResource GrayBtn}"
+                    Clicked="GeriClicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
