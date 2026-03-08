@@ -1,4 +1,4 @@
-﻿using Saller_System.Services;
+using Saller_System.Services;
 
 namespace Saller_System.Views
 {
@@ -18,33 +18,78 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
             await _db.InitAsync();
+            var gunlukKar = await _db.GunlukKarAsync(DateTime.Today);
+            var aylikKar = await _db.AylikKarAsync(DateTime.Today.Year, DateTime.Today.Month);
 
+           
             var gunlukCiro = await _db.GunlukCiroAsync(DateTime.Today);
             var gunlukSayi = await _db.GunlukSatisSayisiAsync(DateTime.Today);
             var aylikCiro = await _db.AylikCiroAsync(DateTime.Today.Year, DateTime.Today.Month);
 
+            GunlukKarLabel.Text = $"₺{gunlukKar:N2}";
+            AylikKarLabel.Text = $"₺{aylikKar:N2}";
             GunlukCiroLabel.Text = $"₺{gunlukCiro:N2}";
             GunlukSayiLabel.Text = $"{gunlukSayi} adet";
             AylikCiroLabel.Text = $"₺{aylikCiro:N2}";
             AyLabel.Text = DateTime.Today.ToString("MMMM yyyy");
+
+            // Varsayılan olarak bugünkü satışları göster
+            await BugunkuSatislariYukle();
+        }
+
+        private async Task BugunkuSatislariYukle()
+        {
+            var satislar = await _db.GunlukSatislerAsync(DateTime.Today);
+            SatisListesi.ItemsSource = satislar;
+            ListeBaslikLabel.Text = $"📅 Bugünkü Satışlar ({satislar.Count} kayıt)";
+            ListeBaslikLabel.IsVisible = true;
         }
 
         private async void BugunkuSatislarClicked(object sender, EventArgs e)
         {
-            var satislar = await _db.GunlukSatislerAsync(DateTime.Today);
-            SatisListesi.ItemsSource = satislar;
+            await BugunkuSatislariYukle();
         }
 
         private async void TumSatislarClicked(object sender, EventArgs e)
         {
             var satislar = await _db.TumSatisleriGetirAsync();
             SatisListesi.ItemsSource = satislar;
+            ListeBaslikLabel.Text = $"📋 Tüm Satışlar ({satislar.Count} kayıt)";
+            ListeBaslikLabel.IsVisible = true;
         }
 
         private async void ExcelAktarClicked(object sender, EventArgs e)
         {
+            string secim = await DisplayActionSheet(
+                "Excel'e Aktar",
+                "İptal",
+                null,
+                "📅 Bugünkü Satışlar",
+                "📆 Bu Ay",
+                "📋 Tüm Satışlar");
+
+            if (secim == null || secim == "İptal") return;
+
             await _db.InitAsync();
-            var satislar = await _db.TumSatisleriGetirAsync();
+
+            List<Saller_System.Models.Satis> satislar;
+            string baslik;
+
+            if (secim == "📅 Bugünkü Satışlar")
+            {
+                satislar = await _db.GunlukSatislerAsync(DateTime.Today);
+                baslik = $"Günlük Rapor {DateTime.Today:dd.MM.yyyy}";
+            }
+            else if (secim == "📆 Bu Ay")
+            {
+                satislar = await _db.AylikSatislerAsync(DateTime.Today.Year, DateTime.Today.Month);
+                baslik = $"Aylık Rapor {DateTime.Today:MMMM yyyy}";
+            }
+            else
+            {
+                satislar = await _db.TumSatisleriGetirAsync();
+                baslik = "Tüm Satışlar Raporu";
+            }
 
             if (satislar.Count == 0)
             {
@@ -52,13 +97,11 @@ namespace Saller_System.Views
                 return;
             }
 
-            string dosyaYolu = _excel.RaporOlustur(satislar, "Tüm Satışlar Raporu");
+            string dosyaYolu = _excel.RaporOlustur(satislar, baslik);
             await DisplayAlert("Başarılı", $"Excel dosyası oluşturuldu:\n{dosyaYolu}", "Tamam");
         }
 
         private async void GeriClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//AnaSayfa");
-        }
+            => await Shell.Current.GoToAsync("//AnaSayfa");
     }
 }

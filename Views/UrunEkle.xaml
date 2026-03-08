@@ -31,7 +31,15 @@
                 <Label Text="Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
                 <Entry x:Name="KgFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
             </VerticalStackLayout>
+            <VerticalStackLayout x:Name="AlisFiyatPanel" Spacing="8">
+                <Label Text="Alış Fiyatı (₺)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="AlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
 
+            <VerticalStackLayout x:Name="KgAlisFiyatPanel" IsVisible="False" Spacing="8">
+                <Label Text="Alış Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
+                <Entry x:Name="KgAlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
+            </VerticalStackLayout>
             <Button Text="💾 Kaydet"
                     BackgroundColor="#166534" TextColor="White"
                     CornerRadius="8" HeightRequest="50"

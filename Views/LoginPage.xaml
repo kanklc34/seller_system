@@ -8,7 +8,7 @@
 
     <VerticalStackLayout Padding="32" Spacing="0" VerticalOptions="Center">
 
-        <Label Text="🛒" FontSize="56" HorizontalOptions="Center"/>
+        <Label Text="🥩" FontSize="56" HorizontalOptions="Center"/>
         <Label Text="Saller System"
                FontSize="28" FontAttributes="Bold"
                HorizontalOptions="Center"

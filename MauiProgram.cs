@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Saller_System.Services;
 using Saller_System.Views;
 using ZXing.Net.Maui.Controls;
@@ -33,6 +33,11 @@ namespace Saller_System
             builder.Services.AddTransient<FiyatGecmisiSayfa>();
             builder.Services.AddSingleton<App>();
             builder.Services.AddTransient<BarkodSayfa>();
+            builder.Services.AddTransient<KurulumSihirbazi>();
+            builder.Services.AddTransient<KurulumSihirbazi>();
+            builder.Services.AddTransient<SplashSayfa>();
+
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
