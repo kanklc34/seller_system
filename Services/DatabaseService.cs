@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 using Saller_System.Models;
 
 namespace Saller_System.Services
@@ -103,7 +103,7 @@ namespace Saller_System.Services
         public async Task<decimal> GunlukCiroAsync(DateTime tarih)
         {
             var satislar = await GunlukSatislerAsync(tarih);
-            return satislar.Sum(s => s.Fiyat * s.Adet);
+            return satislar.Sum(s => s.Fiyat);
         }
 
         public async Task<decimal> AylikCiroAsync(int yil, int ay)
@@ -113,9 +113,33 @@ namespace Saller_System.Services
             var satislar = await _db!.Table<Satis>()
                                      .Where(s => s.Tarih >= baslangic && s.Tarih < bitis)
                                      .ToListAsync();
-            return satislar.Sum(s => s.Fiyat * s.Adet);
+            return satislar.Sum(s => s.Fiyat);
         }
+        public async Task<decimal> GunlukKarAsync(DateTime tarih)
+        {
+            var satislar = await GunlukSatislerAsync(tarih);
+            return satislar.Sum(s => s.Kar);
+        }
+        public async Task<Kullanici?> KullaniciGetirAsync(string kullaniciAdi)
+    => await _db!.Table<Kullanici>()
+                 .Where(k => k.KullaniciAdi == kullaniciAdi)
+                 .FirstOrDefaultAsync();
 
+        public async Task KullaniciGuncelleAsync(Kullanici kullanici)
+            => await _db!.UpdateAsync(kullanici);
+        public async Task<decimal> AylikKarAsync(int yil, int ay)
+        {
+            var satislar = await AylikSatislerAsync(yil, ay);
+            return satislar.Sum(s => s.Kar);
+        }
+        public async Task<List<Satis>> AylikSatislerAsync(int yil, int ay)
+        {
+            var baslangic = new DateTime(yil, ay, 1);
+            var bitis = baslangic.AddMonths(1);
+            return await _db!.Table<Satis>()
+                             .Where(s => s.Tarih >= baslangic && s.Tarih < bitis)
+                             .ToListAsync();
+        }
         public async Task<int> GunlukSatisSayisiAsync(DateTime tarih)
         {
             var satislar = await GunlukSatislerAsync(tarih);

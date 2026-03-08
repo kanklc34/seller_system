@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.SplashSayfa"
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="16">
+        <Label Text="🥩" FontSize="72" HorizontalOptions="Center"/>
+        <Label Text="Kasap Pro" FontSize="28" FontAttributes="Bold"
+               HorizontalOptions="Center" TextColor="{StaticResource PrimaryDark}"/>
+        <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"
+                           HorizontalOptions="Center" Margin="0,16,0,0"/>
+    </VerticalStackLayout>
+</ContentPage>

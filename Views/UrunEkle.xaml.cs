@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -12,10 +12,14 @@ namespace Saller_System.Views
             InitializeComponent();
             _db = db;
         }
+
         private void GramajliChanged(object sender, CheckedChangedEventArgs e)
         {
             KgFiyatPanel.IsVisible = e.Value;
+            KgAlisFiyatPanel.IsVisible = e.Value;
+            AlisFiyatPanel.IsVisible = !e.Value;
         }
+
         private async void KaydetClicked(object sender, EventArgs e)
         {
             if (!OturumServisi.YoneticiMi)
@@ -37,6 +41,8 @@ namespace Saller_System.Views
             bool gramajli = GramajliCheckBox.IsChecked;
             decimal kgFiyati = 0;
             decimal fiyat = 0;
+            decimal alisFiyati = 0;
+            decimal kgAlisFiyati = 0;
 
             if (gramajli)
             {
@@ -45,6 +51,7 @@ namespace Saller_System.Views
                     await DisplayAlert("Hata", "Geçerli bir kg fiyatı girin!", "Tamam");
                     return;
                 }
+                decimal.TryParse(KgAlisFiyatiEntry.Text, out kgAlisFiyati);
             }
             else
             {
@@ -53,6 +60,7 @@ namespace Saller_System.Views
                     await DisplayAlert("Hata", "Geçerli bir fiyat girin!", "Tamam");
                     return;
                 }
+                decimal.TryParse(AlisFiyatiEntry.Text, out alisFiyati);
             }
 
             var urun = new Urun
@@ -60,31 +68,25 @@ namespace Saller_System.Views
                 Ad = ad,
                 Barkod = barkod,
                 Fiyat = gramajli ? 0 : fiyat,
+                AlisFiyati = alisFiyati,
                 Kategori = kategori,
                 GramajliMi = gramajli,
-                KgFiyati = kgFiyati
+                KgFiyati = kgFiyati,
+                KgAlisFiyati = kgAlisFiyati
             };
+
             await _db.InitAsync();
             await _db.UrunEkleAsync(urun);
 
             MesajLabel.Text = $"✅ {ad} başarıyla eklendi!";
             MesajLabel.IsVisible = true;
-
             AdEntry.Text = "";
             BarkodEntry.Text = "";
             FiyatEntry.Text = "";
             KategoriEntry.Text = "";
         }
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            await _db.InitAsync();
-            // UrunlerListesi ve YeniUrunBtn bu sayfada YOK, kaldırın
-        }
 
-       
         private async void GeriClicked(object sender, EventArgs e)
             => await Shell.Current.GoToAsync("//UrunListesi");
     }
-
 }

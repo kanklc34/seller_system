@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.KurulumSihirbazi"
+             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+
+    <VerticalStackLayout Padding="32" Spacing="0" VerticalOptions="Center">
+
+        <Label Text="🥩" FontSize="56" HorizontalOptions="Center"/>
+        <Label Text="Kasap Pro" FontSize="28" FontAttributes="Bold"
+               HorizontalOptions="Center" TextColor="{StaticResource PrimaryDark}"
+               Margin="0,8,0,4"/>
+        <Label Text="İlk Kurulum" FontSize="14" HorizontalOptions="Center"
+               TextColor="{StaticResource TextSecondary}" Margin="0,0,0,16"/>
+
+        <!-- Adım göstergesi — tek, 4 nokta -->
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,0,0,32">
+            <Ellipse x:Name="Adim1Dot" WidthRequest="12" HeightRequest="12" Fill="{StaticResource Primary}"/>
+            <Ellipse x:Name="Adim2Dot" WidthRequest="12" HeightRequest="12" Fill="#E5E7EB"/>
+            <Ellipse x:Name="Adim3Dot" WidthRequest="12" HeightRequest="12" Fill="#E5E7EB"/>
+            <Ellipse x:Name="Adim4Dot" WidthRequest="12" HeightRequest="12" Fill="#E5E7EB"/>
+        </HorizontalStackLayout>
+
+        <!-- Adım 1 — Mağaza Bilgileri -->
+        <VerticalStackLayout x:Name="Adim1Panel" Spacing="12"
+                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                     Padding="24">
+            <Label Text="🏪 Mağaza Bilgileri" FontSize="18" FontAttributes="Bold"
+           TextColor="{StaticResource Primary}"/>
+            <Label Text="Raporlarınızda ve Excel'de görünecek bilgileri girin."
+           TextColor="{StaticResource TextSecondary}" FontSize="13"/>
+            <Label Text="Mağaza Adı *" TextColor="{StaticResource TextSecondary}"/>
+            <Entry x:Name="MagazaAdiEntry" Placeholder="Örn: Ali Usta Kasap"/>
+            <Label Text="Telefon (isteğe bağlı)" TextColor="{StaticResource TextSecondary}"/>
+            <Entry x:Name="TelefonEntry" Placeholder="0544 444 44 44" 
+       Keyboard="Telephone" MaxLength="13"
+       Unfocused="TelefonUnfocused"/>
+            <Label x:Name="TelefonHataLabel" IsVisible="False"
+           TextColor="Red" FontSize="12"/>
+            <Button Text="Devam →" Style="{StaticResource PrimaryBtn}"
+            Margin="0,8,0,0" Clicked="Adim1DevamClicked"/>
+        </VerticalStackLayout>
+
+        <!-- Adım 2 — Terazi Ayarı -->
+        <VerticalStackLayout x:Name="Adim2Panel" IsVisible="False" Spacing="12"
+                             BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                             Padding="24">
+            <Label Text="⚖️ Terazi Ayarı" FontSize="18" FontAttributes="Bold"
+                   TextColor="{StaticResource Primary}"/>
+            <Label Text="Terazinizden bir ürün tarttırın ve barkodu aşağıya girin. Sistem formatı otomatik algılar."
+                   TextColor="{StaticResource TextSecondary}" FontSize="13"/>
+            <Entry x:Name="TeraziBarkodEntry" Placeholder="Terazi barkodunu girin"/>
+            <Button Text="🔍 Formatı Algıla" Style="{StaticResource PrimaryBtn}"
+                    Clicked="FormatAlgilaClicked"/>
+            <Label x:Name="FormatSonucLabel" IsVisible="False" FontSize="13"/>
+            <Button Text="Devam →" Style="{StaticResource PrimaryBtn}"
+                    x:Name="Adim2DevamBtn" IsEnabled="False"
+                    Margin="0,8,0,0" Clicked="Adim2DevamClicked"/>
+            <Button Text="⬅ Atla (Terazi yok)" Style="{StaticResource GrayBtn}"
+                    Clicked="TeraziAtlaClicked"/>
+        </VerticalStackLayout>
+
+        <!-- Adım 3 — Admin Şifre -->
+        <VerticalStackLayout x:Name="Adim3Panel" IsVisible="False" Spacing="12"
+                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                     Padding="24">
+            <Label Text="🔐 Admin Şifresi" FontSize="18" FontAttributes="Bold"
+           TextColor="{StaticResource Primary}"/>
+            <Label Text="Güvenlik için varsayılan şifreyi değiştirin."
+           TextColor="{StaticResource TextSecondary}" FontSize="13"/>
+
+            <!-- Kullanıcı adı sabit, sadece göster -->
+            <Label Text="Kullanıcı Adı" TextColor="{StaticResource TextSecondary}"/>
+            <Border BackgroundColor="{AppThemeBinding Light=#F3F4F6, Dark=#2A2A2A}"
+            Padding="14,12" StrokeShape="RoundRectangle 8" Stroke="Transparent">
+                <Label Text="admin" FontAttributes="Bold"
+               TextColor="{StaticResource TextSecondary}"/>
+            </Border>
+            <Label Text="⚠️ Kullanıcı adı değiştirilemez, sisteme 'admin' ile giriş yapacaksınız."
+           TextColor="Orange" FontSize="11"/>
+
+            <Label Text="Yeni Şifre *" TextColor="{StaticResource TextSecondary}"/>
+            <Entry x:Name="YeniSifreEntry" Placeholder="En az 4 karakter" IsPassword="True"/>
+            <Label Text="Şifre Tekrar *" TextColor="{StaticResource TextSecondary}"/>
+            <Entry x:Name="YeniSifreTekrarEntry" Placeholder="Şifreyi tekrar girin" IsPassword="True"/>
+            <Label x:Name="SifreHataLabel" IsVisible="False" TextColor="Red" FontSize="12"/>
+            <Button Text="Devam →" Style="{StaticResource PrimaryBtn}"
+            Margin="0,8,0,0" Clicked="Adim3DevamClicked"/>
+        </VerticalStackLayout>
+
+        <!-- Adım 4 — Tamamlandı -->
+        <VerticalStackLayout x:Name="Adim4Panel" IsVisible="False" Spacing="16"
+                             BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                             Padding="24">
+            <Label Text="✅ Kurulum Tamamlandı!" FontSize="18" FontAttributes="Bold"
+                   TextColor="{StaticResource Success}" HorizontalOptions="Center"/>
+            <Label x:Name="KurulumOzetLabel" TextColor="{StaticResource TextSecondary}"
+                   FontSize="13" HorizontalOptions="Center"/>
+            <Label Text="Ayarları daha sonra ⚙️ Ayarlar menüsünden değiştirebilirsiniz."
+                   TextColor="{StaticResource TextSecondary}" FontSize="12"
+                   HorizontalOptions="Center"/>
+            <Button Text="🚀 Başlayalım!" Style="{StaticResource SuccessBtn}"
+                    Margin="0,8,0,0" Clicked="BaslayalimClicked"/>
+        </VerticalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

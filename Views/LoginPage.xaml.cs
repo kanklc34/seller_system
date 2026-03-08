@@ -12,7 +12,7 @@ namespace Saller_System.Views
             InitializeComponent();
             _db = db;
         }
-
+       
         private async void GirisYapClicked(object sender, EventArgs e)
         {
             string kullanici = KullaniciAdiEntry.Text?.Trim() ?? "";
@@ -28,7 +28,7 @@ namespace Saller_System.Views
             }
             else
             {
-                HataLabel.Text = "Kullanýcý adý veya þifre hatalý!";
+                HataLabel.Text = "KullanÄ±cÄ± adÄ± veya ÅŸifre hatalÄ±!";
                 HataLabel.IsVisible = true;
             }
         }

@@ -7,7 +7,9 @@
        Shell.TabBarIsVisible="False"
        Shell.BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}"
        FlyoutBehavior="Disabled">
-
+    
+    <ShellContent Route="SplashSayfa"
+                  ContentTemplate="{DataTemplate views:SplashSayfa}"/>
     <ShellContent Route="LoginPage"
                   ContentTemplate="{DataTemplate views:LoginPage}"/>
     <ShellContent Route="AnaSayfa"
@@ -30,6 +32,8 @@
                   ContentTemplate="{DataTemplate views:AyarlarSayfa}"/>
     <ShellContent Route="FiyatGecmisiSayfa"
                   ContentTemplate="{DataTemplate views:FiyatGecmisiSayfa}"/>
+    <ShellContent Route="KurulumSihirbazi"
+              ContentTemplate="{DataTemplate views:KurulumSihirbazi}"/>
     <Shell.Resources>
         <ResourceDictionary>
             <Style TargetType="Shell" ApplyToDerivedTypes="True">
