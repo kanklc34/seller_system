@@ -112,4 +112,12 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\Mrt\Source\Repos2\sales_system\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\Mrt\Source\Repos2\sales_system\.editorconfig" />
+	</ItemGroup>
+
 </Project>
