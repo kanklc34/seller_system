@@ -112,6 +112,9 @@ namespace Saller_System.Views
 
         private async Task UrunGetirAsync(string barkod)
         {
+            barkod = new string(barkod.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray()).Trim();
+            if (string.IsNullOrEmpty(barkod)) return;
+
             await _db.InitAsync();
 
             var (urunKodu, kg, tartiMi) = TartiServisi.BarkodCoz(barkod);
