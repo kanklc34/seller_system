@@ -4,37 +4,55 @@
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.UrunListesi"
              x:Name="ThisPage"
-             Title="Ürün Listesi"
-             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="12">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,18,20,32" RowSpacing="12">
 
-        <Label Grid.Row="0"
-               Text="📦 Ürün Listesi"
-               FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource Primary}"/>
+        <!-- Başlık -->
+        <Border Grid.Row="0"
+                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 20"
+                Padding="20,16">
+            <Label Text="📦 Ürün Listesi"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="White"/>
+        </Border>
 
-        <Button Grid.Row="1"
+        <!-- Yeni Ürün Ekle -->
+        <Border Grid.Row="1"
                 x:Name="YeniUrunBtn"
-                Text="+ Yeni Ürün Ekle"
-                Style="{StaticResource SuccessBtn}"
-                Clicked="YeniUrunClicked"/>
+                BackgroundColor="{StaticResource Success}"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 16"
+                Padding="0,16" HeightRequest="54">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="YeniUrunClicked"/>
+            </Border.GestureRecognizers>
+            <Label Text="+ Yeni Ürün Ekle"
+                   TextColor="White" FontAttributes="Bold"
+                   FontSize="15"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Border>
 
+        <!-- Ürün Listesi -->
         <CollectionView Grid.Row="2" x:Name="UrunlerListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Urun">
                     <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            StrokeShape="RoundRectangle 12"
-                            Stroke="Transparent"
-                            Padding="12" Margin="0,4">
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="16" Margin="0,4">
                         <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
                                 <Label Text="{Binding Ad}"
                                        FontSize="16" FontAttributes="Bold"/>
                                 <Label Text="{Binding Barkod, StringFormat='Barkod: {0}'}"
                                        TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
                                        FontSize="12"/>
-                                <Label TextColor="{StaticResource Success}" FontAttributes="Bold">
+                                <Label TextColor="{StaticResource Success}" FontAttributes="Bold" FontSize="14">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label"
                                                      Binding="{Binding GramajliMi}"
@@ -51,42 +69,82 @@
                                     </Label.Triggers>
                                 </Label>
                             </VerticalStackLayout>
-                            <Button Grid.Column="1"
-                                    Text="📈"
+
+                            <!-- Fiyat Geçmişi -->
+                            <Border Grid.Column="1"
                                     BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                                    TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
-                                    CornerRadius="8"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 10"
                                     HeightRequest="40" WidthRequest="44"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="FiyatGecmisiClicked"/>
-                            <Button Grid.Column="2"
-                                    Text="✏️"
-                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
+                                    VerticalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        CommandParameter="{Binding .}"
+                                        Tapped="FiyatGecmisiClicked"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="📈"
+                                       FontSize="16"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+
+                            <!-- Düzenle -->
+                            <Border Grid.Column="2"
                                     BackgroundColor="{StaticResource Primary}"
-                                    TextColor="White"
-                                    CornerRadius="8"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 10"
                                     HeightRequest="40" WidthRequest="44"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="UrunDuzenleClicked"/>
-                            <Button Grid.Column="3"
-                                    Text="🗑️"
-                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}"
-                                    BackgroundColor="{StaticResource Danger}"
-                                    TextColor="White"
-                                    CornerRadius="8"
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        CommandParameter="{Binding .}"
+                                        Tapped="UrunDuzenleClicked"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="✏️"
+                                       FontSize="16"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+
+                            <!-- Sil -->
+                            <Border Grid.Column="3"
+                                    BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 10"
                                     HeightRequest="40" WidthRequest="44"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="UrunSilClicked"/>
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding Source={x:Reference ThisPage}, Path=YoneticiMi}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        CommandParameter="{Binding .}"
+                                        Tapped="UrunSilClicked"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="🗑️"
+                                       FontSize="16"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="3"
-                Text="⬅ Geri"
-                Style="{StaticResource GrayBtn}"
-                Clicked="GeriClicked"/>
+        <!-- Geri -->
+        <Border Grid.Row="3"
+                BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 16"
+                Padding="0,16" HeightRequest="56">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="GeriClicked"/>
+            </Border.GestureRecognizers>
+            <Label Text="⬅ Geri"
+                   TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                   FontAttributes="Bold" FontSize="15"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Border>
 
     </Grid>
 </ContentPage>

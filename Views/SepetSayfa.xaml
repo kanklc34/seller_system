@@ -3,56 +3,126 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.SepetSayfa"
-             Title="Sepet"
-             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="20" RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,32" RowSpacing="14">
 
-        <Label Grid.Row="0" Text="🛒 Sepet"
-               FontSize="22" FontAttributes="Bold"
-               TextColor="{StaticResource Primary}"/>
+        <!-- Başlık -->
+        <Border Grid.Row="0"
+                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
+                Stroke="Transparent"
+                StrokeShape="RoundRectangle 20"
+                Padding="20,16">
+            <Label Text="🛒 Sepet"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="White"/>
+        </Border>
 
+        <!-- Liste -->
         <CollectionView Grid.Row="1" x:Name="SepetListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SepetItem">
                     <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            StrokeShape="RoundRectangle 10" Stroke="Transparent"
-                            Padding="12" Margin="0,3">
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="16" Margin="0,4">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                <Label Text="{Binding Urun.Ad}" FontSize="16" FontAttributes="Bold"/>
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label Text="{Binding Urun.Ad}"
+                                       FontSize="16" FontAttributes="Bold"/>
                                 <Label Text="{Binding Adet, StringFormat='Adet: {0}'}"
+                                       FontSize="13"
                                        TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
                                 <Label Text="{Binding Toplam, StringFormat='₺{0:N2}'}"
-                                       TextColor="{StaticResource Success}" FontAttributes="Bold"/>
+                                       FontSize="15"
+                                       TextColor="{StaticResource Success}"
+                                       FontAttributes="Bold"/>
                             </VerticalStackLayout>
-                            <Button Grid.Column="1" Text="🗑️"
-                                    BackgroundColor="{StaticResource Danger}"
-                                    TextColor="White" CornerRadius="8"
-                                    HeightRequest="40" WidthRequest="44"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="ItemSilClicked"/>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="0"
+                                    HeightRequest="44" WidthRequest="44"
+                                    VerticalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        CommandParameter="{Binding .}"
+                                        Tapped="ItemSilTapped"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="🗑️"
+                                       FontSize="18"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!-- Alt kısım -->
         <VerticalStackLayout Grid.Row="2" Spacing="10">
+
+            <!-- Toplam -->
             <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                    StrokeShape="RoundRectangle 12" Stroke="Transparent" Padding="16">
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20,14">
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Grid.Column="0" Text="Toplam:"
                            FontSize="18" FontAttributes="Bold"/>
                     <Label Grid.Column="1" x:Name="ToplamLabel"
-                           Text="₺0,00" FontSize="18" FontAttributes="Bold"
+                           Text="₺0,00" FontSize="20" FontAttributes="Bold"
                            TextColor="{StaticResource Success}"/>
                 </Grid>
             </Border>
-            <Button Text="✅ Satışı Tamamla" Style="{StaticResource SuccessBtn}" Clicked="SatisiTamamlaClicked"/>
-            <Button Text="🗑️ Sepeti Temizle" Style="{StaticResource DangerBtn}" Clicked="SepetiTemizleClicked"/>
-            <Button Text="⬅ Geri" Style="{StaticResource GrayBtn}" Clicked="GeriClicked"/>
-        </VerticalStackLayout>
 
+            <!-- Satışı Tamamla -->
+            <Border BackgroundColor="{StaticResource Success}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SatisiTamamlaTapped"/>
+                </Border.GestureRecognizers>
+                <Label Text="✅ Satışı Tamamla"
+                       TextColor="White" FontAttributes="Bold"
+                       FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <!-- Sepeti Temizle -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SepetiTemizleTapped"/>
+                </Border.GestureRecognizers>
+                <Label Text="🗑️ Sepeti Temizle"
+                       TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}"
+                       FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <!-- Geri -->
+            <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="GeriClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="⬅ Geri"
+                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                       FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
