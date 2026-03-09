@@ -12,28 +12,31 @@ namespace Saller_System.Views
             _ayarlar = ayarlar;
         }
 
-        private bool _temaYukleniyor = false;
-
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            _temaYukleniyor = true;
-            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi} 👋";
-            RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            KullaniciYonetimiBtn.IsVisible = OturumServisi.YoneticiMi;
-            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi;
 
-            var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
-            DarkModeSwitch.IsToggled = darkMode == "1";
-            Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
-            _temaYukleniyor = false;
+            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi}";
+
+            OzetBilgiGrid.IsVisible = OturumServisi.YoneticiMi;
+            RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
+            KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
+            AyarlarBtn.IsVisible = OturumServisi.CalisanMi;
+            YonetimBolumu.IsVisible = OturumServisi.YoneticiMi;
+
+            UrunListesiAciklamasiniAyarla();
         }
 
-        private async void DarkModeToggled(object sender, ToggledEventArgs e)
+        private void UrunListesiAciklamasiniAyarla()
         {
-            if (_temaYukleniyor) return;
-            Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
-            await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
+            if (OturumServisi.YoneticiMi)
+            {
+                UrunListesiAciklamaLabel.Text = "Kayıtlı ürünleri görüntüle ve yönet";
+            }
+            else
+            {
+                UrunListesiAciklamaLabel.Text = "Kayıtlı ürünleri görüntüle";
+            }
         }
 
         private async void BarkodOkutClicked(object sender, EventArgs e)
@@ -50,7 +53,6 @@ namespace Saller_System.Views
 
         private async void AyarlarClicked(object sender, EventArgs e)
             => await Shell.Current.GoToAsync("//AyarlarSayfa");
-
 
         private async void CikisClicked(object sender, EventArgs e)
         {
