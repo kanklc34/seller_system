@@ -36,6 +36,7 @@ namespace Saller_System
             builder.Services.AddTransient<KurulumSihirbazi>();
             builder.Services.AddTransient<KurulumSihirbazi>();
             builder.Services.AddTransient<SplashSayfa>();
+            builder.Services.AddTransient<SatisGecmisiSayfa>();
 
 
 #if DEBUG
