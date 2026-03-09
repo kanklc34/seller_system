@@ -16,17 +16,27 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
 
-            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi} 👋";
+            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi}";
 
-            bool kasiyerMi = OturumServisi.CalisanMi;
-
-            GunlukOzetBadge.IsVisible = !kasiyerMi;
-            OzetBilgiGrid.IsVisible = !kasiyerMi;
-
+            OzetBilgiGrid.IsVisible = OturumServisi.YoneticiMi;
             RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
             KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
             AyarlarBtn.IsVisible = OturumServisi.CalisanMi;
             YonetimBolumu.IsVisible = OturumServisi.YoneticiMi;
+
+            UrunListesiAciklamasiniAyarla();
+        }
+
+        private void UrunListesiAciklamasiniAyarla()
+        {
+            if (OturumServisi.YoneticiMi)
+            {
+                UrunListesiAciklamaLabel.Text = "Kayıtlı ürünleri görüntüle ve yönet";
+            }
+            else
+            {
+                UrunListesiAciklamaLabel.Text = "Kayıtlı ürünleri görüntüle";
+            }
         }
 
         private async void BarkodOkutClicked(object sender, EventArgs e)
