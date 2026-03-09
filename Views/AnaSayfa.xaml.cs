@@ -12,28 +12,21 @@ namespace Saller_System.Views
             _ayarlar = ayarlar;
         }
 
-        private bool _temaYukleniyor = false;
-
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            _temaYukleniyor = true;
+
             HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi} 👋";
+
+            bool kasiyerMi = OturumServisi.CalisanMi;
+
+            GunlukOzetBadge.IsVisible = !kasiyerMi;
+            OzetBilgiGrid.IsVisible = !kasiyerMi;
+
             RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            KullaniciYonetimiBtn.IsVisible = OturumServisi.YoneticiMi;
-            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi;
-
-            var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
-            DarkModeSwitch.IsToggled = darkMode == "1";
-            Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
-            _temaYukleniyor = false;
-        }
-
-        private async void DarkModeToggled(object sender, ToggledEventArgs e)
-        {
-            if (_temaYukleniyor) return;
-            Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
-            await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
+            KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
+            AyarlarBtn.IsVisible = OturumServisi.CalisanMi;
+            YonetimBolumu.IsVisible = OturumServisi.YoneticiMi;
         }
 
         private async void BarkodOkutClicked(object sender, EventArgs e)
@@ -50,7 +43,6 @@ namespace Saller_System.Views
 
         private async void AyarlarClicked(object sender, EventArgs e)
             => await Shell.Current.GoToAsync("//AyarlarSayfa");
-
 
         private async void CikisClicked(object sender, EventArgs e)
         {
