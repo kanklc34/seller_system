@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -6,7 +6,6 @@ namespace Saller_System.Views
     public partial class UrunListesi : ContentPage
     {
         private readonly DatabaseService _db;
-
         public bool YoneticiMi => OturumServisi.YoneticiMi;
 
         public UrunListesi(DatabaseService db)
@@ -36,7 +35,7 @@ namespace Saller_System.Views
                 await DisplayAlert("Yetkisiz", "Düzenleme için yönetici yetkisi gerekli!", "Tamam");
                 return;
             }
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
+            if (sender is TapGestureRecognizer tap && tap.CommandParameter is Urun urun)
             {
                 UrunDuzenleServisi.SeciliUrun = urun;
                 await Shell.Current.GoToAsync("//UrunDuzenle");
@@ -50,7 +49,7 @@ namespace Saller_System.Views
                 await DisplayAlert("Yetkisiz", "Silme için yönetici yetkisi gerekli!", "Tamam");
                 return;
             }
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
+            if (sender is TapGestureRecognizer tap && tap.CommandParameter is Urun urun)
             {
                 bool onay = await DisplayAlert("Onay", $"{urun.Ad} silinsin mi?", "Evet", "Hayır");
                 if (onay)
@@ -63,7 +62,7 @@ namespace Saller_System.Views
 
         private async void FiyatGecmisiClicked(object sender, EventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
+            if (sender is TapGestureRecognizer tap && tap.CommandParameter is Urun urun)
             {
                 UrunDuzenleServisi.SeciliUrun = urun;
                 await Shell.Current.GoToAsync("//FiyatGecmisiSayfa");

@@ -72,7 +72,7 @@ namespace Saller_System.Views
                 FormatSonucLabel.Text = "❌ Geçersiz barkod (13 hane olmalı)";
                 FormatSonucLabel.TextColor = Colors.Red;
                 FormatSonucLabel.IsVisible = true;
-                Adim2DevamBtn.IsEnabled = false;
+                Adim2DevamBorder.Opacity = 0.5;
                 return;
             }
 
@@ -83,14 +83,14 @@ namespace Saller_System.Views
                 FormatSonucLabel.Text = "✅ Terazi formatı algılandı!";
                 FormatSonucLabel.TextColor = Colors.Green;
                 FormatSonucLabel.IsVisible = true;
-                Adim2DevamBtn.IsEnabled = true;
+                Adim2DevamBorder.Opacity = 1.0;
             }
             else
             {
                 FormatSonucLabel.Text = "❌ Format algılanamadı, farklı bir barkod deneyin.";
                 FormatSonucLabel.TextColor = Colors.Red;
                 FormatSonucLabel.IsVisible = true;
-                Adim2DevamBtn.IsEnabled = false;
+                Adim2DevamBorder.Opacity = 0.5;
             }
         }
 

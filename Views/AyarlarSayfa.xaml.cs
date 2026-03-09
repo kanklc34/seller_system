@@ -1,4 +1,4 @@
-﻿using Saller_System.Services;
+using Saller_System.Services;
 
 namespace Saller_System.Views
 {
@@ -6,6 +6,7 @@ namespace Saller_System.Views
     {
         private readonly AyarlarServisi _ayarlar;
         private string? _algılananPrefix;
+        private bool _temaYukleniyor = false;
 
         public AyarlarSayfa(AyarlarServisi ayarlar)
         {
@@ -16,15 +17,27 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            _temaYukleniyor = true;
+            var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
+            DarkModeSwitch.IsToggled = darkMode == "1";
+            Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            _temaYukleniyor = false;
+
             KayitliPrefixLabel.Text = await _ayarlar.GetAsync("TaraziPrefix", "Tanımsız");
             MagazaAdiEntry.Text = await _ayarlar.GetAsync("MagazaAdi", "");
             TelefonEntry.Text = await _ayarlar.GetAsync("Telefon", "");
         }
 
+        private async void DarkModeToggled(object sender, ToggledEventArgs e)
+        {
+            if (_temaYukleniyor) return;
+            Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
+            await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
+        }
+
         private void PrefixAlgilaClicked(object sender, EventArgs e)
         {
             string barkod = TestBarkodEntry.Text?.Trim() ?? "";
-
             if (barkod.Length != 13)
             {
                 PrefixLabel.Text = "❌ Geçersiz barkod (13 hane olmalı)";
@@ -32,9 +45,7 @@ namespace Saller_System.Views
                 PrefixKaydetBtn.IsVisible = false;
                 return;
             }
-
             _algılananPrefix = TartiServisi.PrefixAlgila(barkod);
-
             if (_algılananPrefix != null)
             {
                 PrefixLabel.Text = $"✅ '{_algılananPrefix}' algılandı";
