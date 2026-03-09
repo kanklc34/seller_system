@@ -2,82 +2,183 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.AyarlarSayfa"
-             Title="Ayarlar">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+        <VerticalStackLayout Padding="20,18,20,32" Spacing="14">
 
-            <Label Text="⚙️ Ayarlar"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="{StaticResource PrimaryDark}"/>
+            <!-- Başlık -->
+            <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20,16">
+                <Label Text="⚙️ Ayarlar"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="White"/>
+            </Border>
+
+            <!-- Görünüm -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🌙 Görünüm"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Koyu Tema"
+                               VerticalOptions="Center"
+                               FontSize="15"/>
+                        <Switch Grid.Column="1"
+                                x:Name="DarkModeSwitch"
+                                OnColor="{StaticResource Primary}"
+                                Toggled="DarkModeToggled"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Terazi Ayarları -->
-            <VerticalStackLayout Spacing="10" Padding="16"
-                                 BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🔧 Terazi Ayarları"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"/>
+                    <Label Text="Terazinizin ürettiği bir barkodu okutun, sistem prefix'i otomatik algılar."
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                           FontSize="13"/>
 
-                <Label Text="🔧 Terazi Ayarları"
-                       FontSize="16" FontAttributes="Bold"
-                       TextColor="{StaticResource Primary}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="TestBarkodEntry"
+                               Placeholder="Test barkodunu buraya girin"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"/>
+                    </Border>
 
-                <Label Text="Terazinizin ürettiği bir barkodu okutun, sistem prefix'i otomatik algılar."
-                       TextColor="{StaticResource TextSecondary}"/>
+                    <Border BackgroundColor="{StaticResource Primary}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="0,14" HeightRequest="52">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="PrefixAlgilaClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="🔍 Prefix Algıla"
+                               TextColor="White" FontAttributes="Bold" FontSize="15"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
 
-                <Entry x:Name="TestBarkodEntry"
-                       Placeholder="Test barkodunu buraya girin"/>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Grid.Column="0" Text="Algılanan Prefix:"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                        <Label Grid.Column="1" x:Name="PrefixLabel"
+                               Text="Henüz algılanmadı"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
 
-                <Button Text="🔍 Prefix Algıla"
-                        Style="{StaticResource PrimaryBtn}"
-                        Clicked="PrefixAlgilaClicked"/>
+                    <Border x:Name="PrefixKaydetBtn"
+                            BackgroundColor="{StaticResource Success}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="0,14" HeightRequest="52"
+                            IsVisible="False">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="PrefixKaydetClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="💾 Prefix'i Kaydet"
+                               TextColor="White" FontAttributes="Bold" FontSize="15"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
 
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="Algılanan Prefix:" VerticalOptions="Center"/>
-                    <Label x:Name="PrefixLabel"
-                           Text="Henüz algılanmadı"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource Primary}"
-                           VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-
-                <Button Text="💾 Prefix'i Kaydet"
-                        Style="{StaticResource SuccessBtn}"
-                        x:Name="PrefixKaydetBtn"
-                        IsVisible="False"
-                        Clicked="PrefixKaydetClicked"/>
-
-                <HorizontalStackLayout Spacing="10">
-                    <Label Text="Kayıtlı Prefix:" VerticalOptions="Center"
-                           TextColor="{StaticResource TextSecondary}"/>
-                    <Label x:Name="KayitliPrefixLabel"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource Success}"
-                           VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-
-            </VerticalStackLayout>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Grid.Column="0" Text="Kayıtlı Prefix:"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                        <Label Grid.Column="1" x:Name="KayitliPrefixLabel"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Success}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Mağaza Bilgileri -->
-            <VerticalStackLayout Spacing="10" Padding="16"
-                                 BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🏪 Mağaza Bilgileri"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}"/>
 
-                <Label Text="🏪 Mağaza Bilgileri"
-                       FontSize="16" FontAttributes="Bold"
-                       TextColor="{StaticResource Primary}"/>
+                    <Label Text="Mağaza Adı"
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                           FontSize="13"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="MagazaAdiEntry"
+                               Placeholder="Mağaza adınız"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"/>
+                    </Border>
 
-                <Label Text="Mağaza Adı" TextColor="{StaticResource TextSecondary}"/>
-                <Entry x:Name="MagazaAdiEntry" Placeholder="Mağaza adınız"/>
+                    <Label Text="Telefon"
+                           TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
+                           FontSize="13"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="TelefonEntry"
+                               Placeholder="0555 000 00 00"
+                               Keyboard="Telephone"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"/>
+                    </Border>
 
-                <Label Text="Telefon" TextColor="{StaticResource TextSecondary}"/>
-                <Entry x:Name="TelefonEntry" Placeholder="0555 000 00 00" Keyboard="Telephone"/>
+                    <Border BackgroundColor="{StaticResource Success}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="0,14" HeightRequest="52">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="BilgileriKaydetClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="💾 Bilgileri Kaydet"
+                               TextColor="White" FontAttributes="Bold" FontSize="15"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
-                <Button Text="💾 Bilgileri Kaydet"
-                        Style="{StaticResource SuccessBtn}"
-                        Clicked="BilgileriKaydetClicked"/>
-
-            </VerticalStackLayout>
-
-            <Button Text="⬅ Geri"
-                    Style="{StaticResource GrayBtn}"
-                    Clicked="GeriClicked"/>
+            <!-- Geri -->
+            <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="GeriClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="⬅ Geri"
+                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                       FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
 
         </VerticalStackLayout>
     </ScrollView>
