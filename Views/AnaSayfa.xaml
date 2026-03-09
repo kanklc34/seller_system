@@ -66,10 +66,11 @@
                                 <Label Text="Satış"
                                        FontSize="11"
                                        TextColor="#94A3B8" />
-                                <Label Text="-"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="White" />
+                                <Label x:Name="GunlukSatisLabel"
+       Text="-"
+       FontSize="18"
+       FontAttributes="Bold"
+       TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
 
@@ -100,10 +101,11 @@
                                 <Label Text="Ciro"
                                        FontSize="11"
                                        TextColor="#94A3B8" />
-                                <Label Text="- ₺"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="White" />
+                                <Label x:Name="GunlukCiroLabel"
+       Text="- ₺"
+       FontSize="18"
+       FontAttributes="Bold"
+       TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
 

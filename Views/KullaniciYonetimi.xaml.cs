@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using Saller_System.Services;
 
 namespace Saller_System.Views
@@ -38,7 +38,6 @@ namespace Saller_System.Views
                 return;
             }
 
-            // Yönetici Admin ekleyemesin
             if (!OturumServisi.AdminMi && rol == "Admin")
             {
                 await DisplayAlert("Yetkisiz", "Admin eklemek için admin yetkisi gerekli!", "Tamam");
@@ -62,7 +61,7 @@ namespace Saller_System.Views
 
         private async void KullaniciSilClicked(object sender, EventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is Kullanici kullanici)
+            if (sender is TapGestureRecognizer tap && tap.CommandParameter is Kullanici kullanici)
             {
                 if (kullanici.KullaniciAdi == OturumServisi.AktifKullanici?.KullaniciAdi)
                 {
