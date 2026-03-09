@@ -21,31 +21,38 @@ namespace Saller_System.Views
             BarkodOkuyucu.Options = new ZXing.Net.Maui.BarcodeReaderOptions
             {
                 Formats = ZXing.Net.Maui.BarcodeFormat.QrCode |
-          ZXing.Net.Maui.BarcodeFormat.Ean13 |
-          ZXing.Net.Maui.BarcodeFormat.Ean8 |
-          ZXing.Net.Maui.BarcodeFormat.Code128 |
-          ZXing.Net.Maui.BarcodeFormat.Code39 |
-          ZXing.Net.Maui.BarcodeFormat.Code93 |
-          ZXing.Net.Maui.BarcodeFormat.Codabar |
-          ZXing.Net.Maui.BarcodeFormat.Pdf417 |
-          ZXing.Net.Maui.BarcodeFormat.DataMatrix |
-          ZXing.Net.Maui.BarcodeFormat.UpcA |
-          ZXing.Net.Maui.BarcodeFormat.UpcE |
-          ZXing.Net.Maui.BarcodeFormat.Itf |
-          ZXing.Net.Maui.BarcodeFormat.Msi,
+                          ZXing.Net.Maui.BarcodeFormat.Ean13 |
+                          ZXing.Net.Maui.BarcodeFormat.Ean8 |
+                          ZXing.Net.Maui.BarcodeFormat.Code128 |
+                          ZXing.Net.Maui.BarcodeFormat.Code39 |
+                          ZXing.Net.Maui.BarcodeFormat.Code93 |
+                          ZXing.Net.Maui.BarcodeFormat.Codabar |
+                          ZXing.Net.Maui.BarcodeFormat.Pdf417 |
+                          ZXing.Net.Maui.BarcodeFormat.DataMatrix |
+                          ZXing.Net.Maui.BarcodeFormat.UpcA |
+                          ZXing.Net.Maui.BarcodeFormat.UpcE |
+                          ZXing.Net.Maui.BarcodeFormat.Itf |
+                          ZXing.Net.Maui.BarcodeFormat.Msi,
                 AutoRotate = true,
                 Multiple = false
             };
         }
 
-        private async void UrunGetirClicked(object sender, EventArgs e)
+        private async void UrunGetirTapped(object sender, EventArgs e)
         {
             string barkod = BarkodEntry.Text?.Trim() ?? "";
             if (string.IsNullOrEmpty(barkod)) return;
             await UrunGetirAsync(barkod);
         }
 
-        private async void SatisaEkleClicked(object sender, EventArgs e)
+        private async void BarkodEntry_Completed(object sender, EventArgs e)
+        {
+            string barkod = BarkodEntry.Text?.Trim() ?? "";
+            if (string.IsNullOrEmpty(barkod)) return;
+            await UrunGetirAsync(barkod);
+        }
+
+        private async void SatisaEkleTapped(object sender, EventArgs e)
         {
             if (_bulunanUrun == null) return;
 
@@ -70,6 +77,7 @@ namespace Saller_System.Views
 
             MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi! (Sepet: {_sepet.ToplamAdet} ürün)";
             MesajLabel.IsVisible = true;
+            MesajBorder.IsVisible = true;
             UrunBilgiFrame.IsVisible = false;
             BarkodEntry.Text = "";
             _bulunanUrun = null;
@@ -77,17 +85,15 @@ namespace Saller_System.Views
             _kg = 0;
         }
 
-        private void KameraToggleClicked(object sender, EventArgs e)
-        {
-            BarkodOkuyucu.IsDetecting = !BarkodOkuyucu.IsDetecting;
-            KameraBtn.Text = BarkodOkuyucu.IsDetecting ? "🔦 Kamerayı Kapat" : "🔦 Kamerayı Aç";
-        }
+        
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             BarkodOkuyucu.IsDetecting = true;
-            KameraBtn.Text = "🔦 Kamerayı Kapat";
+            
+            MesajLabel.IsVisible = false;
+            MesajBorder.IsVisible = false;
         }
 
         protected override void OnDisappearing()
@@ -106,7 +112,7 @@ namespace Saller_System.Views
                 BarkodEntry.Text = ilkSonuc.Value;
                 await UrunGetirAsync(ilkSonuc.Value);
                 BarkodOkuyucu.IsDetecting = false;
-                KameraBtn.Text = "🔦 Kamerayı Aç";
+               
             });
         }
 
@@ -139,6 +145,7 @@ namespace Saller_System.Views
                     AdetEntry.IsEnabled = false;
                     UrunBilgiFrame.IsVisible = true;
                     MesajLabel.IsVisible = false;
+                    MesajBorder.IsVisible = false;
                     return;
                 }
             }
@@ -156,10 +163,10 @@ namespace Saller_System.Views
                 AdetEntry.IsEnabled = true;
                 UrunBilgiFrame.IsVisible = true;
                 MesajLabel.IsVisible = false;
+                MesajBorder.IsVisible = false;
             }
             else
             {
-                // Ürün bulunamadı — hızlı ekle seçeneği sun
                 bool ekle = await DisplayAlert(
                     "Ürün Bulunamadı",
                     $"'{barkod}' barkodlu ürün sistemde yok. Hemen eklemek ister misiniz?",

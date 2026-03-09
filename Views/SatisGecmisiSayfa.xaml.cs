@@ -61,7 +61,7 @@ namespace Saller_System.Views
             _seciliYil = yil;
             UstSeviyeBtn.IsVisible = true;
             ExcelBtn.IsVisible = true;
-            ExcelBtn.Text = $"📥 {yil} Yılını Aktar";
+            ExcelBtnLabel.Text = $"📥 {yil} Yılını Aktar";
             BreadcrumbLabel.Text = $"Tüm Satışlar › {yil}";
 
             var satislar = await _db.TumSatisleriGetirAsync();
@@ -89,7 +89,7 @@ namespace Saller_System.Views
             _seciliAy = ay;
             UstSeviyeBtn.IsVisible = true;
             ExcelBtn.IsVisible = true;
-            ExcelBtn.Text = $"📥 {new DateTime(yil, ay, 1):MMMM}'ı Aktar";
+            ExcelBtnLabel.Text = $"📥 {new DateTime(yil, ay, 1):MMMM}'ı Aktar";
             BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM}";
 
             var satislar = await _db.TumSatisleriGetirAsync();
@@ -117,7 +117,7 @@ namespace Saller_System.Views
             _seciliHafta = hafta;
             UstSeviyeBtn.IsVisible = true;
             ExcelBtn.IsVisible = true;
-            ExcelBtn.Text = $"📥 Hafta {hafta}'yi Aktar";
+            ExcelBtnLabel.Text = $"📥 Hafta {hafta}'yi Aktar";
             BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM} › Hafta {hafta}";
 
             var satislar = await _db.TumSatisleriGetirAsync();

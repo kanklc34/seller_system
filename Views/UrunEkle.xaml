@@ -2,56 +2,178 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.UrunEkle"
-             Title="Yeni Ürün Ekle">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+        <VerticalStackLayout Padding="20,18,20,32" Spacing="14">
 
-            <Label Text="📦 Yeni Ürün Ekle"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="#1A3A5C"/>
-             
-            <Label Text="Ürün Adı" TextColor="Gray"/>
-            <Entry x:Name="AdEntry" Placeholder="Ürün adını girin"/>
+            <!-- Başlık -->
+            <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20,16">
+                <Label Text="📦 Yeni Ürün Ekle"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="White"/>
+            </Border>
 
-            <Label Text="Barkod" TextColor="Gray"/>
-            <Entry x:Name="BarkodEntry" Placeholder="Barkod numarası"/>
+            <!-- Form kartı -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                    Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="20">
+                <VerticalStackLayout Spacing="12">
 
-            <Label Text="Fiyat" TextColor="Gray"/>
-            <Entry x:Name="FiyatEntry" Placeholder="0.00" Keyboard="Numeric"/>
+                    <Label Text="Ürün Adı"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="AdEntry" Placeholder="Ürün adını girin"
+                               BackgroundColor="Transparent" VerticalOptions="Center"/>
+                    </Border>
 
-            <Label Text="Kategori" TextColor="Gray"/>
-            <Entry x:Name="KategoriEntry" Placeholder="Örn: Et, Tavuk, Şarküteri"/>
-            <HorizontalStackLayout Spacing="10">
-                <CheckBox x:Name="GramajliCheckBox" CheckedChanged="GramajliChanged"/>
-                <Label Text="Gramajlı ürün (kg bazlı fiyat)" VerticalOptions="Center"/>
-            </HorizontalStackLayout>
+                    <Label Text="Barkod"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="BarkodEntry" Placeholder="Barkod numarası"
+                               BackgroundColor="Transparent" VerticalOptions="Center"/>
+                    </Border>
 
-            <VerticalStackLayout x:Name="KgFiyatPanel" IsVisible="False" Spacing="8">
-                <Label Text="Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
-                <Entry x:Name="KgFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
-            </VerticalStackLayout>
-            <VerticalStackLayout x:Name="AlisFiyatPanel" Spacing="8">
-                <Label Text="Alış Fiyatı (₺)" TextColor="{StaticResource TextSecondary}"/>
-                <Entry x:Name="AlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
-            </VerticalStackLayout>
+                    <Label Text="Kategori"
+                           FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="KategoriEntry" Placeholder="Örn: Et, Tavuk, Şarküteri"
+                               BackgroundColor="Transparent" VerticalOptions="Center"/>
+                    </Border>
 
-            <VerticalStackLayout x:Name="KgAlisFiyatPanel" IsVisible="False" Spacing="8">
-                <Label Text="Alış Kg Fiyatı (₺/kg)" TextColor="{StaticResource TextSecondary}"/>
-                <Entry x:Name="KgAlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"/>
-            </VerticalStackLayout>
-            <Button Text="💾 Kaydet"
-                    BackgroundColor="#166534" TextColor="White"
-                    CornerRadius="8" HeightRequest="50"
-                    Clicked="KaydetClicked"/>
+                    <!-- Gramajlı toggle -->
+                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="14,10">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <CheckBox Grid.Column="0"
+                                      x:Name="GramajliCheckBox"
+                                      CheckedChanged="GramajliChanged"
+                                      Color="{StaticResource Primary}"/>
+                            <Label Grid.Column="1"
+                                   Text="Gramajlı ürün (kg bazlı fiyat)"
+                                   VerticalOptions="Center" FontSize="14"/>
+                        </Grid>
+                    </Border>
 
-            <Label x:Name="MesajLabel" TextColor="Green"
-                   HorizontalOptions="Center" IsVisible="False"/>
-              
-            <Button Text="⬅ Geri"
-                    BackgroundColor="Gray" TextColor="White"
-                    CornerRadius="8" HeightRequest="45"
-                    Clicked="GeriClicked"/>
+                    <!-- Normal fiyat -->
+                    <VerticalStackLayout x:Name="NormalFiyatPanel" Spacing="8">
+                        <Label Text="Satış Fiyatı (₺)"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                                StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                                Padding="14,4" HeightRequest="54">
+                            <Entry x:Name="FiyatEntry" Placeholder="0.00" Keyboard="Numeric"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Kg fiyat -->
+                    <VerticalStackLayout x:Name="KgFiyatPanel" IsVisible="False" Spacing="8">
+                        <Label Text="Kg Satış Fiyatı (₺/kg)"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                                StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                                Padding="14,4" HeightRequest="54">
+                            <Entry x:Name="KgFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Alış fiyatı -->
+                    <VerticalStackLayout x:Name="AlisFiyatPanel" Spacing="8">
+                        <Label Text="Alış Fiyatı (₺)"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                                StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                                Padding="14,4" HeightRequest="54">
+                            <Entry x:Name="AlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Kg alış fiyatı -->
+                    <VerticalStackLayout x:Name="KgAlisFiyatPanel" IsVisible="False" Spacing="8">
+                        <Label Text="Alış Kg Fiyatı (₺/kg)"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                                StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                                Padding="14,4" HeightRequest="54">
+                            <Entry x:Name="KgAlisFiyatiEntry" Placeholder="0.00" Keyboard="Numeric"
+                                   BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Mesaj -->
+            <Border x:Name="MesajBorder"
+                    IsVisible="False"
+                    BackgroundColor="{AppThemeBinding Light=#DCFCE7, Dark=#14532D}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,10">
+                <Label x:Name="MesajLabel"
+                       TextColor="{AppThemeBinding Light=#16A34A, Dark=#86EFAC}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+            </Border>
+
+            <!-- Kaydet -->
+            <Border BackgroundColor="{StaticResource Success}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="KaydetClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="💾 Kaydet"
+                       TextColor="White" FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <!-- Geri -->
+            <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="GeriClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="⬅ Geri"
+                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                       FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

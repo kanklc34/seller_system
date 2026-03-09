@@ -23,7 +23,7 @@ namespace Saller_System.Views
             ToplamLabel.Text = $"₺{_sepet.Toplam:N2}";
         }
 
-        private async void SatisiTamamlaClicked(object sender, EventArgs e)
+        private async void SatisiTamamlaTapped(object sender, EventArgs e)
         {
             if (_sepet.Items.Count == 0)
             {
@@ -36,10 +36,8 @@ namespace Saller_System.Views
             foreach (var item in _sepet.Items)
             {
                 decimal alisFiyati = 0;
-
                 if (item.Urun.GramajliMi && item.OzelFiyat > 0)
                 {
-                    // Gramajlı ürün — kg alış fiyatı × gram
                     decimal kg = item.OzelFiyat / (item.Urun.KgFiyati > 0 ? item.Urun.KgFiyati : 1);
                     alisFiyati = item.Urun.KgAlisFiyati * kg;
                 }
@@ -58,6 +56,7 @@ namespace Saller_System.Views
                     Tarih = DateTime.Now,
                     KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Kasiyer"
                 };
+
                 await _db.SatisKaydetAsync(satis);
             }
 
@@ -67,9 +66,9 @@ namespace Saller_System.Views
             await Shell.Current.GoToAsync("//BarkodSayfa");
         }
 
-        private void ItemSilClicked(object sender, EventArgs e)
+        private void ItemSilTapped(object sender, EventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is SepetItem item)
+            if (sender is TapGestureRecognizer tap && tap.CommandParameter is SepetItem item)
             {
                 _sepet.Cikar(item);
                 SepetListesi.ItemsSource = null;
@@ -78,7 +77,7 @@ namespace Saller_System.Views
             }
         }
 
-        private void SepetiTemizleClicked(object sender, EventArgs e)
+        private void SepetiTemizleTapped(object sender, EventArgs e)
         {
             _sepet.Temizle();
             SepetListesi.ItemsSource = null;

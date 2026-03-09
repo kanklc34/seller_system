@@ -2,13 +2,34 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.SplashSayfa"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
-    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
-    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="16">
-        <Label Text="🥩" FontSize="72" HorizontalOptions="Center"/>
-        <Label Text="Kasap Pro" FontSize="28" FontAttributes="Bold"
-               HorizontalOptions="Center" TextColor="{StaticResource PrimaryDark}"/>
-        <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"
-                           HorizontalOptions="Center" Margin="0,16,0,0"/>
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#0B1220}">
+
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+
+        <Border StrokeThickness="0"
+                BackgroundColor="#1E293B"
+                StrokeShape="RoundRectangle 28"
+                WidthRequest="110" HeightRequest="110"
+                HorizontalOptions="Center">
+            <Label Text="🥩" FontSize="54"
+                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Border>
+
+        <Label Text="Kasap Pro"
+               FontSize="30" FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White"/>
+
+        <Label Text="Satış Takip Sistemi"
+               FontSize="14"
+               HorizontalOptions="Center"
+               TextColor="#64748B"/>
+
+        <ActivityIndicator IsRunning="True"
+                           Color="{StaticResource Primary}"
+                           HorizontalOptions="Center"
+                           Margin="0,12,0,0"/>
+
     </VerticalStackLayout>
 </ContentPage>
