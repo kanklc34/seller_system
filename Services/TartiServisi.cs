@@ -1,4 +1,4 @@
-﻿namespace Saller_System.Services
+namespace Saller_System.Services
 {
     public static class TartiServisi
     {
@@ -21,6 +21,8 @@
 
         public static (string UrunKodu, decimal Kg, bool TartiUrunuMu) BarkodCoz(string barkod, string? ozelPrefix = null)
         {
+            barkod = new string(barkod.Where(c => char.IsDigit(c)).ToArray()).Trim();
+
             if (barkod.Length != 13) return (barkod, 0, false);
             if (!barkod.StartsWith("2")) return (barkod, 0, false);
 
