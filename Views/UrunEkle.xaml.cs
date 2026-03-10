@@ -13,10 +13,23 @@ namespace Saller_System.Views
             _db = db;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _db.InitAsync();
+            if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
+            {
+                BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
+                UrunDuzenleServisi.HizliEkleBarkod = null;
+                AdEntry.Focus();
+            }
+        }
+
         private void GramajliChanged(object sender, CheckedChangedEventArgs e)
         {
             KgFiyatPanel.IsVisible = e.Value;
             KgAlisFiyatPanel.IsVisible = e.Value;
+            NormalFiyatPanel.IsVisible = !e.Value;
             AlisFiyatPanel.IsVisible = !e.Value;
         }
 
@@ -39,10 +52,7 @@ namespace Saller_System.Views
             }
 
             bool gramajli = GramajliCheckBox.IsChecked;
-            decimal kgFiyati = 0;
-            decimal fiyat = 0;
-            decimal alisFiyati = 0;
-            decimal kgAlisFiyati = 0;
+            decimal kgFiyati = 0, fiyat = 0, alisFiyati = 0, kgAlisFiyati = 0;
 
             if (gramajli)
             {
@@ -75,15 +85,20 @@ namespace Saller_System.Views
                 KgAlisFiyati = kgAlisFiyati
             };
 
-            await _db.InitAsync();
             await _db.UrunEkleAsync(urun);
 
             MesajLabel.Text = $"✅ {ad} başarıyla eklendi!";
             MesajLabel.IsVisible = true;
+            MesajBorder.IsVisible = true;
+
             AdEntry.Text = "";
             BarkodEntry.Text = "";
             FiyatEntry.Text = "";
             KategoriEntry.Text = "";
+            KgFiyatiEntry.Text = "";
+            AlisFiyatiEntry.Text = "";
+            KgAlisFiyatiEntry.Text = "";
+            GramajliCheckBox.IsChecked = false;
         }
 
         private async void GeriClicked(object sender, EventArgs e)

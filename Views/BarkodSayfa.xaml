@@ -3,94 +3,160 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              x:Class="Saller_System.Views.BarkodSayfa"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="260,Auto,*">
+        <!-- Kamera yüksekliği 260, alt açıklama Auto, geri kalan ScrollView -->
 
-        <!-- Üst kısım — kamera -->
-        <Grid Grid.Row="0" HeightRequest="280">
-            <zxing:CameraBarcodeReaderView
-        x:Name="BarkodOkuyucu"
-        IsDetecting="False"
-        BarcodesDetected="BarkodOkundu"/>
+        <!-- Kamera -->
+        <zxing:CameraBarcodeReaderView
+            x:Name="BarkodOkuyucu"
+            Grid.Row="0"
+            IsDetecting="False"
+            BarcodesDetected="BarkodOkundu"/>
+
+        <!-- Kamera altı açıklama -->
+        <Border Grid.Row="1"
+        BackgroundColor="#00000000"
+        Stroke="Transparent"
+          Padding="15,100,15,6">
             <Label Text="📷 Barkodu kameraya tutun"
            HorizontalOptions="Center"
-           VerticalOptions="End"
-           Margin="0,0,0,10"
            TextColor="White"
-           FontSize="13"
-           BackgroundColor="#80000000"
-           Padding="8,4"/>
-        </Grid>
+           FontSize="13"/>
+        </Border>
 
+        <!-- Alt kısım -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="20,120,20,32" Spacing="14">
 
-        <!-- Alt kısım — kontroller -->
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="16" Spacing="12">
-
-                <Button x:Name="KameraBtn"
-                        Text="🔦 Kamerayı Aç"
-                        Style="{StaticResource PrimaryBtn}"
-                        Clicked="KameraToggleClicked"/>
-
-                <Label Text="— veya barkod yazın —"
-                       HorizontalOptions="Center"
-                       TextColor="{StaticResource TextSecondary}"
-                       FontSize="12"/>
-
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                    <Entry Grid.Column="0"
-                           x:Name="BarkodEntry"
-                           Placeholder="Barkod numarası"
-                           Keyboard="Numeric"/>
-                    <Button Grid.Column="1"
-                            Text="Getir"
-                            Style="{StaticResource PrimaryBtn}"
-                            WidthRequest="80"
-                            Clicked="UrunGetirClicked"/>
+                <!-- Barkod giriş ve Getir -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <Border Grid.Column="0"
+                            Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1E293B}"
+                            Padding="14,4"
+                            HeightRequest="54">
+                        <Entry x:Name="BarkodEntry"
+                               Placeholder="Barkod numarası"
+                               Keyboard="Numeric"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"
+                               Completed="BarkodEntry_Completed"/>
+                    </Border>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource Primary}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="18,0"
+                            HeightRequest="54"
+                            WidthRequest="80">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="UrunGetirTapped"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="Getir"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
                 </Grid>
 
                 <!-- Ürün bilgi kartı -->
-                <VerticalStackLayout x:Name="UrunBilgiFrame"
-                                     IsVisible="False"
-                                     Spacing="8" Padding="16"
-                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}">
-                    <Label x:Name="UrunAdLabel"
-                           FontSize="18" FontAttributes="Bold"/>
-                    <Label x:Name="UrunFiyatLabel"
-                           FontSize="16"
-                           TextColor="{StaticResource Success}"/>
-                    <Label x:Name="UrunKategoriLabel"
-                           FontSize="14"
-                           TextColor="{StaticResource TextSecondary}"/>
-                    <Entry x:Name="AdetEntry"
-                           Placeholder="Adet"
-                           Keyboard="Numeric"
-                           Text="1"/>
-                    <Button Text="✅ Sepete Ekle"
-                            Style="{StaticResource SuccessBtn}"
-                            Clicked="SatisaEkleClicked"/>
-                </VerticalStackLayout>
+                <Border x:Name="UrunBilgiFrame"
+                        IsVisible="False"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                        Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="20">
+                    <VerticalStackLayout Spacing="10">
+                        <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold"/>
+                        <Label x:Name="UrunFiyatLabel" FontSize="16" TextColor="{StaticResource Success}"/>
+                        <Label x:Name="UrunKategoriLabel" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                                Padding="14,4"
+                                HeightRequest="50">
+                            <Entry x:Name="AdetEntry"
+                                   Placeholder="Adet"
+                                   Keyboard="Numeric"
+                                   Text="1"
+                                   BackgroundColor="Transparent"
+                                   VerticalOptions="Center"/>
+                        </Border>
+                        <Border BackgroundColor="{StaticResource Success}"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="0,16"
+                                HeightRequest="54">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="SatisaEkleTapped"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="✅ Sepete Ekle"
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   FontSize="15"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-                <Label x:Name="MesajLabel"
-                       TextColor="{StaticResource Success}"
-                       HorizontalOptions="Center"
-                       IsVisible="False"/>
+                <!-- Mesaj -->
+                <Border x:Name="MesajBorder"
+                        IsVisible="False"
+                        BackgroundColor="{AppThemeBinding Light=#DCFCE7, Dark=#14532D}"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="14,10">
+                    <Label x:Name="MesajLabel"
+                           TextColor="{AppThemeBinding Light=#16A34A, Dark=#86EFAC}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </Border>
 
-                <Button Text="🛒 Sepete Git"
-                        BackgroundColor="#7C3AED"
-                        TextColor="White"
-                        CornerRadius="10"
-                        HeightRequest="52"
-                        FontSize="15"
-                        FontAttributes="Bold"
-                        Clicked="SepeteGitClicked"/>
+                <!-- Sepete Git -->
+                <Border BackgroundColor="#7C3AED"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="0,16"
+                        HeightRequest="56">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="SepeteGitClicked"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="🛒 Sepete Git"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           FontSize="15"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
 
-                <Button Text="⬅ Geri"
-                        Style="{StaticResource GrayBtn}"
-                        Clicked="GeriClicked"/>
+                <!-- Geri -->
+                <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="0,16"
+                        HeightRequest="56">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="GeriClicked"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="⬅ Geri"
+                           TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                           FontAttributes="Bold"
+                           FontSize="15"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
 
             </VerticalStackLayout>
         </ScrollView>
+
     </Grid>
 </ContentPage>

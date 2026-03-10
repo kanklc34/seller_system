@@ -3,127 +3,151 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.Raporlar"
-             BackgroundColor="{AppThemeBinding Light=#F8F9FA, Dark=#121212}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,32" RowSpacing="14">
 
-            <Label Text="📊 Raporlar"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="{StaticResource PrimaryDark}"/>
+        <!-- Üst kısım -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="12">
 
-            <!-- İstatistik Kartları -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <VerticalStackLayout Grid.Column="0"
-                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                                     Padding="15" Spacing="4">
-                    <Label Text="Bugünkü Ciro" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="GunlukCiroLabel" Text="₺0,00"
-                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1"
-                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                                     Padding="15" Spacing="4">
-                    <Label Text="Bugünkü Satış" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="GunlukSayiLabel" Text="0 adet"
-                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
-                </VerticalStackLayout>
-            </Grid>
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <VerticalStackLayout Grid.Column="0"
-                         BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                         Padding="15" Spacing="4">
-                    <Label Text="Bugünkü Kar" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="GunlukKarLabel" Text="₺0,00"
-               FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1"
-                         BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                         Padding="15" Spacing="4">
-                    <Label Text="Aylık Kar" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="AylikKarLabel" Text="₺0,00"
-               FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
-                </VerticalStackLayout>
-            </Grid>
+                <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="20,16">
+                    <Label Text="📊 Raporlar"
+                           FontSize="22" FontAttributes="Bold"
+                           TextColor="White"/>
+                </Border>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <VerticalStackLayout Grid.Column="0"
-                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                                     Padding="15" Spacing="4">
-                    <Label Text="Aylık Ciro" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="AylikCiroLabel" Text="₺0,00"
-                           FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1"
-                                     BackgroundColor="{AppThemeBinding Light=#EEF4FF, Dark=#1E2A3A}"
-                                     Padding="15" Spacing="4">
-                    <Label Text="Ay" TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                    <Label x:Name="AyLabel" Text=""
-                           FontSize="16" FontAttributes="Bold" TextColor="{StaticResource PrimaryDark}"/>
-                </VerticalStackLayout>
-            </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Border Grid.Column="0"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Bugünkü Ciro"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="GunlukCiroLabel" Text="₺0,00"
+                                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Bugünkü Satış"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="GunlukSayiLabel" Text="0 adet"
+                                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
-            <!-- Satış Listesi Butonları -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                <Button Grid.Column="0"
-                        Text="📅 Bugün"
-                        Style="{StaticResource PrimaryBtn}"
-                        Clicked="BugunkuSatislarClicked"/>
-                <Button Grid.Column="1"
-                        Text="📋 Tüm Satışlar"
-                        BackgroundColor="{StaticResource PrimaryDark}"
-                        TextColor="White" CornerRadius="10"
-                        HeightRequest="52" FontSize="15" FontAttributes="Bold"
-                        Clicked="TumSatislarClicked"/>
-            </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Border Grid.Column="0"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Bugünkü Kar"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="GunlukKarLabel" Text="₺0,00"
+                                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Aylık Kar"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="AylikKarLabel" Text="₺0,00"
+                                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
-            <!-- Satış Listesi Başlığı -->
-            <Label x:Name="ListeBaslikLabel"
-                   Text="" FontSize="16" FontAttributes="Bold"
-                   TextColor="{StaticResource PrimaryDark}"
-                   IsVisible="False"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Border Grid.Column="0"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Aylık Ciro"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="AylikCiroLabel" Text="₺0,00"
+                                   FontSize="20" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16" Padding="14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Ay"
+                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="12"/>
+                            <Label x:Name="AyLabel" Text=""
+                                   FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
-            <!-- Satış Listesi -->
-            <CollectionView x:Name="SatisListesi">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Satis">
-                        <Grid ColumnDefinitions="*,Auto" Padding="10" ColumnSpacing="8"
-          BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-          Margin="0,2">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                <Label Text="{Binding UrunAd}"
-                   FontSize="15" FontAttributes="Bold"/>
-                                <Label Text="{Binding Tarih, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
-                   TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                                <Label Text="{Binding KasiyerAd, StringFormat='Kasiyer: {0}'}"
-                   TextColor="{StaticResource TextSecondary}" FontSize="12"/>
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
-                                <Label Text="{Binding Fiyat, StringFormat='₺{0:N2}'}"
-                   FontSize="16" FontAttributes="Bold"
-                   TextColor="{StaticResource Success}"
-                   HorizontalOptions="End"/>
-                                <Label Text="{Binding Adet, StringFormat='{0} adet'}"
-                   TextColor="{StaticResource TextSecondary}"
-                   FontSize="12" HorizontalOptions="End"/>
-                                <Label Text="{Binding Kar, StringFormat='Kar: ₺{0:N2}'}"
-                   TextColor="{StaticResource Primary}"
-                   FontSize="12" HorizontalOptions="End"/>
-                            </VerticalStackLayout>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
 
-            <!-- Excel Butonu -->
-            <Button Text="📥 Excel'e Aktar"
-                    Style="{StaticResource SuccessBtn}"
-                    Clicked="ExcelAktarClicked"/>
+        <!-- Boş alan (liste kaldırıldı, satış geçmişi ayrı sayfada) -->
+        <BoxView Grid.Row="1" Color="Transparent"/>
 
-            <Button Text="⬅ Geri"
-                    Style="{StaticResource GrayBtn}"
-                    Clicked="GeriClicked"/>
+        <!-- Alt butonlar -->
+        <VerticalStackLayout Grid.Row="2" Spacing="10">
+
+            <Border BackgroundColor="{StaticResource Accent}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SatisGecmisiClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="📅 Satış Geçmişi"
+                       TextColor="White" FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <Border BackgroundColor="{StaticResource Success}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ExcelAktarClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="📥 Excel'e Aktar"
+                       TextColor="White" FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+
+            <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="0,16" HeightRequest="56">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="GeriClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="⬅ Geri"
+                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
+                       FontAttributes="Bold" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
 
         </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </ContentPage>

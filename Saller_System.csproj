@@ -100,6 +100,9 @@
 	  <MauiXaml Update="Views\Raporlar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\SatisGecmisiSayfa.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\SepetSayfa.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -124,5 +127,11 @@
 	<ItemGroup>
 	  <None Include="C:\Users\Mrt\Source\Repos2\sales_system\.editorconfig" />
 	</ItemGroup>
-
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<AndroidKeyStore>True</AndroidKeyStore>
+		<AndroidSigningKeyStore>kasappro.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>kasappro</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass></AndroidSigningKeyPass>
+		<AndroidSigningStorePass></AndroidSigningStorePass>
+	</PropertyGroup>
 </Project>

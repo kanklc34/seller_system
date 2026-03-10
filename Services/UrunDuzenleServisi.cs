@@ -1,9 +1,10 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 
 namespace Saller_System.Services
 {
     public static class UrunDuzenleServisi
     {
         public static Urun? SeciliUrun { get; set; }
+        public static string? HizliEkleBarkod { get; set; }
     }
 }
