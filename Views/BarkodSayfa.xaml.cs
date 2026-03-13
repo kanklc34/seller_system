@@ -18,6 +18,7 @@ namespace Saller_System.Views
             _db = db;
             _sepet = sepet;
 
+            // Mevcut okuma formatlarını koruduk (hızlandırma değişikliği yapılmadı)
             BarkodOkuyucu.Options = new ZXing.Net.Maui.BarcodeReaderOptions
             {
                 Formats = ZXing.Net.Maui.BarcodeFormat.QrCode |
@@ -38,6 +39,13 @@ namespace Saller_System.Views
             };
         }
 
+        // TELEFONUN FİZİKSEL GERİ TUŞU OLAYI
+        protected override bool OnBackButtonPressed()
+        {
+            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
+            return true;
+        }
+
         private async void UrunGetirTapped(object sender, EventArgs e)
         {
             string barkod = BarkodEntry.Text?.Trim() ?? "";
@@ -55,14 +63,11 @@ namespace Saller_System.Views
         private async void SatisaEkleTapped(object sender, EventArgs e)
         {
             if (_bulunanUrun == null) return;
-
             decimal fiyat;
             int adet = 1;
 
             if (_bulunanUrun.GramajliMi && _hesaplananFiyat > 0)
-            {
                 fiyat = _hesaplananFiyat;
-            }
             else
             {
                 if (!int.TryParse(AdetEntry.Text, out adet) || adet <= 0)
@@ -74,25 +79,18 @@ namespace Saller_System.Views
             }
 
             _sepet.Ekle(_bulunanUrun, adet, fiyat);
-
-            MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi! (Sepet: {_sepet.ToplamAdet} ürün)";
+            MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi!";
             MesajLabel.IsVisible = true;
             MesajBorder.IsVisible = true;
             UrunBilgiFrame.IsVisible = false;
             BarkodEntry.Text = "";
             _bulunanUrun = null;
-            _hesaplananFiyat = 0;
-            _kg = 0;
         }
-
-        
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             BarkodOkuyucu.IsDetecting = true;
-            
-            MesajLabel.IsVisible = false;
             MesajBorder.IsVisible = false;
         }
 
@@ -112,7 +110,6 @@ namespace Saller_System.Views
                 BarkodEntry.Text = ilkSonuc.Value;
                 await UrunGetirAsync(ilkSonuc.Value);
                 BarkodOkuyucu.IsDetecting = false;
-               
             });
         }
 
@@ -122,15 +119,12 @@ namespace Saller_System.Views
             if (string.IsNullOrEmpty(barkod)) return;
 
             await _db.InitAsync();
-
             var (urunKodu, kg, tartiMi) = TartiServisi.BarkodCoz(barkod);
 
             Urun? bulunanUrun = null;
-
             if (tartiMi)
             {
                 bulunanUrun = await _db.BarkodIleGetirAsync(urunKodu);
-
                 if (bulunanUrun != null && bulunanUrun.GramajliMi)
                 {
                     decimal hesaplananFiyat = TartiServisi.FiyatHesapla(bulunanUrun.KgFiyati, kg);
@@ -139,21 +133,17 @@ namespace Saller_System.Views
                     _kg = kg;
 
                     UrunAdLabel.Text = $"{bulunanUrun.Ad} ({kg:N3} kg)";
-                    UrunFiyatLabel.Text = $"Fiyat: ₺{hesaplananFiyat:N2} ({kg:N3} kg × ₺{bulunanUrun.KgFiyati:N2}/kg)";
+                    UrunFiyatLabel.Text = $"Fiyat: ₺{hesaplananFiyat:N2}";
                     UrunKategoriLabel.Text = $"Kategori: {bulunanUrun.Kategori}";
                     AdetEntry.Text = "1";
                     AdetEntry.IsEnabled = false;
                     UrunBilgiFrame.IsVisible = true;
-                    MesajLabel.IsVisible = false;
                     MesajBorder.IsVisible = false;
                     return;
                 }
             }
 
             bulunanUrun = await _db.BarkodIleGetirAsync(barkod);
-            _hesaplananFiyat = 0;
-            _kg = 0;
-
             if (bulunanUrun != null)
             {
                 _bulunanUrun = bulunanUrun;
@@ -162,16 +152,11 @@ namespace Saller_System.Views
                 UrunKategoriLabel.Text = $"Kategori: {bulunanUrun.Kategori}";
                 AdetEntry.IsEnabled = true;
                 UrunBilgiFrame.IsVisible = true;
-                MesajLabel.IsVisible = false;
                 MesajBorder.IsVisible = false;
             }
             else
             {
-                bool ekle = await DisplayAlert(
-                    "Ürün Bulunamadı",
-                    $"'{barkod}' barkodlu ürün sistemde yok. Hemen eklemek ister misiniz?",
-                    "Ekle", "İptal");
-
+                bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{barkod}' sistemde yok. Eklemek ister misiniz?", "Ekle", "İptal");
                 if (ekle)
                 {
                     UrunDuzenleServisi.HizliEkleBarkod = barkod;
