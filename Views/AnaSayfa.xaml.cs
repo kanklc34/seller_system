@@ -12,12 +12,17 @@ namespace Saller_System.Views
             InitializeComponent();
             _ayarlar = ayarlar;
             _db = db;
+
+            // XAML'da eklediğimiz Tarih etiketine anlık tarihi basıyoruz
+            TarihLabel.Text = DateTime.Now.ToString("dd.MM.yyyy dddd", new System.Globalization.CultureInfo("tr-TR"));
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi}";
+
+            // "Hoş geldiniz" yerine samimi kurumsal formata ("Hoş geldin") geçtik
+            HosgeldinLabel.Text = $"Hoş geldin, {OturumServisi.AktifKullanici?.KullaniciAdi}";
 
             // Rol bazlı görünürlük
             RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;

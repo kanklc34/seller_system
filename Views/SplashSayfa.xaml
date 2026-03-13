@@ -10,18 +10,22 @@
         <Border StrokeThickness="0"
                 BackgroundColor="#1E293B"
                 StrokeShape="RoundRectangle 28"
-                WidthRequest="110" HeightRequest="110"
+                WidthRequest="180" HeightRequest="120"
                 HorizontalOptions="Center">
-            <Label Text="🥩" FontSize="54"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
+
+            <Image Source="appiconfg.png" 
+                   Aspect="AspectFit"
+                   Margin="10"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
         </Border>
 
-        <Label Text="Kasap Pro"
-               FontSize="30" FontAttributes="Bold"
+        <Label Text="Öz Biga Et"
+               FontSize="32" FontAttributes="Bold"
                HorizontalOptions="Center"
                TextColor="White"/>
 
-        <Label Text="Satış Takip Sistemi"
+        <Label Text="Satış ve Stok Takip Sistemi"
                FontSize="14"
                HorizontalOptions="Center"
                TextColor="#64748B"/>
@@ -29,7 +33,7 @@
         <ActivityIndicator IsRunning="True"
                            Color="{StaticResource Primary}"
                            HorizontalOptions="Center"
-                           Margin="0,12,0,0"/>
+                           Margin="0,15,0,0"/>
 
     </VerticalStackLayout>
 </ContentPage>
