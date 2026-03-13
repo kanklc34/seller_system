@@ -18,6 +18,18 @@ namespace Saller_System.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            ArayuzuGuncelle();
+        }
+
+        // ANDROID GERİ TUŞU DESTEĞİ
+        protected override bool OnBackButtonPressed()
+        {
+            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//BarkodSayfa"));
+            return true;
+        }
+
+        private void ArayuzuGuncelle()
+        {
             SepetListesi.ItemsSource = null;
             SepetListesi.ItemsSource = _sepet.Items;
             ToplamLabel.Text = $"₺{_sepet.Toplam:N2}";
@@ -27,9 +39,12 @@ namespace Saller_System.Views
         {
             if (_sepet.Items.Count == 0)
             {
-                await DisplayAlert("Uyarı", "Sepet boş!", "Tamam");
+                await DisplayAlert("Uyarı", "Sepetinizde ürün bulunmuyor!", "Tamam");
                 return;
             }
+
+            bool onay = await DisplayAlert("Satış Onayı", $"Toplam ₺{_sepet.Toplam:N2} tutarındaki satışı onaylıyor musunuz?", "Evet, Tamamla", "Vazgeç");
+            if (!onay) return;
 
             await _db.InitAsync();
 
@@ -62,27 +77,29 @@ namespace Saller_System.Views
 
             decimal toplam = _sepet.Toplam;
             _sepet.Temizle();
-            await DisplayAlert("Başarılı", $"Satış tamamlandı!\nToplam: ₺{toplam:N2}", "Tamam");
+            await DisplayAlert("Başarılı", $"Satış kaydedildi.\nToplam: ₺{toplam:N2}", "Tamam");
             await Shell.Current.GoToAsync("//BarkodSayfa");
         }
 
         private void ItemSilTapped(object sender, EventArgs e)
         {
-            if (sender is TapGestureRecognizer tap && tap.CommandParameter is SepetItem item)
+            if (sender is Button btn && btn.CommandParameter is SepetItem item)
             {
                 _sepet.Cikar(item);
-                SepetListesi.ItemsSource = null;
-                SepetListesi.ItemsSource = _sepet.Items;
-                ToplamLabel.Text = $"₺{_sepet.Toplam:N2}";
+                ArayuzuGuncelle();
             }
         }
 
-        private void SepetiTemizleTapped(object sender, EventArgs e)
+        private async void SepetiTemizleTapped(object sender, EventArgs e)
         {
-            _sepet.Temizle();
-            SepetListesi.ItemsSource = null;
-            SepetListesi.ItemsSource = _sepet.Items;
-            ToplamLabel.Text = "₺0,00";
+            if (_sepet.Items.Count == 0) return;
+
+            bool onay = await DisplayAlert("Sepeti Boşalt", "Tüm ürünleri çıkarmak istediğinize emin misiniz?", "Evet", "Hayır");
+            if (onay)
+            {
+                _sepet.Temizle();
+                ArayuzuGuncelle();
+            }
         }
 
         private async void GeriClicked(object sender, EventArgs e)
