@@ -6,144 +6,95 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,32" RowSpacing="14">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,20" RowSpacing="15">
 
-        <!-- Üst — başlık ve yeni kullanıcı ekle -->
-        <ScrollView Grid.Row="0">
-            <VerticalStackLayout Spacing="12">
+        <Border Grid.Row="0" BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="20,16">
+            <Label Text="SİSTEM YÖNETİMİ" FontSize="16" FontAttributes="Bold" TextColor="White" CharacterSpacing="1.5" HorizontalOptions="Center"/>
+        </Border>
 
-                <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                        Stroke="Transparent"
-                        StrokeShape="RoundRectangle 20"
-                        Padding="20,16">
-                    <Label Text="👥 Kullanıcı Yönetimi"
-                           FontSize="22" FontAttributes="Bold"
-                           TextColor="White"/>
-                </Border>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20">
 
-                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                        Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 20"
-                        Padding="20">
+                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 12" Padding="20">
                     <VerticalStackLayout Spacing="12">
-                        <Label Text="Yeni Kullanıcı Ekle"
-                               FontSize="16" FontAttributes="Bold"
-                               TextColor="{StaticResource Primary}"/>
+                        <Label Text="YENİ KULLANICI KAYDI" FontSize="11" FontAttributes="Bold" TextColor="#64748B" Margin="2,0"/>
 
-                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
-                                StrokeShape="RoundRectangle 14"
-                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
-                                Padding="14,4" HeightRequest="54">
-                            <Entry x:Name="YeniKullaniciAdiEntry"
-                                   Placeholder="Kullanıcı adı"
-                                   BackgroundColor="Transparent"
-                                   VerticalOptions="Center"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 8" HeightRequest="50" Padding="12,0">
+                            <Entry x:Name="YeniKullaniciAdiEntry" Placeholder="Kullanıcı Adı" BackgroundColor="Transparent" VerticalOptions="Center"/>
                         </Border>
 
-                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
-                                StrokeShape="RoundRectangle 14"
-                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
-                                Padding="14,4" HeightRequest="54">
-                            <Entry x:Name="YeniSifreEntry"
-                                   Placeholder="Şifre"
-                                   IsPassword="True"
-                                   BackgroundColor="Transparent"
-                                   VerticalOptions="Center"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 8" HeightRequest="50" Padding="12,0">
+                            <Entry x:Name="YeniSifreEntry" Placeholder="Şifre" IsPassword="True" BackgroundColor="Transparent" VerticalOptions="Center"/>
                         </Border>
 
-                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
-                                StrokeShape="RoundRectangle 14"
-                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
-                                Padding="14,4" HeightRequest="54">
-                            <Picker x:Name="RolPicker"
-                                    Title="Rol Seç"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"
-                                    TitleColor="{AppThemeBinding Light=#94A3B8, Dark=#64748B}">
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 8" HeightRequest="50" Padding="12,0">
+                            <Picker x:Name="RolPicker" Title="Yetki Seviyesi Seç" TitleColor="#94A3B8" BackgroundColor="Transparent" VerticalOptions="Center">
                                 <Picker.Items>
-                                    <x:String>Admin</x:String>
-                                    <x:String>Yonetici</x:String>
-                                    <x:String>Calisan</x:String>
+                                    <x:String>Patron</x:String>
+                                    <x:String>Müdür</x:String>
+                                    <x:String>Personel</x:String>
                                 </Picker.Items>
                             </Picker>
                         </Border>
 
-                        <Border BackgroundColor="{StaticResource Success}"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="0,16" HeightRequest="54">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="KullaniciEkleClicked"/>
-                            </Border.GestureRecognizers>
-                            <Label Text="➕ Kullanıcı Ekle"
-                                   TextColor="White" FontAttributes="Bold" FontSize="15"
-                                   HorizontalOptions="Center" VerticalOptions="Center"/>
-                        </Border>
+                        <Button Text="KAYDET VE YAYINLA" BackgroundColor="#16A34A" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="8" Clicked="KullaniciEkleClicked" Margin="0,5,0,0"/>
                     </VerticalStackLayout>
                 </Border>
 
-                <Label Text="Mevcut Kullanıcılar"
-                       FontSize="16" FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
+                <Label Text="KAYITLI KULLANICILAR" FontSize="11" FontAttributes="Bold" TextColor="#64748B" Margin="5,0"/>
+
+                <VerticalStackLayout x:Name="KullaniciListesiContainer" Spacing="8">
+                    <CollectionView x:Name="KullaniciListesi" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Kullanici">
+                                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 10" Padding="16" Margin="0,4">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                            <Label Text="{Binding KullaniciAdi}" FontSize="15" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
+
+                                            <HorizontalStackLayout Spacing="8" Margin="0,4,0,0">
+                                                <Border Stroke="Transparent" StrokeShape="RoundRectangle 4" Padding="6,2">
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Rol}" Value="Patron">
+                                                            <Setter Property="BackgroundColor" Value="#FEF3C7"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Rol}" Value="Müdür">
+                                                            <Setter Property="BackgroundColor" Value="#DBEAFE"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding Rol}" Value="Personel">
+                                                            <Setter Property="BackgroundColor" Value="#F3F4F6"/>
+                                                        </DataTrigger>
+                                                    </Border.Triggers>
+                                                    <Label Text="{Binding Rol}" FontSize="10" FontAttributes="Bold">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Rol}" Value="Patron">
+                                                                <Setter Property="TextColor" Value="#92400E"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Rol}" Value="Müdür">
+                                                                <Setter Property="TextColor" Value="#1E40AF"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding Rol}" Value="Personel">
+                                                                <Setter Property="TextColor" Value="#374151"/>
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                </Border>
+                                                <Label Text="{Binding Sifre, StringFormat='Sifre: {0}'}" FontSize="10" TextColor="#94A3B8" VerticalOptions="Center"/>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <Button Grid.Column="1" Text="SİL" BackgroundColor="Transparent" TextColor="#EF4444" FontSize="12" FontAttributes="Bold" Clicked="KullaniciSilClicked" CommandParameter="{Binding .}" VerticalOptions="Center" Padding="10,0"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Kullanıcı listesi -->
-        <CollectionView Grid.Row="1" x:Name="KullaniciListesi">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Kullanici">
-                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 16"
-                            Padding="16" Margin="0,4">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                            <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                <Label Text="{Binding KullaniciAdi}"
-                                       FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding Rol}"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
-                                       FontSize="13"/>
-                            </VerticalStackLayout>
-                            <Border Grid.Column="1"
-                                    BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
-                                    Stroke="Transparent"
-                                    StrokeShape="RoundRectangle 12"
-                                    Padding="12,0"
-                                    HeightRequest="44" WidthRequest="70"
-                                    VerticalOptions="Center">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        CommandParameter="{Binding .}"
-                                        Tapped="KullaniciSilClicked"/>
-                                </Border.GestureRecognizers>
-                                <Label Text="🗑️ Sil"
-                                       TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}"
-                                       FontAttributes="Bold" FontSize="13"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
-                            </Border>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-        <!-- Geri -->
-        <Border Grid.Row="2"
-                BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 16"
-                Padding="0,16" HeightRequest="56">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="GeriClicked"/>
-            </Border.GestureRecognizers>
-            <Label Text="⬅ Geri"
-                   TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
-                   FontAttributes="Bold" FontSize="15"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="20">
+            <Button Text="ANA SAYFAYA DÖN" BackgroundColor="#334155" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="8" Clicked="GeriClicked"/>
         </Border>
-
     </Grid>
 </ContentPage>

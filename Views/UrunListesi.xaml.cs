@@ -1,102 +1,92 @@
-using Saller_System.Models;
 using Saller_System.Services;
+using Saller_System.Models;
 
 namespace Saller_System.Views
 {
     public partial class UrunListesi : ContentPage
     {
         private readonly DatabaseService _db;
-        private List<Urun> _tumUrunler;
+        public bool IsYonetici { get; set; }
 
         public UrunListesi(DatabaseService db)
         {
             InitializeComponent();
             _db = db;
-            TarihLabel.Text = DateTime.Now.Year.ToString();
+            TarihLabel.Text = DateTime.Now.ToString("yyyy");
+            BindingContext = this;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await VerileriYukle();
-        }
-
-        protected override bool OnBackButtonPressed()
-        {
-            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
-            return true;
-        }
-
-        private async Task VerileriYukle()
-        {
             await _db.InitAsync();
-            _tumUrunler = await _db.TumUrunleriGetirAsync();
-            UrunlerListesi.ItemsSource = _tumUrunler;
+            await ListeYukle();
+
+            // HIZLI EKLEME KONTROLÜ
+            if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
+            {
+                BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
+                UrunDuzenleServisi.HizliEkleBarkod = null; // İşlem bitince temizle
+                AdEntry.Focus(); // İsim alanına odaklan
+            }
+
+            var rol = OturumServisi.AktifKullanici?.Rol;
+            bool yoneticiMi = (rol == "Patron" || rol == "Müdür" || OturumServisi.AktifKullanici?.KullaniciAdi == "admin");
+
+            YeniUrunPaneli.IsVisible = yoneticiMi;
+            IsYonetici = yoneticiMi;
+            OnPropertyChanged(nameof(IsYonetici));
         }
 
-        private void UrunAraTextChanged(object sender, TextChangedEventArgs e)
+        private async Task ListeYukle()
         {
-            if (_tumUrunler == null) return;
-            var arama = e.NewTextValue?.ToLower() ?? "";
-            UrunlerListesi.ItemsSource = _tumUrunler.Where(u => u.Ad.ToLower().Contains(arama) || u.Barkod.Contains(arama)).ToList();
-        }
-
-        private void GramajliToggled(object sender, ToggledEventArgs e)
-        {
-            FiyatEntry.Placeholder = e.Value ? "Kg Satış ₺" : "Satış ₺";
-            AlisFiyatiEntry.Placeholder = e.Value ? "Kg Alış ₺" : "Alış ₺";
+            UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
         }
 
         private async void KaydetClicked(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(AdEntry.Text) || string.IsNullOrWhiteSpace(BarkodEntry.Text))
-            {
-                await DisplayAlert("Hata", "Ad ve Barkod boş geçilemez!", "Tamam");
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(AdEntry.Text)) return;
 
             var urun = new Urun
             {
                 Ad = AdEntry.Text,
                 Barkod = BarkodEntry.Text,
-                Kategori = KategoriEntry.Text ?? "Genel",
-                GramajliMi = GramajliSwitch.IsToggled,
-                Fiyat = GramajliSwitch.IsToggled ? 0 : decimal.Parse(FiyatEntry.Text ?? "0"),
-                KgFiyati = GramajliSwitch.IsToggled ? decimal.Parse(FiyatEntry.Text ?? "0") : 0,
-                AlisFiyati = GramajliSwitch.IsToggled ? 0 : decimal.Parse(AlisFiyatiEntry.Text ?? "0"),
-                KgAlisFiyati = GramajliSwitch.IsToggled ? decimal.Parse(AlisFiyatiEntry.Text ?? "0") : 0
+                Kategori = KategoriEntry.Text,
+                Fiyat = decimal.TryParse(FiyatEntry.Text, out var f) ? f : 0,
+                AlisFiyati = decimal.TryParse(AlisFiyatiEntry.Text, out var a) ? a : 0,
+                GramajliMi = GramajliSwitch.IsToggled
             };
 
             await _db.UrunEkleAsync(urun);
             AdEntry.Text = BarkodEntry.Text = KategoriEntry.Text = FiyatEntry.Text = AlisFiyatiEntry.Text = "";
-            await VerileriYukle();
-            await DisplayAlert("Başarılı", "Ürün eklendi.", "Tamam");
+            await ListeYukle();
         }
 
-        private async void UrunDuzenleClicked(object sender, EventArgs e)
+        private async void UrunAraTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
-            {
-                UrunDuzenleServisi.SeciliUrun = urun;
-                await Shell.Current.GoToAsync("//UrunDuzenle");
-            }
+            var liste = await _db.TumUrunleriGetirAsync();
+            UrunlerListesi.ItemsSource = string.IsNullOrWhiteSpace(e.NewTextValue)
+                ? liste : liste.Where(u => u.Ad.ToLower().Contains(e.NewTextValue.ToLower()));
         }
 
         private async void UrunSilClicked(object sender, EventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
+            if (((Button)sender).CommandParameter is Urun urun)
             {
-                bool onay = await DisplayAlert("Sil", $"{urun.Ad} silinecek?", "Evet", "Hayır");
-                if (onay) { await _db.UrunSilAsync(urun); await VerileriYukle(); }
+                if (await DisplayAlert("SİL", $"{urun.Ad} silinsin mi?", "Evet", "Hayır"))
+                {
+                    await _db.UrunSilAsync(urun);
+                    await ListeYukle();
+                }
             }
         }
 
-        private async void FiyatGecmisiClicked(object sender, EventArgs e)
+        private async void UrunDuzenleClicked(object sender, EventArgs e)
         {
-            if (sender is Button btn && btn.CommandParameter is Urun urun)
+            if (((Button)sender).CommandParameter is Urun secilenUrun)
             {
-                UrunDuzenleServisi.SeciliUrun = urun;
-                await Shell.Current.GoToAsync("//FiyatGecmisiSayfa");
+                UrunDuzenleServisi.SeciliUrun = secilenUrun;
+                await Shell.Current.GoToAsync("//UrunDuzenle");
             }
         }
 

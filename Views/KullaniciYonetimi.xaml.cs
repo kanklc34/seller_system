@@ -16,69 +16,78 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await ListeyiYukle();
+            await _db.InitAsync();
+            await ListeYukle();
         }
 
-        private async Task ListeyiYukle()
+        // TELEFONUN FİZİKSEL GERİ TUŞUNU ÇALIŞTIRAN KOD
+        protected override bool OnBackButtonPressed()
         {
-            await _db.InitAsync();
-            var kullanicilar = await _db.TumKullanicilariGetirAsync();
-            KullaniciListesi.ItemsSource = kullanicilar;
+            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
+            return true;
+        }
+
+        private async Task ListeYukle()
+        {
+            try
+            {
+                var liste = await _db.TumKullanicilariGetirAsync();
+                KullaniciListesi.ItemsSource = liste;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Liste yüklenirken bir sorun oluştu: " + ex.Message, "Tamam");
+            }
         }
 
         private async void KullaniciEkleClicked(object sender, EventArgs e)
         {
-            string ad = YeniKullaniciAdiEntry.Text?.Trim() ?? "";
-            string sifre = YeniSifreEntry.Text?.Trim() ?? "";
-            string rol = RolPicker.SelectedItem?.ToString() ?? "";
-
-            if (string.IsNullOrEmpty(ad) || string.IsNullOrEmpty(sifre) || string.IsNullOrEmpty(rol))
+            if (string.IsNullOrWhiteSpace(YeniKullaniciAdiEntry.Text) ||
+                string.IsNullOrWhiteSpace(YeniSifreEntry.Text) ||
+                RolPicker.SelectedIndex == -1)
             {
-                await DisplayAlert("Hata", "Tüm alanları doldurun!", "Tamam");
-                return;
-            }
-
-            if (!OturumServisi.AdminMi && rol == "Admin")
-            {
-                await DisplayAlert("Yetkisiz", "Admin eklemek için admin yetkisi gerekli!", "Tamam");
+                await DisplayAlert("Uyarı", "Lütfen tüm alanları (Ad, Şifre, Rol) eksiksiz doldurun.", "Tamam");
                 return;
             }
 
             var yeniKullanici = new Kullanici
             {
-                KullaniciAdi = ad,
-                Sifre = GuvenlikServisi.Hashle(sifre),
-                Rol = rol
+                KullaniciAdi = YeniKullaniciAdiEntry.Text.Trim(),
+                Sifre = YeniSifreEntry.Text.Trim(),
+                Rol = RolPicker.SelectedItem.ToString()
             };
 
             await _db.KullaniciEkleAsync(yeniKullanici);
-            YeniKullaniciAdiEntry.Text = "";
-            YeniSifreEntry.Text = "";
+
+            // Giriş alanlarını temizle
+            YeniKullaniciAdiEntry.Text = string.Empty;
+            YeniSifreEntry.Text = string.Empty;
             RolPicker.SelectedIndex = -1;
-            await ListeyiYukle();
-            await DisplayAlert("Başarılı", $"{ad} eklendi!", "Tamam");
+
+            await ListeYukle();
         }
 
         private async void KullaniciSilClicked(object sender, EventArgs e)
         {
-            if (sender is TapGestureRecognizer tap && tap.CommandParameter is Kullanici kullanici)
+            if (sender is Button btn && btn.CommandParameter is Kullanici kullanici)
             {
-                if (kullanici.KullaniciAdi == OturumServisi.AktifKullanici?.KullaniciAdi)
-                {
-                    await DisplayAlert("Hata", "Kendi hesabınızı silemezsiniz!", "Tamam");
-                    return;
-                }
+                // Güvenlik kontrolü: Patron silmek onay gerektirir
+                string mesaj = kullanici.Rol == "Patron"
+                    ? "UYARI: Bir Patron hesabını silmek üzeresiniz. Onaylıyor musunuz?"
+                    : $"{kullanici.KullaniciAdi} kullanıcısı silinecektir. Onaylıyor musunuz?";
 
-                bool onay = await DisplayAlert("Onay", $"{kullanici.KullaniciAdi} silinsin mi?", "Evet", "Hayır");
+                bool onay = await DisplayAlert("Silme Onayı", mesaj, "Evet, Sil", "Vazgeç");
                 if (onay)
                 {
                     await _db.KullaniciSilAsync(kullanici);
-                    await ListeyiYukle();
+                    await ListeYukle();
                 }
             }
         }
 
         private async void GeriClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//AnaSayfa");
+        {
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
     }
 }
