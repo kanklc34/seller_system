@@ -21,7 +21,6 @@ namespace Saller_System.Views
             ArayuzuGuncelle();
         }
 
-        // ANDROID GERİ TUŞU DESTEĞİ
         protected override bool OnBackButtonPressed()
         {
             Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//BarkodSayfa"));
@@ -37,36 +36,25 @@ namespace Saller_System.Views
 
         private async void SatisiTamamlaTapped(object sender, EventArgs e)
         {
-            if (_sepet.Items.Count == 0)
-            {
-                await DisplayAlert("Uyarı", "Sepetinizde ürün bulunmuyor!", "Tamam");
-                return;
-            }
+            if (_sepet.Items.Count == 0) return;
 
-            bool onay = await DisplayAlert("Satış Onayı", $"Toplam ₺{_sepet.Toplam:N2} tutarındaki satışı onaylıyor musunuz?", "Evet, Tamamla", "Vazgeç");
+            bool onay = await DisplayAlert("Satış Onayı", $"Toplam ₺{_sepet.Toplam:N2} onaylıyor musunuz?", "Evet", "Vazgeç");
             if (!onay) return;
 
             await _db.InitAsync();
 
             foreach (var item in _sepet.Items)
             {
-                decimal alisFiyati = 0;
-                if (item.Urun.GramajliMi && item.OzelFiyat > 0)
-                {
-                    decimal kg = item.OzelFiyat / (item.Urun.KgFiyati > 0 ? item.Urun.KgFiyati : 1);
-                    alisFiyati = item.Urun.KgAlisFiyati * kg;
-                }
-                else
-                {
-                    alisFiyati = item.Urun.AlisFiyati * item.Adet;
-                }
+                decimal maliyet = item.Urun.GramajliMi
+                    ? (item.Toplam / (item.Urun.KgFiyati > 0 ? item.Urun.KgFiyati : 1)) * item.Urun.KgAlisFiyati
+                    : item.Urun.AlisFiyati * item.Adet;
 
                 var satis = new Satis
                 {
                     UrunId = item.Urun.Id,
                     UrunAd = item.Urun.Ad,
                     Fiyat = item.Toplam,
-                    AlisFiyati = alisFiyati,
+                    AlisFiyati = maliyet,
                     Adet = item.Adet,
                     Tarih = DateTime.Now,
                     KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Kasiyer"
@@ -75,9 +63,8 @@ namespace Saller_System.Views
                 await _db.SatisKaydetAsync(satis);
             }
 
-            decimal toplam = _sepet.Toplam;
             _sepet.Temizle();
-            await DisplayAlert("Başarılı", $"Satış kaydedildi.\nToplam: ₺{toplam:N2}", "Tamam");
+            await DisplayAlert("Başarılı", "Satış Tamamlandı.", "Tamam");
             await Shell.Current.GoToAsync("//BarkodSayfa");
         }
 
@@ -93,16 +80,13 @@ namespace Saller_System.Views
         private async void SepetiTemizleTapped(object sender, EventArgs e)
         {
             if (_sepet.Items.Count == 0) return;
-
-            bool onay = await DisplayAlert("Sepeti Boşalt", "Tüm ürünleri çıkarmak istediğinize emin misiniz?", "Evet", "Hayır");
-            if (onay)
+            if (await DisplayAlert("Sepet", "Boşaltılsın mı?", "Evet", "Hayır"))
             {
                 _sepet.Temizle();
                 ArayuzuGuncelle();
             }
         }
 
-        private async void GeriClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//BarkodSayfa");
+        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//BarkodSayfa");
     }
 }

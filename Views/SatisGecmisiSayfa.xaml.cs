@@ -1,5 +1,5 @@
 using Saller_System.Services;
-using Saller_System.Models; // Modelleri kullanabilmek için ekledik
+using Saller_System.Models;
 
 namespace Saller_System.Views
 {
@@ -8,7 +8,6 @@ namespace Saller_System.Views
         private readonly DatabaseService _db;
         private readonly ExcelServisi _excel;
 
-        // Navigasyon seviyesi: 0=Yıl, 1=Ay, 2=Hafta, 3=Gün
         private int _seviye = 0;
         private int _seciliYil = 0;
         private int _seciliAy = 0;
@@ -29,7 +28,6 @@ namespace Saller_System.Views
             await YillariYukle();
         }
 
-        // ANDROID FİZİKSEL GERİ TUŞU DESTEĞİ
         protected override bool OnBackButtonPressed()
         {
             if (_seviye > 0)
@@ -72,8 +70,8 @@ namespace Saller_System.Views
             var satislar = await _db.TumSatisleriGetirAsync();
             _mevcutListe = satislar.Where(s => s.Tarih.Year == yil).GroupBy(s => s.Tarih.Month).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
-                Baslik = $"🗓 {new DateTime(yil, g.Key, 1):MMMM}",
-                AltBaslik = $"{yil} dönemi",
+                Baslik = $"🗓 {System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key)}",
+                AltBaslik = $"{yil} Dönemi",
                 Ciro = g.Sum(s => s.Fiyat),
                 Kar = g.Sum(s => s.Kar),
                 SatisSayisi = g.Count(),
@@ -87,13 +85,14 @@ namespace Saller_System.Views
             _seviye = 2; _seciliAy = ay;
             UstSeviyeHeader.IsVisible = true;
             ExcelBtn.Text = "📥 Ayı Aktar";
-            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM}";
+            string ayAdi = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(ay);
+            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {ayAdi}";
 
             var satislar = await _db.TumSatisleriGetirAsync();
             _mevcutListe = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay).GroupBy(s => System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih)).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
                 Baslik = $"📆 {g.Key}. Hafta",
-                AltBaslik = $"{g.Min(s => s.Tarih):dd MMM} – {g.Max(s => s.Tarih):dd MMM}",
+                AltBaslik = "Haftalık Özet",
                 Ciro = g.Sum(s => s.Fiyat),
                 Kar = g.Sum(s => s.Kar),
                 SatisSayisi = g.Count(),
@@ -107,7 +106,8 @@ namespace Saller_System.Views
             _seviye = 3; _seciliHafta = hafta;
             UstSeviyeHeader.IsVisible = true;
             ExcelBtn.Text = "📥 Haftayı Aktar";
-            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM} › {hafta}. Hafta";
+            string ayAdi = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(ay);
+            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {ayAdi} › {hafta}. Hafta";
 
             var satislar = await _db.TumSatisleriGetirAsync();
             _mevcutListe = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay && System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih) == hafta).GroupBy(s => s.Tarih.Date).OrderByDescending(g => g.Key).Select(g => new GecmisItem
