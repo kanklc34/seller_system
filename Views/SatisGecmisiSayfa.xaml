@@ -1,77 +1,54 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.SatisGecmisiSayfa"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,18,20,32" RowSpacing="12">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,20" RowSpacing="12">
 
-        <!-- Başlık + breadcrumb -->
-        <Border Grid.Row="0"
-                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 20"
+        <Border Grid.Row="0" 
+                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" 
+                Stroke="Transparent" 
+                StrokeShape="RoundRectangle 20" 
                 Padding="20,16">
             <VerticalStackLayout Spacing="4">
-                <Label Text="📅 Satış Geçmişi"
-                       FontSize="22" FontAttributes="Bold"
-                       TextColor="White"/>
-                <Label x:Name="BreadcrumbLabel"
-                       FontSize="13"
-                       TextColor="#94A3B8"/>
+                <Label Text="📅 Satış Geçmişi" FontSize="22" FontAttributes="Bold" TextColor="White"/>
+                <Label x:Name="BreadcrumbLabel" Text="Tüm Satışlar" FontSize="13" TextColor="#94A3B8"/>
             </VerticalStackLayout>
         </Border>
 
-        <!-- Üst seviye butonu -->
-        <Border Grid.Row="1"
-                x:Name="UstSeviyeBtn"
-                BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 14"
-                Padding="0,12" HeightRequest="46"
-                IsVisible="False">
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="UstSeviyeClicked"/>
-            </Border.GestureRecognizers>
-            <Label Text="⬆ Üst Seviye"
-                   TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
-                   FontAttributes="Bold" FontSize="14"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
-        </Border>
+        <CollectionView Grid.Row="1" x:Name="GecmisListesi" SelectionMode="Single" SelectionChanged="OnSecimDegisti">
+            <CollectionView.Header>
+                <ContentView x:Name="UstSeviyeHeader" IsVisible="False">
+                    <Border BackgroundColor="#334155" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="12" Margin="0,0,0,10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="UstSeviyeClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="⬆ Bir Üst Seviyeye Dön" TextColor="White" HorizontalOptions="Center" FontAttributes="Bold"/>
+                    </Border>
+                </ContentView>
+            </CollectionView.Header>
 
-        <!-- Liste -->
-        <CollectionView Grid.Row="2" x:Name="GecmisListesi"
-                        SelectionMode="Single"
-                        SelectionChanged="OnSecimDegisti">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 16"
-                            Padding="16" Margin="0,4">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                            <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                <Label Text="{Binding Baslik}"
-                                       FontSize="16" FontAttributes="Bold"/>
-                                <Label Text="{Binding AltBaslik}"
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                <DataTemplate x:DataType="models:GecmisItem">
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" 
+                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" 
+                            StrokeThickness="1" 
+                            StrokeShape="RoundRectangle 16" 
+                            Padding="16" 
+                            Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding Baslik}" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
+                                <Label Text="{Binding AltBaslik}" FontSize="12" TextColor="#94A3B8"/>
+                                <Label Text="{Binding SatisSayisi, StringFormat='{0} Satış Yapıldı'}" FontSize="12" TextColor="#3B82F6" FontAttributes="Bold"/>
                             </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="End">
-                                <Label Text="{Binding Ciro, StringFormat='₺{0:N2}'}"
-                                       FontSize="16" FontAttributes="Bold"
-                                       TextColor="{StaticResource Success}"
-                                       HorizontalOptions="End"/>
-                                <Label Text="{Binding Kar, StringFormat='Kar: ₺{0:N2}'}"
-                                       FontSize="12"
-                                       TextColor="{StaticResource Primary}"
-                                       HorizontalOptions="End"/>
-                                <Label Text="{Binding SatisSayisi, StringFormat='{0} satış'}"
-                                       FontSize="12"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
-                                       HorizontalOptions="End"/>
+
+                            <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding Ciro, StringFormat='₺{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#16A34A" HorizontalOptions="End"/>
+                                <Label Text="{Binding Kar, StringFormat='Kâr: ₺{0:N2}'}" FontSize="12" FontAttributes="Bold" TextColor="#e31e24" HorizontalOptions="End"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
@@ -79,39 +56,33 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Alt butonlar -->
-        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="10">
+        <Border Grid.Row="2" 
+                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" 
+                Stroke="Transparent" 
+                StrokeShape="RoundRectangle 24" 
+                Padding="20">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" 
+                        Text="⬅ Geri" 
+                        BackgroundColor="#334155" 
+                        TextColor="White" 
+                        FontAttributes="Bold" 
+                        HeightRequest="56" 
+                        CornerRadius="16" 
+                        Clicked="GeriClicked"/>
 
-            <Border Grid.Column="0"
-                    x:Name="ExcelBtn"
-                    BackgroundColor="{StaticResource Success}"
-                    Stroke="Transparent"
-                    StrokeShape="RoundRectangle 16"
-                    Padding="0,16" HeightRequest="56"
-                    IsVisible="False">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="ExcelAktarClicked"/>
-                </Border.GestureRecognizers>
-                <Label x:Name="ExcelBtnLabel"
-                       Text="📥 Excel'e Aktar"
-                       TextColor="White" FontAttributes="Bold" FontSize="14"
-                       HorizontalOptions="Center" VerticalOptions="Center"/>
-            </Border>
+                <Button Grid.Column="1" 
+                        x:Name="ExcelBtn" 
+                        Text="📥 Excel Al" 
+                        BackgroundColor="#16A34A" 
+                        TextColor="White" 
+                        FontAttributes="Bold" 
+                        HeightRequest="56" 
+                        CornerRadius="16" 
+                        Clicked="ExcelAktarClicked" 
+                        IsVisible="False"/>
+            </Grid>
+        </Border>
 
-            <Border Grid.Column="1"
-                    BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                    Stroke="Transparent"
-                    StrokeShape="RoundRectangle 16"
-                    Padding="0,16" HeightRequest="56">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="GeriClicked"/>
-                </Border.GestureRecognizers>
-                <Label Text="⬅ Geri"
-                       TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
-                       FontAttributes="Bold" FontSize="14"
-                       HorizontalOptions="Center" VerticalOptions="Center"/>
-            </Border>
-
-        </Grid>
     </Grid>
 </ContentPage>
