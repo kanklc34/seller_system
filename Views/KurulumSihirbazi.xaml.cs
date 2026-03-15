@@ -1,4 +1,5 @@
 using Saller_System.Services;
+using Saller_System.Models;
 
 namespace Saller_System.Views
 {
@@ -20,14 +21,12 @@ namespace Saller_System.Views
             string magazaAdi = MagazaAdiEntry.Text?.Trim() ?? "";
             string telefon = new string((TelefonEntry.Text ?? "").Where(char.IsDigit).ToArray());
 
-
             if (string.IsNullOrEmpty(magazaAdi))
             {
                 await DisplayAlert("Hata", "Mağaza adı zorunludur!", "Tamam");
                 return;
             }
 
-            
             if (!string.IsNullOrEmpty(telefon) && telefon.Length != 11)
             {
                 TelefonHataLabel.Text = "❌ Türkiye telefon numarası 11 hane olmalıdır (Örn: 0532 123 45 67)";
@@ -38,21 +37,19 @@ namespace Saller_System.Views
             TelefonHataLabel.IsVisible = false;
             await _ayarlar.SetAsync("MagazaAdi", magazaAdi);
             await _ayarlar.SetAsync("Telefon", string.IsNullOrEmpty(telefon) ? "" :
-     telefon[..4] + " " + telefon[4..7] + " " + telefon[7..9] + " " + telefon[9..]);
+                   telefon[..4] + " " + telefon[4..7] + " " + telefon[7..9] + " " + telefon[9..]);
 
             Adim1Panel.IsVisible = false;
             Adim2Panel.IsVisible = true;
             Adim1Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
             Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#2E75B6"));
         }
+
         private void TelefonUnfocused(object sender, FocusEventArgs e)
         {
-            string temiz = "";
-            foreach (char c in TelefonEntry.Text ?? "")
-                if (char.IsDigit(c) && temiz.Length < 11)
-                    temiz += c;
-
+            string temiz = new string((TelefonEntry.Text ?? "").Where(char.IsDigit).ToArray());
             if (temiz.Length == 0) return;
+            if (temiz.Length > 11) temiz = temiz.Substring(0, 11);
 
             string formatted = "";
             for (int i = 0; i < temiz.Length; i++)
@@ -60,24 +57,21 @@ namespace Saller_System.Views
                 if (i == 4 || i == 7 || i == 9) formatted += " ";
                 formatted += temiz[i];
             }
-
             TelefonEntry.Text = formatted;
         }
+
         private void FormatAlgilaClicked(object sender, EventArgs e)
         {
             string barkod = TeraziBarkodEntry.Text?.Trim() ?? "";
-
             if (barkod.Length != 13)
             {
                 FormatSonucLabel.Text = "❌ Geçersiz barkod (13 hane olmalı)";
                 FormatSonucLabel.TextColor = Colors.Red;
                 FormatSonucLabel.IsVisible = true;
-                Adim2DevamBorder.Opacity = 0.5;
                 return;
             }
 
             _algılananPrefix = TartiServisi.PrefixAlgila(barkod);
-
             if (_algılananPrefix != null)
             {
                 FormatSonucLabel.Text = "✅ Terazi formatı algılandı!";
@@ -87,10 +81,9 @@ namespace Saller_System.Views
             }
             else
             {
-                FormatSonucLabel.Text = "❌ Format algılanamadı, farklı bir barkod deneyin.";
+                FormatSonucLabel.Text = "❌ Format algılanamadı.";
                 FormatSonucLabel.TextColor = Colors.Red;
                 FormatSonucLabel.IsVisible = true;
-                Adim2DevamBorder.Opacity = 0.5;
             }
         }
 
@@ -109,8 +102,6 @@ namespace Saller_System.Views
         {
             Adim2Panel.IsVisible = false;
             Adim3Panel.IsVisible = true;
-            Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
-            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#2E75B6"));
         }
 
         private async void Adim3DevamClicked(object sender, EventArgs e)
@@ -132,30 +123,20 @@ namespace Saller_System.Views
                 return;
             }
 
-            SifreHataLabel.IsVisible = false;
-
             await _db.InitAsync();
-            var admin = await _db.KullaniciGetirAsync("admin");
+            var kullanicilar = await _db.TumKullanicilariGetirAsync();
+            var admin = kullanicilar.FirstOrDefault(k => k.KullaniciAdi == "admin");
+
             if (admin != null)
             {
                 admin.Sifre = GuvenlikServisi.Hashle(sifre);
+                // DATABASE SERVICE İÇİNDEKİ METOT ADIYLA EŞLENDİ
                 await _db.KullaniciGuncelleAsync(admin);
             }
 
-            string magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
-            string telefon = await _ayarlar.GetAsync("Telefon", "");
-            string prefix = await _ayarlar.GetAsync("TaraziPrefix", "Tanımsız");
-
-            KurulumOzetLabel.Text =
-                $"🏪 {magazaAdi}\n" +
-                $"📞 {(string.IsNullOrEmpty(telefon) ? "Telefon girilmedi" : telefon)}\n" +
-                $"⚖️ Terazi Prefix: {prefix}\n" +
-                $"🔐 Admin şifresi belirlendi";
-
+            KurulumOzetLabel.Text = "Kurulum Bilgileri Kaydedildi.";
             Adim3Panel.IsVisible = false;
             Adim4Panel.IsVisible = true;
-            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
-            Adim4Dot.Fill = new SolidColorBrush(Color.FromArgb("#2E75B6"));
         }
 
         private async void BaslayalimClicked(object sender, EventArgs e)
