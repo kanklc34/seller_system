@@ -104,7 +104,7 @@
                 </Grid>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="12">
+            <VerticalStackLayout x:Name="SonIslemlerBolumu" Spacing="12">
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="Son İşlemler" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" VerticalOptions="Center"/>
                     <Label Grid.Column="1" Text="Tümünü Gör >" FontSize="13" TextColor="{AppThemeBinding Light=#E31E24, Dark=#FCA5A5}" VerticalOptions="Center">
@@ -115,7 +115,6 @@
                 </Grid>
 
                 <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="16,0">
-
                     <VerticalStackLayout x:Name="SonIslemlerListesi" Spacing="0">
                         <BindableLayout.EmptyView>
                             <Label Text="Henüz satış yapılmadı." TextColor="#94A3B8" HorizontalOptions="Center" Margin="0,15" />
@@ -133,7 +132,6 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
-
                 </Border>
             </VerticalStackLayout>
 

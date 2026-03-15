@@ -33,7 +33,7 @@
                             <VerticalStackLayout Grid.Column="0" Spacing="4">
                                 <Label Text="{Binding Baslik}" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
                                 <Label Text="{Binding AltBaslik}" FontSize="12" TextColor="#94A3B8"/>
-                                <Label Text="{Binding SatisSayisi, StringFormat='{0} Satış'}" FontSize="12" TextColor="#3B82F6" FontAttributes="Bold"/>
+                                <Label Text="{Binding SatisSayisi, StringFormat='{0} İşlem'}" FontSize="12" TextColor="#3B82F6" FontAttributes="Bold"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="2">
                                 <Label Text="{Binding Ciro, StringFormat='₺{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#16A34A"/>

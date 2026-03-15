@@ -22,18 +22,19 @@ namespace Saller_System.Views
             await _db.InitAsync();
             await ListeYukle();
 
-            // HIZLI EKLEME KONTROLÜ
             if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
             {
                 BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
-                UrunDuzenleServisi.HizliEkleBarkod = null; // İşlem bitince temizle
-                AdEntry.Focus(); // İsim alanına odaklan
+                UrunDuzenleServisi.HizliEkleBarkod = null;
+                AdEntry.Focus();
             }
 
             var rol = OturumServisi.AktifKullanici?.Rol;
             bool yoneticiMi = (rol == "Patron" || rol == "Müdür" || OturumServisi.AktifKullanici?.KullaniciAdi == "admin");
 
-            YeniUrunPaneli.IsVisible = yoneticiMi;
+            // Personel hızlı ekleme yapsın diye paneli herkese açıyoruz 
+            // ama silme ikonlarını hala IsYonetici ile kısıtlıyoruz.
+            YeniUrunPaneli.IsVisible = true;
             IsYonetici = yoneticiMi;
             OnPropertyChanged(nameof(IsYonetici));
         }
