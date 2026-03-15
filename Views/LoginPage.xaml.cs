@@ -14,33 +14,40 @@ namespace Saller_System.Views
 
         private async void GirisYapClicked(object sender, EventArgs e)
         {
-            HataLabel.IsVisible = false;
             HataBorder.IsVisible = false;
 
-            string kullanici = KullaniciAdiEntry.Text?.Trim() ?? "";
-            string sifre = SifreEntry.Text?.Trim() ?? "";
+            string kullanici = KullaniciAdiEntry.Text?.Trim();
+            string sifre = SifreEntry.Text?.Trim();
 
-            if (string.IsNullOrWhiteSpace(kullanici) || string.IsNullOrWhiteSpace(sifre))
+            if (string.IsNullOrEmpty(kullanici) || string.IsNullOrEmpty(sifre))
             {
-                HataLabel.Text = "Kullanıcı adı ve şifre boş bırakılamaz!";
-                HataLabel.IsVisible = true;
+                HataLabel.Text = "Lütfen bilgilerinizi eksiksiz girin.";
                 HataBorder.IsVisible = true;
                 return;
             }
 
-            await _db.InitAsync();
-            var bulunanKullanici = await _db.GirisKontrolAsync(kullanici, sifre);
+            try
+            {
+                await _db.InitAsync();
+                var bulunanKullanici = await _db.GirisKontrolAsync(kullanici, sifre);
 
-            if (bulunanKullanici != null)
-            {
-                OturumServisi.AktifKullanici = bulunanKullanici;
-                await Shell.Current.GoToAsync("//AnaSayfa");
+                if (bulunanKullanici != null)
+                {
+                    OturumServisi.AktifKullanici = bulunanKullanici;
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Shell.Current.GoToAsync("//AnaSayfa");
+                    });
+                }
+                else
+                {
+                    HataLabel.Text = "Kullanıcı adı veya şifre hatalı!";
+                    HataBorder.IsVisible = true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                HataLabel.Text = "Kullanıcı adı veya şifre hatalı!";
-                HataLabel.IsVisible = true;
-                HataBorder.IsVisible = true;
+                await DisplayAlert("Giriş Hatası", "Hata: " + ex.Message, "Tamam");
             }
         }
     }
