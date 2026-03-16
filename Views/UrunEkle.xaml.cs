@@ -17,6 +17,7 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
             await _db.InitAsync();
+
             if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
             {
                 BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
@@ -25,83 +26,54 @@ namespace Saller_System.Views
             }
         }
 
-        private void GramajliChanged(object sender, CheckedChangedEventArgs e)
+        protected override bool OnBackButtonPressed()
+        {
+            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//UrunListesi"));
+            return true;
+        }
+
+        private void GramajliToggled(object sender, ToggledEventArgs e)
         {
             KgFiyatPanel.IsVisible = e.Value;
-            KgAlisFiyatPanel.IsVisible = e.Value;
             NormalFiyatPanel.IsVisible = !e.Value;
-            AlisFiyatPanel.IsVisible = !e.Value;
         }
 
         private async void KaydetClicked(object sender, EventArgs e)
         {
-            if (!OturumServisi.YoneticiMi)
+            // ENGEL KALDIRILDI: Personel de artık hızlı ekleme yapabilir.
+            if (string.IsNullOrWhiteSpace(AdEntry.Text) || string.IsNullOrWhiteSpace(BarkodEntry.Text))
             {
-                await DisplayAlert("Yetkisiz", "Ürün eklemek için yönetici yetkisi gereklidir!", "Tamam");
+                await DisplayAlert("Hata", "Ad ve barkod alanları boş geçilemez!", "Tamam");
                 return;
             }
 
-            string ad = AdEntry.Text?.Trim() ?? "";
-            string barkod = BarkodEntry.Text?.Trim() ?? "";
-            string kategori = KategoriEntry.Text?.Trim() ?? "";
-
-            if (string.IsNullOrEmpty(ad) || string.IsNullOrEmpty(barkod))
+            try
             {
-                await DisplayAlert("Hata", "Ürün adı ve barkod zorunludur!", "Tamam");
-                return;
-            }
-
-            bool gramajli = GramajliCheckBox.IsChecked;
-            decimal kgFiyati = 0, fiyat = 0, alisFiyati = 0, kgAlisFiyati = 0;
-
-            if (gramajli)
-            {
-                if (!decimal.TryParse(KgFiyatiEntry.Text, out kgFiyati) || kgFiyati <= 0)
+                var urun = new Urun
                 {
-                    await DisplayAlert("Hata", "Geçerli bir kg fiyatı girin!", "Tamam");
-                    return;
-                }
-                decimal.TryParse(KgAlisFiyatiEntry.Text, out kgAlisFiyati);
+                    Ad = AdEntry.Text.Trim(),
+                    Barkod = BarkodEntry.Text.Trim(),
+                    Kategori = KategoriEntry.Text?.Trim() ?? "Genel",
+                    GramajliMi = GramajliSwitch.IsToggled,
+                    Fiyat = GramajliSwitch.IsToggled ? 0 : decimal.Parse(FiyatEntry.Text ?? "0"),
+                    AlisFiyati = GramajliSwitch.IsToggled ? 0 : decimal.Parse(AlisFiyatiEntry.Text ?? "0"),
+                    KgFiyati = GramajliSwitch.IsToggled ? decimal.Parse(KgFiyatiEntry.Text ?? "0") : 0,
+                    KgAlisFiyati = GramajliSwitch.IsToggled ? decimal.Parse(KgAlisFiyatiEntry.Text ?? "0") : 0
+                };
+
+                await _db.UrunEkleAsync(urun);
+
+                MesajLabel.Text = "✅ Ürün başarıyla eklendi!";
+                MesajBorder.IsVisible = true;
+                await Task.Delay(1500);
+                await Shell.Current.GoToAsync("//UrunListesi");
             }
-            else
+            catch (Exception ex)
             {
-                if (!decimal.TryParse(FiyatEntry.Text, out fiyat) || fiyat < 0)
-                {
-                    await DisplayAlert("Hata", "Geçerli bir fiyat girin!", "Tamam");
-                    return;
-                }
-                decimal.TryParse(AlisFiyatiEntry.Text, out alisFiyati);
+                await DisplayAlert("Kayıt Hatası", "Ürün eklenirken bir sorun oluştu: " + ex.Message, "Tamam");
             }
-
-            var urun = new Urun
-            {
-                Ad = ad,
-                Barkod = barkod,
-                Fiyat = gramajli ? 0 : fiyat,
-                AlisFiyati = alisFiyati,
-                Kategori = kategori,
-                GramajliMi = gramajli,
-                KgFiyati = kgFiyati,
-                KgAlisFiyati = kgAlisFiyati
-            };
-
-            await _db.UrunEkleAsync(urun);
-
-            MesajLabel.Text = $"✅ {ad} başarıyla eklendi!";
-            MesajLabel.IsVisible = true;
-            MesajBorder.IsVisible = true;
-
-            AdEntry.Text = "";
-            BarkodEntry.Text = "";
-            FiyatEntry.Text = "";
-            KategoriEntry.Text = "";
-            KgFiyatiEntry.Text = "";
-            AlisFiyatiEntry.Text = "";
-            KgAlisFiyatiEntry.Text = "";
-            GramajliCheckBox.IsChecked = false;
         }
 
-        private async void GeriClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//UrunListesi");
+        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//UrunListesi");
     }
 }

@@ -10,7 +10,6 @@ namespace Saller_System.Views
         private readonly SepetServisi _sepet;
         private Urun? _bulunanUrun;
         private decimal _hesaplananFiyat = 0;
-        private decimal _kg = 0;
 
         public BarkodSayfa(DatabaseService db, SepetServisi sepet)
         {
@@ -18,81 +17,18 @@ namespace Saller_System.Views
             _db = db;
             _sepet = sepet;
 
-            BarkodOkuyucu.Options = new ZXing.Net.Maui.BarcodeReaderOptions
+            BarkodOkuyucu.Options = new BarcodeReaderOptions
             {
-                Formats = ZXing.Net.Maui.BarcodeFormat.QrCode |
-                          ZXing.Net.Maui.BarcodeFormat.Ean13 |
-                          ZXing.Net.Maui.BarcodeFormat.Ean8 |
-                          ZXing.Net.Maui.BarcodeFormat.Code128 |
-                          ZXing.Net.Maui.BarcodeFormat.Code39 |
-                          ZXing.Net.Maui.BarcodeFormat.Code93 |
-                          ZXing.Net.Maui.BarcodeFormat.Codabar |
-                          ZXing.Net.Maui.BarcodeFormat.Pdf417 |
-                          ZXing.Net.Maui.BarcodeFormat.DataMatrix |
-                          ZXing.Net.Maui.BarcodeFormat.UpcA |
-                          ZXing.Net.Maui.BarcodeFormat.UpcE |
-                          ZXing.Net.Maui.BarcodeFormat.Itf |
-                          ZXing.Net.Maui.BarcodeFormat.Msi,
+                Formats = BarcodeFormat.Ean13 | BarcodeFormat.Ean8 | BarcodeFormat.Code128 | BarcodeFormat.QrCode,
                 AutoRotate = true,
                 Multiple = false
             };
         }
 
-        private async void UrunGetirTapped(object sender, EventArgs e)
-        {
-            string barkod = BarkodEntry.Text?.Trim() ?? "";
-            if (string.IsNullOrEmpty(barkod)) return;
-            await UrunGetirAsync(barkod);
-        }
-
-        private async void BarkodEntry_Completed(object sender, EventArgs e)
-        {
-            string barkod = BarkodEntry.Text?.Trim() ?? "";
-            if (string.IsNullOrEmpty(barkod)) return;
-            await UrunGetirAsync(barkod);
-        }
-
-        private async void SatisaEkleTapped(object sender, EventArgs e)
-        {
-            if (_bulunanUrun == null) return;
-
-            decimal fiyat;
-            int adet = 1;
-
-            if (_bulunanUrun.GramajliMi && _hesaplananFiyat > 0)
-            {
-                fiyat = _hesaplananFiyat;
-            }
-            else
-            {
-                if (!int.TryParse(AdetEntry.Text, out adet) || adet <= 0)
-                {
-                    await DisplayAlert("Hata", "Adet 0'dan büyük olmalıdır!", "Tamam");
-                    return;
-                }
-                fiyat = _bulunanUrun.Fiyat;
-            }
-
-            _sepet.Ekle(_bulunanUrun, adet, fiyat);
-
-            MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi! (Sepet: {_sepet.ToplamAdet} ürün)";
-            MesajLabel.IsVisible = true;
-            MesajBorder.IsVisible = true;
-            UrunBilgiFrame.IsVisible = false;
-            BarkodEntry.Text = "";
-            _bulunanUrun = null;
-            _hesaplananFiyat = 0;
-            _kg = 0;
-        }
-
-        
-
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
             BarkodOkuyucu.IsDetecting = true;
-            
-            MesajLabel.IsVisible = false;
             MesajBorder.IsVisible = false;
         }
 
@@ -104,86 +40,60 @@ namespace Saller_System.Views
 
         private async void BarkodOkundu(object sender, BarcodeDetectionEventArgs e)
         {
-            var ilkSonuc = e.Results.FirstOrDefault();
-            if (ilkSonuc == null) return;
+            var result = e.Results.FirstOrDefault();
+            if (result == null) return;
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                BarkodEntry.Text = ilkSonuc.Value;
-                await UrunGetirAsync(ilkSonuc.Value);
+                BarkodEntry.Text = result.Value;
+                await UrunGetirAsync(result.Value);
                 BarkodOkuyucu.IsDetecting = false;
-               
             });
         }
 
         private async Task UrunGetirAsync(string barkod)
         {
-            barkod = new string(barkod.Where(c => char.IsLetterOrDigit(c) || c == '-').ToArray()).Trim();
             if (string.IsNullOrEmpty(barkod)) return;
-
             await _db.InitAsync();
 
-            var (urunKodu, kg, tartiMi) = TartiServisi.BarkodCoz(barkod);
+            var urun = await _db.BarkodIleGetirAsync(barkod);
 
-            Urun? bulunanUrun = null;
-
-            if (tartiMi)
+            if (urun != null)
             {
-                bulunanUrun = await _db.BarkodIleGetirAsync(urunKodu);
-
-                if (bulunanUrun != null && bulunanUrun.GramajliMi)
-                {
-                    decimal hesaplananFiyat = TartiServisi.FiyatHesapla(bulunanUrun.KgFiyati, kg);
-                    _bulunanUrun = bulunanUrun;
-                    _hesaplananFiyat = hesaplananFiyat;
-                    _kg = kg;
-
-                    UrunAdLabel.Text = $"{bulunanUrun.Ad} ({kg:N3} kg)";
-                    UrunFiyatLabel.Text = $"Fiyat: ₺{hesaplananFiyat:N2} ({kg:N3} kg × ₺{bulunanUrun.KgFiyati:N2}/kg)";
-                    UrunKategoriLabel.Text = $"Kategori: {bulunanUrun.Kategori}";
-                    AdetEntry.Text = "1";
-                    AdetEntry.IsEnabled = false;
-                    UrunBilgiFrame.IsVisible = true;
-                    MesajLabel.IsVisible = false;
-                    MesajBorder.IsVisible = false;
-                    return;
-                }
-            }
-
-            bulunanUrun = await _db.BarkodIleGetirAsync(barkod);
-            _hesaplananFiyat = 0;
-            _kg = 0;
-
-            if (bulunanUrun != null)
-            {
-                _bulunanUrun = bulunanUrun;
-                UrunAdLabel.Text = bulunanUrun.Ad;
-                UrunFiyatLabel.Text = $"Fiyat: ₺{bulunanUrun.Fiyat:N2}";
-                UrunKategoriLabel.Text = $"Kategori: {bulunanUrun.Kategori}";
-                AdetEntry.IsEnabled = true;
+                _bulunanUrun = urun;
+                UrunAdLabel.Text = urun.Ad;
+                UrunFiyatLabel.Text = $"Fiyat: ₺{urun.Fiyat:N2}";
+                UrunKategoriLabel.Text = $"Kategori: {urun.Kategori}";
                 UrunBilgiFrame.IsVisible = true;
-                MesajLabel.IsVisible = false;
                 MesajBorder.IsVisible = false;
             }
             else
             {
-                bool ekle = await DisplayAlert(
-                    "Ürün Bulunamadı",
-                    $"'{barkod}' barkodlu ürün sistemde yok. Hemen eklemek ister misiniz?",
-                    "Ekle", "İptal");
-
+                // HIZLI EKLEME ÖZELLİĞİ
+                bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{barkod}' sistemde yok. Hemen eklemek ister misiniz?", "Evet", "Hayır");
                 if (ekle)
                 {
                     UrunDuzenleServisi.HizliEkleBarkod = barkod;
-                    await Shell.Current.GoToAsync("//UrunEkle");
+                    await Shell.Current.GoToAsync("//UrunListesi");
                 }
             }
         }
 
-        private async void GeriClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//AnaSayfa");
+        private async void SatisaEkleTapped(object sender, EventArgs e)
+        {
+            if (_bulunanUrun == null) return;
+            _sepet.Ekle(_bulunanUrun, int.Parse(AdetEntry.Text), _bulunanUrun.Fiyat);
 
-        private async void SepeteGitClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//SepetSayfa");
+            MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi!";
+            MesajBorder.IsVisible = true;
+            UrunBilgiFrame.IsVisible = false;
+            BarkodEntry.Text = "";
+            BarkodOkuyucu.IsDetecting = true;
+        }
+
+        private async void UrunGetirTapped(object sender, EventArgs e) => await UrunGetirAsync(BarkodEntry.Text);
+        private async void BarkodEntry_Completed(object sender, EventArgs e) => await UrunGetirAsync(BarkodEntry.Text);
+        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AnaSayfa");
+        private async void SepeteGitClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//SepetSayfa");
     }
 }

@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<defs>
-		<linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-			<stop offset="0%" stop-color="#1a1a2e"/>
-			<stop offset="100%" stop-color="#16213e"/>
+		<linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#fdf49a" />
+			<stop offset="30%" stop-color="#ffd700" />
+			<stop offset="70%" stop-color="#eac01e" />
+			<stop offset="100%" stop-color="#bf9a13" />
 		</linearGradient>
-		<linearGradient id="kGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-			<stop offset="0%" stop-color="#e53e3e"/>
-			<stop offset="100%" stop-color="#c53030"/>
-		</linearGradient>
-		<linearGradient id="pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-			<stop offset="0%" stop-color="#4299e1"/>
-			<stop offset="100%" stop-color="#2b6cb0"/>
-		</linearGradient>
+		<filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+			<feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+			<feOffset in="blur" dx="2" dy="2" result="offsetBlur" />
+			<feMerge>
+				<feMergeNode in="offsetBlur" />
+				<feMergeNode in="SourceGraphic" />
+			</feMerge>
+		</filter>
+		<path id="circlePath" d="M300,300 m0,-150 a150,150 0 1,1 0,300 a150,150 0 1,1 0,-300 Z" transform="rotate(90 300 300)" />
 	</defs>
-	<rect width="500" height="500" rx="100" fill="url(#bg)"/>
-	<circle cx="250" cy="250" r="195" fill="none" stroke="white" stroke-width="2" opacity="0.08"/>
-	<circle cx="250" cy="250" r="170" fill="none" stroke="white" stroke-width="1" opacity="0.05"/>
-	<text x="110" y="310" font-family="Georgia, serif" font-size="240" font-weight="bold" fill="url(#kGrad)" opacity="0.95">K</text>
-	<text x="230" y="310" font-family="Georgia, serif" font-size="240" font-weight="bold" fill="url(#pGrad)" opacity="0.7">P</text>
-	<rect x="80" y="330" width="340" height="4" rx="2" fill="white" opacity="0.2"/>
-	<text x="250" y="390" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="white" opacity="0.6" letter-spacing="8">KASAP PRO</text>
-	<path d="M 30,30 L 80,30 L 30,80 Z" fill="#e53e3e" opacity="0.15"/>
-	<path d="M 470,470 L 420,470 L 470,420 Z" fill="#4299e1" opacity="0.15"/>
+
+	<rect width="100%" height="100%" fill="black" />
+
+	<path d="M300,50 a250,250 0 1,1 0,500 a250,250 0 1,1 0,-500 M300,50 L300,45 A255,255 0 0,0 255,103 L260,108 A250,250 0 0,1 300,50 Z" fill="#a10a17" filter="url(#shadow)" />
+	<path d="M255,103 A255,255 0 0,0 103,255 L108,260 A250,250 0 0,1 260,108 Z" fill="#a10a17" filter="url(#shadow)" />
+	<path d="M103,255 A255,255 0 0,0 300,555 L300,550 A250,250 0 0,1 108,260 Z" fill="#a10a17" filter="url(#shadow)" />
+	<path d="M300,555 A255,255 0 0,0 497,345 L492,340 A250,250 0 0,1 300,550 Z" fill="#a10a17" filter="url(#shadow)" />
+	<path d="M497,345 A255,255 0 0,0 300,50 L300,55 A250,250 0 0,1 492,340 Z" fill="#a10a17" filter="url(#shadow)" />
+
+	<circle cx="300" cy="300" r="235" fill="none" stroke="url(#goldGradient)" stroke-width="30" filter="url(#shadow)"/>
+	<circle cx="300" cy="300" r="220" fill="none" stroke="#bf9a13" stroke-width="1.5" opacity="0.4"/>
+
+	<circle cx="300" cy="300" r="205" fill="#a10a17" />
+
+	<text font-family="Georgia, serif" font-size="60" font-weight="bold" fill="url(#goldGradient)" filter="url(#shadow)">
+		<textPath xlink:href="#circlePath" text-anchor="middle" startOffset="25%">ÖZBIGA</textPath>
+	</text>
+
+	<path d="M210,340 Q300,430 390,340 M210,340 Q300,390 390,340" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round" filter="url(#shadow)"/>
+
+	<text x="300" y="445" font-family="Georgia, serif" font-size="80" font-weight="bold" fill="url(#goldGradient)" text-anchor="middle" filter="url(#shadow)">ET</text>
 </svg>

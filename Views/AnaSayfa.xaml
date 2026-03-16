@@ -1,264 +1,141 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Saller_System.Models"
              x:Class="Saller_System.Views.AnaSayfa"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20,18,20,32" Spacing="18">
+        <VerticalStackLayout Padding="20,18,20,32" Spacing="22">
 
-            <!-- KARŞILAMA / ÜST KART -->
-            <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                    Stroke="Transparent"
-                    StrokeShape="RoundRectangle 28"
-                    Padding="24">
-
+            <Border BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" Stroke="Transparent" StrokeShape="RoundRectangle 28" Padding="24">
                 <VerticalStackLayout Spacing="18">
-
-                    <!-- ÜST SATIR -->
-                    <Grid ColumnDefinitions="*,Auto,Auto"
-                          ColumnSpacing="10">
-
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Kasap Pro"
-                                   FontSize="30"
-                                   FontAttributes="Bold"
-                                   TextColor="White" />
-
-                            <Label x:Name="HosgeldinLabel"
-                                   Text="Hoş geldiniz"
-                                   FontSize="14"
-                                   TextColor="#CBD5E1" />
+                            <Label Text="Öz Biga Et" FontSize="28" FontAttributes="Bold" TextColor="White" />
+                            <Label x:Name="HosgeldinLabel" Text="Hoş geldin" FontSize="14" TextColor="#CBD5E1" />
                         </VerticalStackLayout>
 
-                        <!-- AYARLAR -->
-                        <Border x:Name="AyarlarBtn"
-                                Grid.Column="2"
-                                BackgroundColor="#1E293B"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                Padding="12"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start">
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,5,0">
+                            <Label x:Name="TarihLabel" Text="..." FontSize="13" FontAttributes="Bold" TextColor="#94A3B8" HorizontalTextAlignment="End"/>
+                        </VerticalStackLayout>
+
+                        <Border x:Name="AyarlarBtn" Grid.Column="2" BackgroundColor="#1E293B" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="12" HorizontalOptions="End" VerticalOptions="Center">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="AyarlarClicked" />
                             </Border.GestureRecognizers>
-
-                            <Label Text="⚙️"
-                                   FontSize="20"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
+                            <Label Text="⚙️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
                         </Border>
                     </Grid>
 
-                    <!-- ÖZET BİLGİ KARTLARI -->
-                    <Grid x:Name="OzetBilgiGrid"
-                          ColumnDefinitions="*,*,*"
-                          ColumnSpacing="10">
-
-                        <Border BackgroundColor="#1E293B"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                Padding="10,8"
-                                HeightRequest="60">
+                    <Grid x:Name="OzetBilgiGrid" ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <Border BackgroundColor="#1E293B" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="10,8" HeightRequest="60">
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                <Label Text="Satış"
-                                       FontSize="11"
-                                       TextColor="#94A3B8" />
-                                <Label x:Name="GunlukSatisLabel"
-       Text="-"
-       FontSize="18"
-       FontAttributes="Bold"
-       TextColor="White" />
+                                <Label Text="Satış" FontSize="11" TextColor="#94A3B8" />
+                                <Label x:Name="GunlukSatisLabel" Text="0" FontSize="18" FontAttributes="Bold" TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
-
-                        <Border Grid.Column="1"
-                                BackgroundColor="#1E293B"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                Padding="10,8"
-                                HeightRequest="60">
+                        <Border Grid.Column="1" BackgroundColor="#1E293B" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="10,8" HeightRequest="60">
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                <Label Text="Kilo"
-                                       FontSize="11"
-                                       TextColor="#94A3B8" />
-                                <Label Text="- kg"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="White" />
+                                <Label Text="Kilo" FontSize="11" TextColor="#94A3B8" />
+                                <Label Text="- kg" FontSize="18" FontAttributes="Bold" TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
-
-                        <Border Grid.Column="2"
-                                BackgroundColor="#1E293B"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                Padding="10,8"
-                                HeightRequest="60">
+                        <Border Grid.Column="2" BackgroundColor="#1E293B" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="10,8" HeightRequest="60">
                             <VerticalStackLayout Spacing="2" VerticalOptions="Center">
-                                <Label Text="Ciro"
-                                       FontSize="11"
-                                       TextColor="#94A3B8" />
-                                <Label x:Name="GunlukCiroLabel"
-       Text="- ₺"
-       FontSize="18"
-       FontAttributes="Bold"
-       TextColor="White" />
+                                <Label Text="Ciro" FontSize="11" TextColor="#94A3B8" />
+                                <Label x:Name="GunlukCiroLabel" Text="₺0" FontSize="18" FontAttributes="Bold" TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
-
                     </Grid>
                 </VerticalStackLayout>
             </Border>
 
-            <!-- ANA İŞLEMLER -->
             <VerticalStackLayout Spacing="12">
-                <Label Text="Ana İşlemler"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
-
-                <Grid ColumnDefinitions="*,*"
-                      ColumnSpacing="14">
-
-                    <!-- BARKOD OKUT -->
-                    <Border Grid.Column="0"
-                            BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#1D4ED8}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 24"
-                            Padding="18"
-                            HeightRequest="170">
+                <Label Text="Ana İşlemler" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                    <Border Grid.Column="0" BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#C81A20}" Stroke="Transparent" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="160">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="BarkodOkutClicked" />
                         </Border.GestureRecognizers>
-
                         <VerticalStackLayout Spacing="8" VerticalOptions="Start">
-                            <Label Text="📷"
-                                   FontSize="34" />
-                            <Label Text="Barkod Okut"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   TextColor="White" />
-                            <Label Text="Etiketi tara ve satışı sisteme aktar"
-                                   FontSize="13"
-                                   LineBreakMode="WordWrap"
-                                   MaxLines="2"
-                                   TextColor="#DBEAFE" />
+                            <Label Text="📷" FontSize="34" />
+                            <Label Text="Barkod Okut" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                            <Label Text="Etiketi tara ve satışı sisteme aktar" FontSize="13" LineBreakMode="WordWrap" MaxLines="2" TextColor="#FEE2E2" />
                         </VerticalStackLayout>
                     </Border>
-
-                    <!-- ÜRÜN LİSTESİ -->
-                    <Border Grid.Column="1"
-                            BackgroundColor="{AppThemeBinding Light=#16A34A, Dark=#15803D}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 24"
-                            Padding="18"
-                            HeightRequest="170">
+                    <Border Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#1F2937, Dark=#18181B}" Stroke="Transparent" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="160">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="UrunListesiClicked" />
                         </Border.GestureRecognizers>
-
                         <VerticalStackLayout Spacing="8" VerticalOptions="Start">
-                            <Label Text="📦"
-                                   FontSize="34" />
-                            <Label Text="Ürün Listesi"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   TextColor="White" />
-                            <Label x:Name="UrunListesiAciklamaLabel"
-                                   Text="Kayıtlı ürünleri görüntüle ve yönet"
-                                   FontSize="13"
-                                   LineBreakMode="WordWrap"
-                                   MaxLines="2"
-                                   TextColor="#DCFCE7" />
+                            <Label Text="📦" FontSize="34" />
+                            <Label Text="Ürün Listesi" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                            <Label x:Name="UrunListesiAciklamaLabel" Text="Kayıtlı ürünleri görüntüle ve yönet" FontSize="13" LineBreakMode="WordWrap" MaxLines="2" TextColor="#D1D5DB" />
                         </VerticalStackLayout>
                     </Border>
-
                 </Grid>
             </VerticalStackLayout>
 
-            <!-- YÖNETİM -->
-            <VerticalStackLayout x:Name="YonetimBolumu"
-                                 Spacing="12">
-                <Label Text="Yönetim"
-                       FontSize="18"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
-
-                <Grid ColumnDefinitions="*,*"
-                      ColumnSpacing="14"
-                      RowSpacing="14">
-
-                    <!-- RAPORLAR -->
-                    <Border x:Name="RaporlarBtn"
-                            Grid.Column="0"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 22"
-                            Padding="18"
-                            HeightRequest="150">
+            <VerticalStackLayout x:Name="YonetimBolumu" Spacing="12">
+                <Label Text="Yönetim" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                    <Border x:Name="RaporlarBtn" Grid.Column="0" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 22" Padding="18" HeightRequest="140">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="RaporlarClicked" />
                         </Border.GestureRecognizers>
-
                         <VerticalStackLayout Spacing="8" VerticalOptions="Start">
-                            <Label Text="📊"
-                                   FontSize="28" />
-                            <Label Text="Raporlar"
-                                   FontSize="17"
-                                   FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
-                            <Label Text="Satış, ciro ve en çok satan ürünler"
-                                   FontSize="12"
-                                   LineBreakMode="WordWrap"
-                                   MaxLines="2"
-                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" />
+                            <Label Text="📊" FontSize="28" />
+                            <Label Text="Raporlar" FontSize="17" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                            <Label Text="Satış, ciro ve ürünler" FontSize="12" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" />
                         </VerticalStackLayout>
                     </Border>
-
-                    <!-- KULLANICI YÖNETİMİ -->
-                    <Border x:Name="KullaniciYonetimiBtn"
-                            Grid.Column="1"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 22"
-                            Padding="18"
-                            HeightRequest="150">
+                    <Border x:Name="KullaniciYonetimiBtn" Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 22" Padding="18" HeightRequest="140">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="KullaniciYonetimiClicked" />
                         </Border.GestureRecognizers>
-
                         <VerticalStackLayout Spacing="8" VerticalOptions="Start">
-                            <Label Text="👥"
-                                   FontSize="28" />
-                            <Label Text="Kullanıcılar"
-                                   FontSize="17"
-                                   FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
-                            <Label Text="Personel ve yetki işlemlerini yönet"
-                                   FontSize="12"
-                                   LineBreakMode="WordWrap"
-                                   MaxLines="2"
-                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" />
+                            <Label Text="👥" FontSize="28" />
+                            <Label Text="Kullanıcılar" FontSize="17" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                            <Label Text="Personel yönetimi" FontSize="12" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" />
                         </VerticalStackLayout>
                     </Border>
-
                 </Grid>
             </VerticalStackLayout>
 
-            <!-- ÇIKIŞ -->
-            <Button Text="Çıkış Yap"
-                    HeightRequest="60"
-                    CornerRadius="18"
-                    FontSize="15"
-                    FontAttributes="Bold"
-                    BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}"
-                    TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}"
-                    Clicked="CikisClicked" />
+            <VerticalStackLayout x:Name="SonIslemlerBolumu" Spacing="12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Son İşlemler" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="Tümünü Gör >" FontSize="13" TextColor="{AppThemeBinding Light=#E31E24, Dark=#FCA5A5}" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="RaporlarClicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="16,0">
+                    <VerticalStackLayout x:Name="SonIslemlerListesi" Spacing="0">
+                        <BindableLayout.EmptyView>
+                            <Label Text="Henüz satış yapılmadı." TextColor="#94A3B8" HorizontalOptions="Center" Margin="0,15" />
+                        </BindableLayout.EmptyView>
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Satis">
+                                <VerticalStackLayout>
+                                    <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12" Padding="0,12">
+                                        <Label Text="{Binding Tarih, StringFormat='{0:HH:mm}'}" FontSize="13" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding UrunAd}" FontSize="15" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" VerticalOptions="Center" />
+                                        <Label Grid.Column="2" Text="{Binding Fiyat, StringFormat='+ {0:N2} ₺'}" FontSize="15" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#16A34A, Dark=#4ADE80}" VerticalOptions="Center" />
+                                    </Grid>
+                                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#F1F5F9, Dark=#334155}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <Button Text="Çıkış Yap" HeightRequest="60" CornerRadius="18" FontSize="15" FontAttributes="Bold" BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#7F1D1D}" TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}" Clicked="CikisClicked" Margin="0,10,0,0"/>
 
         </VerticalStackLayout>
     </ScrollView>

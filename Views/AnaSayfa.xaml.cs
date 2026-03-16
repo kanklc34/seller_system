@@ -12,57 +12,74 @@ namespace Saller_System.Views
             InitializeComponent();
             _ayarlar = ayarlar;
             _db = db;
+
+            TarihLabel.Text = DateTime.Now.ToString("dd.MM.yyyy dddd", new System.Globalization.CultureInfo("tr-TR"));
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            HosgeldinLabel.Text = $"Hoş geldiniz, {OturumServisi.AktifKullanici?.KullaniciAdi}";
 
-            // Rol bazlı görünürlük
-            RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
-            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            YonetimBolumu.IsVisible = OturumServisi.YoneticiMi;
-            OzetBilgiGrid.IsVisible = OturumServisi.YoneticiMi;
+            var kullanici = OturumServisi.AktifKullanici;
+            HosgeldinLabel.Text = $"Hoş geldin, {kullanici?.KullaniciAdi}";
 
-            UrunListesiAciklamasiniAyarla();
+            // YETKİ KONTROLÜ
+            bool isPatron = kullanici?.Rol == "Patron" || kullanici?.KullaniciAdi?.ToLower() == "admin";
+            bool isYonetici = isPatron || kullanici?.Rol == "Müdür";
 
-            // Dark mode
+            // GÖRÜNÜRLÜK AYARLARI (GİZLİLİK KURALLARI)
+            RaporlarBtn.IsVisible = isYonetici;
+            AyarlarBtn.IsVisible = isYonetici;
+            YonetimBolumu.IsVisible = isYonetici;
+            OzetBilgiGrid.IsVisible = isYonetici; // Üst ciro kartları
+            KullaniciYonetimiBtn.IsVisible = isPatron;
+
+            // PERSONEL FİYATLARI TOPLAYAMASIN DİYE SON İŞLEMLERİ DE KAPATIYORUZ
+            SonIslemlerBolumu.IsVisible = isYonetici;
+
+            UrunListesiAciklamasiniAyarla(isYonetici);
+
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
 
-            // Özet kartları doldur
-            if (OturumServisi.YoneticiMi)
-                await OzetKartlariniDoldur();
+            // Sadece yöneticiyse verileri doldur (Veritabanı güvenliği)
+            if (isYonetici)
+            {
+                await VerileriDoldur();
+            }
         }
 
-        private async Task OzetKartlariniDoldur()
+        private async Task VerileriDoldur()
         {
             await _db.InitAsync();
-            var gunlukSayi = await _db.GunlukSatisSayisiAsync(DateTime.Today);
-            var gunlukCiro = await _db.GunlukCiroAsync(DateTime.Today);
+            var bugun = DateTime.Today;
+
+            // Ciro ve adet güncellemesi
+            var gunlukSayi = await _db.GunlukSatisSayisiAsync(bugun);
+            var gunlukCiro = await _db.GunlukCiroAsync(bugun);
             GunlukSatisLabel.Text = gunlukSayi.ToString();
             GunlukCiroLabel.Text = $"₺{gunlukCiro:N0}";
+
+            // SON İŞLEMLERİ (SATIŞLARI) LİSTEYE ÇEK
+            var bugunkuSatislar = await _db.GunlukSatislerAsync(bugun);
+            var sonSatislar = bugunkuSatislar.OrderByDescending(s => s.Tarih).Take(4).ToList();
+
+            BindableLayout.SetItemsSource(SonIslemlerListesi, sonSatislar);
         }
 
-        private void UrunListesiAciklamasiniAyarla()
+        private void UrunListesiAciklamasiniAyarla(bool isYonetici)
         {
-            UrunListesiAciklamaLabel.Text = OturumServisi.YoneticiMi
-                ? "Kayıtlı ürünleri görüntüle ve yönet"
-                : "Kayıtlı ürünleri görüntüle";
+            UrunListesiAciklamaLabel.Text = isYonetici
+                ? "Ürünleri görüntüle, ekle ve fiyatları yönet"
+                : "Kayıtlı ürün fiyatlarını görüntüle";
         }
 
-        private async void BarkodOkutClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//BarkodSayfa");
-        private async void UrunListesiClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//UrunListesi");
-        private async void RaporlarClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//Raporlar");
-        private async void KullaniciYonetimiClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//KullaniciYonetimi");
-        private async void AyarlarClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//AyarlarSayfa");
+        private async void BarkodOkutClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//BarkodSayfa");
+        private async void UrunListesiClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//UrunListesi");
+        private async void RaporlarClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//Raporlar");
+        private async void KullaniciYonetimiClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//KullaniciYonetimi");
+        private async void AyarlarClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AyarlarSayfa");
+
         private async void CikisClicked(object sender, EventArgs e)
         {
             OturumServisi.AktifKullanici = null;
