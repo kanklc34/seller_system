@@ -12,12 +12,21 @@ namespace Saller_System.Views
             _db = db;
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            // Giriş sayfasına her dönüşte alanları temizle
+            KullaniciAdiEntry.Text = string.Empty;
+            SifreEntry.Text = string.Empty;
+            HataBorder.IsVisible = false;
+        }
+
         private async void GirisYapClicked(object sender, EventArgs e)
         {
             HataBorder.IsVisible = false;
 
-            string kullanici = KullaniciAdiEntry.Text?.Trim();
-            string sifre = SifreEntry.Text?.Trim();
+            string kullanici = KullaniciAdiEntry.Text?.Trim() ?? "";
+            string sifre = SifreEntry.Text?.Trim() ?? "";
 
             if (string.IsNullOrEmpty(kullanici) || string.IsNullOrEmpty(sifre))
             {
@@ -33,7 +42,9 @@ namespace Saller_System.Views
 
                 if (bulunanKullanici != null)
                 {
-                    OturumServisi.AktifKullanici = bulunanKullanici;
+                    // Oturumu başlat — zamanaşımı sayacı buradan başlar
+                    OturumServisi.Giris(bulunanKullanici);
+
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         await Shell.Current.GoToAsync("//AnaSayfa");
