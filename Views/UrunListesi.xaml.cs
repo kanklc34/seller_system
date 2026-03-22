@@ -8,6 +8,9 @@ namespace Saller_System.Views
         private readonly DatabaseService _db;
         public bool IsYonetici { get; set; }
 
+        // Debounce için
+        private CancellationTokenSource? _aramaCts;
+
         public UrunListesi(DatabaseService db)
         {
             InitializeComponent();
@@ -42,10 +45,16 @@ namespace Saller_System.Views
             OnPropertyChanged(nameof(IsYonetici));
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            OturumServisi.AktiviteYenile();
+            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
+            return true;
+        }
+
         private async Task<bool> ZamanAsimKontrolAsync()
         {
             if (!OturumServisi.OturumSuresiDolduMu()) return false;
-
             OturumServisi.Cikis();
             await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
             await Shell.Current.GoToAsync("//LoginPage");
@@ -58,7 +67,6 @@ namespace Saller_System.Views
         private async void KaydetClicked(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(AdEntry.Text)) return;
-
             OturumServisi.AktiviteYenile();
 
             var urun = new Urun
@@ -74,16 +82,40 @@ namespace Saller_System.Views
             await _db.UrunEkleAsync(urun);
             AdEntry.Text = BarkodEntry.Text = KategoriEntry.Text =
                 FiyatEntry.Text = AlisFiyatiEntry.Text = "";
+            GramajliSwitch.IsToggled = false;
             await ListeYukle();
         }
 
+        // Debounce — 300ms bekle, sonra ara
         private async void UrunAraTextChanged(object sender, TextChangedEventArgs e)
         {
             OturumServisi.AktiviteYenile();
-            var liste = await _db.TumUrunleriGetirAsync();
-            UrunlerListesi.ItemsSource = string.IsNullOrWhiteSpace(e.NewTextValue)
-                ? liste
-                : liste.Where(u => u.Ad.ToLower().Contains(e.NewTextValue.ToLower()));
+
+            _aramaCts?.Cancel();
+            _aramaCts = new CancellationTokenSource();
+            var token = _aramaCts.Token;
+
+            try
+            {
+                await Task.Delay(300, token);
+
+                var aramaMetni = e.NewTextValue?.Trim() ?? "";
+                if (string.IsNullOrEmpty(aramaMetni))
+                {
+                    UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
+                }
+                else
+                {
+                    var liste = await _db.TumUrunleriGetirAsync();
+                    UrunlerListesi.ItemsSource = liste
+                        .Where(u => u.Ad.ToLower().Contains(aramaMetni.ToLower())
+                                 || (u.Barkod?.Contains(aramaMetni) ?? false));
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Yeni tuşa basıldı, bu arama iptal edildi — normal
+            }
         }
 
         private async void UrunSilClicked(object sender, EventArgs e)

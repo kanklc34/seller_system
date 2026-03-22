@@ -8,13 +8,15 @@ namespace Saller_System.Views
     {
         private readonly DatabaseService _db;
         private readonly SepetServisi _sepet;
+        private readonly AyarlarServisi _ayarlar;
         private Urun? _bulunanUrun;
 
-        public BarkodSayfa(DatabaseService db, SepetServisi sepet)
+        public BarkodSayfa(DatabaseService db, SepetServisi sepet, AyarlarServisi ayarlar)
         {
             InitializeComponent();
             _db = db;
             _sepet = sepet;
+            _ayarlar = ayarlar;
             BarkodOkuyucu.Options = new BarcodeReaderOptions
             {
                 Formats = BarcodeFormat.Ean13 | BarcodeFormat.Ean8 | BarcodeFormat.Code128 | BarcodeFormat.QrCode,
@@ -30,6 +32,12 @@ namespace Saller_System.Views
             if (await ZamanAsimKontrolAsync()) return;
 
             OturumServisi.AktiviteYenile();
+
+            var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
+            MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
+                ? "KASAP PRO"
+                : magazaAdi.ToUpper();
+
             BarkodOkuyucu.IsDetecting = true;
             MesajBorder.IsVisible = false;
         }

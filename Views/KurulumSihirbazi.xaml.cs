@@ -16,6 +16,9 @@ namespace Saller_System.Views
             _db = db;
         }
 
+        // ----------------------------------------------------------------
+        // Adım 1 — Mağaza bilgileri
+        // ----------------------------------------------------------------
         private async void Adim1DevamClicked(object sender, EventArgs e)
         {
             string magazaAdi = MagazaAdiEntry.Text?.Trim() ?? "";
@@ -29,7 +32,7 @@ namespace Saller_System.Views
 
             if (!string.IsNullOrEmpty(telefon) && telefon.Length != 11)
             {
-                TelefonHataLabel.Text = "❌ Türkiye telefon numarası 11 hane olmalıdır (Örn: 0532 123 45 67)";
+                TelefonHataLabel.Text = "❌ Türkiye telefon numarası 11 hane olmalıdır.";
                 TelefonHataLabel.IsVisible = true;
                 return;
             }
@@ -37,19 +40,19 @@ namespace Saller_System.Views
             TelefonHataLabel.IsVisible = false;
             await _ayarlar.SetAsync("MagazaAdi", magazaAdi);
             await _ayarlar.SetAsync("Telefon", string.IsNullOrEmpty(telefon) ? "" :
-                   telefon[..4] + " " + telefon[4..7] + " " + telefon[7..9] + " " + telefon[9..]);
+                telefon[..4] + " " + telefon[4..7] + " " + telefon[7..9] + " " + telefon[9..]);
 
             Adim1Panel.IsVisible = false;
             Adim2Panel.IsVisible = true;
             Adim1Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
-            Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#2E75B6"));
+            Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#E31E24"));
         }
 
         private void TelefonUnfocused(object sender, FocusEventArgs e)
         {
             string temiz = new string((TelefonEntry.Text ?? "").Where(char.IsDigit).ToArray());
             if (temiz.Length == 0) return;
-            if (temiz.Length > 11) temiz = temiz.Substring(0, 11);
+            if (temiz.Length > 11) temiz = temiz[..11];
 
             string formatted = "";
             for (int i = 0; i < temiz.Length; i++)
@@ -60,6 +63,9 @@ namespace Saller_System.Views
             TelefonEntry.Text = formatted;
         }
 
+        // ----------------------------------------------------------------
+        // Adım 2 — Terazi
+        // ----------------------------------------------------------------
         private void FormatAlgilaClicked(object sender, EventArgs e)
         {
             string barkod = TeraziBarkodEntry.Text?.Trim() ?? "";
@@ -95,19 +101,39 @@ namespace Saller_System.Views
             Adim2Panel.IsVisible = false;
             Adim3Panel.IsVisible = true;
             Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
-            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#2E75B6"));
+            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#E31E24"));
         }
 
-        private async void TeraziAtlaClicked(object sender, EventArgs e)
+        private void TeraziAtlaClicked(object sender, EventArgs e)
         {
             Adim2Panel.IsVisible = false;
             Adim3Panel.IsVisible = true;
+            Adim2Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
+            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#E31E24"));
         }
 
+        // ----------------------------------------------------------------
+        // Adım 3 — İlk kullanıcı oluştur (serbest kullanıcı adı + rol)
+        // ----------------------------------------------------------------
         private async void Adim3DevamClicked(object sender, EventArgs e)
         {
+            string kullaniciAdi = KullaniciAdiEntry.Text?.Trim() ?? "";
             string sifre = YeniSifreEntry.Text ?? "";
             string sifreTekrar = YeniSifreTekrarEntry.Text ?? "";
+
+            if (string.IsNullOrEmpty(kullaniciAdi))
+            {
+                SifreHataLabel.Text = "❌ Kullanıcı adı boş olamaz!";
+                SifreHataLabel.IsVisible = true;
+                return;
+            }
+
+            if (RolPicker.SelectedIndex == -1)
+            {
+                SifreHataLabel.Text = "❌ Lütfen bir rol seçin!";
+                SifreHataLabel.IsVisible = true;
+                return;
+            }
 
             if (sifre.Length < 4)
             {
@@ -123,22 +149,37 @@ namespace Saller_System.Views
                 return;
             }
 
+            SifreHataLabel.IsVisible = false;
+
             await _db.InitAsync();
-            var kullanicilar = await _db.TumKullanicilariGetirAsync();
-            var admin = kullanicilar.FirstOrDefault(k => k.KullaniciAdi == "admin");
 
-            if (admin != null)
+            // Mevcut varsayılan kullanıcıları temizle, yeni kullanıcıyı ekle
+            var mevcutlar = await _db.TumKullanicilariGetirAsync();
+            foreach (var k in mevcutlar)
+                await _db.KullaniciSilAsync(k);
+
+            var yeniKullanici = new Kullanici
             {
-                admin.Sifre = GuvenlikServisi.Hashle(sifre);
-                // DATABASE SERVICE İÇİNDEKİ METOT ADIYLA EŞLENDİ
-                await _db.KullaniciGuncelleAsync(admin);
-            }
+                KullaniciAdi = kullaniciAdi,
+                Sifre = GuvenlikServisi.Hashle(sifre),
+                Rol = RolPicker.SelectedItem.ToString()!
+            };
+            await _db.KullaniciEkleAsync(yeniKullanici);
 
-            KurulumOzetLabel.Text = "Kurulum Bilgileri Kaydedildi.";
+            var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
+            KurulumOzetLabel.Text =
+                $"Mağaza: {magazaAdi}\n" +
+                $"Kullanıcı: {kullaniciAdi} ({RolPicker.SelectedItem})";
+
             Adim3Panel.IsVisible = false;
             Adim4Panel.IsVisible = true;
+            Adim3Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
+            Adim4Dot.Fill = new SolidColorBrush(Color.FromArgb("#E31E24"));
         }
 
+        // ----------------------------------------------------------------
+        // Adım 4 — Başlayalım
+        // ----------------------------------------------------------------
         private async void BaslayalimClicked(object sender, EventArgs e)
         {
             await _ayarlar.SetAsync("KurulumTamamlandi", "1");

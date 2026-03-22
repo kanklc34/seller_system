@@ -7,12 +7,14 @@ namespace Saller_System.Views
     {
         private readonly DatabaseService _db;
         private readonly ExcelServisi _excel;
+        private readonly AyarlarServisi _ayarlar;
 
-        public Raporlar(DatabaseService db, ExcelServisi excel)
+        public Raporlar(DatabaseService db, ExcelServisi excel, AyarlarServisi ayarlar)
         {
             InitializeComponent();
             _db = db;
             _excel = excel;
+            _ayarlar = ayarlar;
         }
 
         protected override async void OnAppearing()
@@ -22,6 +24,11 @@ namespace Saller_System.Views
             if (await ZamanAsimKontrolAsync()) return;
 
             OturumServisi.AktiviteYenile();
+
+            var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
+            if (!string.IsNullOrWhiteSpace(magazaAdi))
+                RaporBaslikLabel.Text = $"{magazaAdi} — Finans";
+
             await VerileriYukle();
         }
 

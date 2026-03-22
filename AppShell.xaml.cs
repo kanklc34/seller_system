@@ -2,6 +2,21 @@ namespace Saller_System
 {
     public partial class AppShell : Shell
     {
+        // Her sayfanın geri tuşunda nereye gideceği
+        private static readonly Dictionary<string, string> GeriMap = new()
+        {
+            { "BarkodSayfa",        "//AnaSayfa" },
+            { "UrunListesi",        "//AnaSayfa" },
+            { "Raporlar",           "//AnaSayfa" },
+            { "KullaniciYonetimi",  "//AnaSayfa" },
+            { "AyarlarSayfa",       "//AnaSayfa" },
+            { "SepetSayfa",         "//BarkodSayfa" },
+            { "UrunEkle",           "//UrunListesi" },
+            { "UrunDuzenle",        "//UrunListesi" },
+            { "FiyatGecmisiSayfa",  "//UrunListesi" },
+            { "SatisGecmisiSayfa",  "//Raporlar" },
+        };
+
         public AppShell()
         {
             InitializeComponent();
@@ -9,17 +24,18 @@ namespace Saller_System
 
         protected override bool OnBackButtonPressed()
         {
-            var currentRoute = Shell.Current.CurrentState.Location.ToString();
+            var location = Shell.Current.CurrentState.Location.ToString();
 
-            if (currentRoute.Contains("KurulumSihirbazi") || currentRoute.Contains("SplashSayfa"))
+            // Kurulum ve splash — normal davran
+            if (location.Contains("KurulumSihirbazi") || location.Contains("SplashSayfa"))
                 return base.OnBackButtonPressed();
 
-            // Login ve Ana sayfada çıkış sor
-            if (currentRoute.Contains("LoginPage") || currentRoute.Contains("AnaSayfa"))
+            // Login ve Ana sayfa — uygulamadan çık
+            if (location.Contains("LoginPage") || location.Contains("AnaSayfa"))
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    bool cikis = await Shell.Current.DisplayAlert(
+                    bool cikis = await DisplayAlert(
                         "Çıkış", "Uygulamadan çıkmak istiyor musunuz?", "Evet", "Hayır");
                     if (cikis)
                         Application.Current?.Quit();
@@ -27,11 +43,18 @@ namespace Saller_System
                 return true;
             }
 
-            // Diğer sayfalarda bir önceki sayfaya dön
-            MainThread.BeginInvokeOnMainThread(async () =>
+            // Diğer sayfalar — map'e göre git
+            var hedef = GeriMap.FirstOrDefault(k => location.Contains(k.Key)).Value;
+            if (hedef != null)
             {
-                await Shell.Current.GoToAsync("..");
-            });
+                MainThread.BeginInvokeOnMainThread(async () =>
+                    await Shell.Current.GoToAsync(hedef));
+                return true;
+            }
+
+            // Map'te yoksa ana sayfaya
+            MainThread.BeginInvokeOnMainThread(async () =>
+                await Shell.Current.GoToAsync("//AnaSayfa"));
             return true;
         }
     }

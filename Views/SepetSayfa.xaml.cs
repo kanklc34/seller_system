@@ -18,9 +18,7 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
             if (await ZamanAsimKontrolAsync()) return;
-
             OturumServisi.AktiviteYenile();
             ArayuzuGuncelle();
         }
@@ -35,7 +33,6 @@ namespace Saller_System.Views
         private async Task<bool> ZamanAsimKontrolAsync()
         {
             if (!OturumServisi.OturumSuresiDolduMu()) return false;
-
             OturumServisi.Cikis();
             await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
             await Shell.Current.GoToAsync("//LoginPage");
@@ -47,12 +44,15 @@ namespace Saller_System.Views
             SepetListesi.ItemsSource = null;
             SepetListesi.ItemsSource = _sepet.Items;
             ToplamLabel.Text = $"₺{_sepet.Toplam:N2}";
+
+            bool dolu = _sepet.Items.Count > 0;
+            OdemeAlBtn.IsEnabled = dolu;
+            OdemeAlBtn.Opacity = dolu ? 1.0 : 0.4;
         }
 
         private async void SatisiTamamlaTapped(object sender, EventArgs e)
         {
             if (_sepet.Items.Count == 0) return;
-
             OturumServisi.AktiviteYenile();
 
             bool onay = await DisplayAlert("Satış Onayı",
@@ -61,7 +61,6 @@ namespace Saller_System.Views
 
             await _db.InitAsync();
 
-            // Transaction ile toplu kaydet
             var satislar = _sepet.Items.Select(item =>
             {
                 decimal maliyet = item.Urun.GramajliMi
@@ -81,9 +80,8 @@ namespace Saller_System.Views
             }).ToList();
 
             await _db.SatisleriTopluKaydetAsync(satislar);
-
             _sepet.Temizle();
-            await DisplayAlert("Başarılı", "Satış Tamamlandı.", "Tamam");
+            await DisplayAlert("Başarılı", "Satış tamamlandı!", "Tamam");
             await Shell.Current.GoToAsync("//BarkodSayfa");
         }
 
@@ -100,7 +98,6 @@ namespace Saller_System.Views
         private async void SepetiTemizleTapped(object sender, EventArgs e)
         {
             if (_sepet.Items.Count == 0) return;
-
             OturumServisi.AktiviteYenile();
             if (await DisplayAlert("Sepet", "Boşaltılsın mı?", "Evet", "Hayır"))
             {
