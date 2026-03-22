@@ -17,6 +17,11 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if (await ZamanAsimKontrolAsync()) return;
+
+            OturumServisi.AktiviteYenile();
+
             _temaYukleniyor = true;
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
@@ -28,16 +33,30 @@ namespace Saller_System.Views
             TelefonEntry.Text = await _ayarlar.GetAsync("Telefon", "");
         }
 
+        private async Task<bool> ZamanAsimKontrolAsync()
+        {
+            if (!OturumServisi.OturumSuresiDolduMu()) return false;
+
+            OturumServisi.Cikis();
+            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
+            await Shell.Current.GoToAsync("//LoginPage");
+            return true;
+        }
+
         private async void DarkModeToggled(object sender, ToggledEventArgs e)
         {
             if (_temaYukleniyor) return;
+
+            OturumServisi.AktiviteYenile();
             Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
             await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
         }
 
         private void PrefixAlgilaClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             string barkod = TestBarkodEntry.Text?.Trim() ?? "";
+
             if (barkod.Length != 13)
             {
                 PrefixLabel.Text = "❌ Geçersiz barkod (13 hane olmalı)";
@@ -45,6 +64,7 @@ namespace Saller_System.Views
                 PrefixKaydetBtn.IsVisible = false;
                 return;
             }
+
             _algılananPrefix = TartiServisi.PrefixAlgila(barkod);
             if (_algılananPrefix != null)
             {
@@ -63,6 +83,8 @@ namespace Saller_System.Views
         private async void PrefixKaydetClicked(object sender, EventArgs e)
         {
             if (_algılananPrefix == null) return;
+
+            OturumServisi.AktiviteYenile();
             await _ayarlar.SetAsync("TaraziPrefix", _algılananPrefix);
             KayitliPrefixLabel.Text = _algılananPrefix;
             await DisplayAlert("Başarılı", $"Prefix '{_algılananPrefix}' kaydedildi!", "Tamam");
@@ -70,12 +92,16 @@ namespace Saller_System.Views
 
         private async void BilgileriKaydetClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             await _ayarlar.SetAsync("MagazaAdi", MagazaAdiEntry.Text?.Trim() ?? "");
             await _ayarlar.SetAsync("Telefon", TelefonEntry.Text?.Trim() ?? "");
             await DisplayAlert("Başarılı", "Bilgiler kaydedildi!", "Tamam");
         }
 
         private async void GeriClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//AnaSayfa");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
     }
 }
