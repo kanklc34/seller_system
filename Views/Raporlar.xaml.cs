@@ -18,7 +18,21 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if (await ZamanAsimKontrolAsync()) return;
+
+            OturumServisi.AktiviteYenile();
             await VerileriYukle();
+        }
+
+        private async Task<bool> ZamanAsimKontrolAsync()
+        {
+            if (!OturumServisi.OturumSuresiDolduMu()) return false;
+
+            OturumServisi.Cikis();
+            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
+            await Shell.Current.GoToAsync("//LoginPage");
+            return true;
         }
 
         private async Task VerileriYukle()
@@ -31,10 +45,9 @@ namespace Saller_System.Views
             var gunlukCiro = await _db.GunlukCiroAsync(bugun);
             var gunlukSayi = await _db.GunlukSatisSayisiAsync(bugun);
             var aylikCiro = await _db.AylikCiroAsync(bugun.Year, bugun.Month);
+            var performans = await _db.PersonelPerformansRaporuGetirAsync(bugun);
 
-            var performansListesi = await _db.PersonelPerformansRaporuGetirAsync(bugun);
-            PersonelPerformansListesi.ItemsSource = performansListesi;
-
+            PersonelPerformansListesi.ItemsSource = performans;
             GunlukKarLabel.Text = $"₺{gunlukKar:N2}";
             AylikKarLabel.Text = $"₺{aylikKar:N2}";
             GunlukCiroLabel.Text = $"₺{gunlukCiro:N2}";
@@ -43,14 +56,30 @@ namespace Saller_System.Views
             AyLabel.Text = bugun.ToString("MMMM yyyy").ToUpper();
         }
 
-        private async void SatisGecmisiClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//SatisGecmisiSayfa");
+        private async void SatisGecmisiClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//SatisGecmisiSayfa");
+        }
+
         private async void ExcelAktarClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             var satislar = await _db.GunlukSatislerAsync(DateTime.Today);
             if (satislar.Count == 0) return;
+
             string dosyaYolu = _excel.RaporOlustur(satislar, "Gunluk_Rapor");
-            await Share.Default.RequestAsync(new ShareFileRequest { Title = "Rapor", File = new ShareFile(dosyaYolu) });
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Rapor",
+                File = new ShareFile(dosyaYolu)
+            });
         }
-        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AnaSayfa");
+
+        private async void GeriClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
     }
 }

@@ -19,6 +19,10 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if (await ZamanAsimKontrolAsync()) return;
+
+            OturumServisi.AktiviteYenile();
             await _db.InitAsync();
             await ListeYukle();
 
@@ -30,23 +34,32 @@ namespace Saller_System.Views
             }
 
             var rol = OturumServisi.AktifKullanici?.Rol;
-            bool yoneticiMi = (rol == "Patron" || rol == "Müdür" || OturumServisi.AktifKullanici?.KullaniciAdi == "admin");
+            bool yoneticiMi = rol == "Patron" || rol == "Müdür"
+                           || OturumServisi.AktifKullanici?.KullaniciAdi == "admin";
 
-            // Personel hızlı ekleme yapsın diye paneli herkese açıyoruz 
-            // ama silme ikonlarını hala IsYonetici ile kısıtlıyoruz.
             YeniUrunPaneli.IsVisible = true;
             IsYonetici = yoneticiMi;
             OnPropertyChanged(nameof(IsYonetici));
         }
 
-        private async Task ListeYukle()
+        private async Task<bool> ZamanAsimKontrolAsync()
         {
-            UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
+            if (!OturumServisi.OturumSuresiDolduMu()) return false;
+
+            OturumServisi.Cikis();
+            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
+            await Shell.Current.GoToAsync("//LoginPage");
+            return true;
         }
+
+        private async Task ListeYukle() =>
+            UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
 
         private async void KaydetClicked(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(AdEntry.Text)) return;
+
+            OturumServisi.AktiviteYenile();
 
             var urun = new Urun
             {
@@ -59,19 +72,23 @@ namespace Saller_System.Views
             };
 
             await _db.UrunEkleAsync(urun);
-            AdEntry.Text = BarkodEntry.Text = KategoriEntry.Text = FiyatEntry.Text = AlisFiyatiEntry.Text = "";
+            AdEntry.Text = BarkodEntry.Text = KategoriEntry.Text =
+                FiyatEntry.Text = AlisFiyatiEntry.Text = "";
             await ListeYukle();
         }
 
         private async void UrunAraTextChanged(object sender, TextChangedEventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             var liste = await _db.TumUrunleriGetirAsync();
             UrunlerListesi.ItemsSource = string.IsNullOrWhiteSpace(e.NewTextValue)
-                ? liste : liste.Where(u => u.Ad.ToLower().Contains(e.NewTextValue.ToLower()));
+                ? liste
+                : liste.Where(u => u.Ad.ToLower().Contains(e.NewTextValue.ToLower()));
         }
 
         private async void UrunSilClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             if (((Button)sender).CommandParameter is Urun urun)
             {
                 if (await DisplayAlert("SİL", $"{urun.Ad} silinsin mi?", "Evet", "Hayır"))
@@ -84,6 +101,7 @@ namespace Saller_System.Views
 
         private async void UrunDuzenleClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             if (((Button)sender).CommandParameter is Urun secilenUrun)
             {
                 UrunDuzenleServisi.SeciliUrun = secilenUrun;
@@ -91,6 +109,10 @@ namespace Saller_System.Views
             }
         }
 
-        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AnaSayfa");
+        private async void GeriClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
     }
 }
