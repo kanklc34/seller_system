@@ -8,18 +8,18 @@
     <ScrollView>
         <VerticalStackLayout Padding="20,40,20,32" Spacing="20">
 
-            <!-- Logo + başlık -->
+            <!-- Logo -->
             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                 <Border StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
                         StrokeShape="RoundRectangle 20"
-                        WidthRequest="90" HeightRequest="90"
-                        HorizontalOptions="Center">
+                        WidthRequest="90" HeightRequest="90" HorizontalOptions="Center">
                     <Label Text="🥩" FontSize="42"
                            HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Border>
                 <Label Text="Kasap Pro" FontSize="28" FontAttributes="Bold"
-                       HorizontalOptions="Center" TextColor="White"/>
+                       HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
                 <Label Text="İlk Kurulum" FontSize="14" HorizontalOptions="Center"
                        TextColor="#94A3B8"/>
             </VerticalStackLayout>
@@ -36,12 +36,9 @@
             <Border x:Name="Adim1Panel"
                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
                     Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="24">
+                    StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="24">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="🏪 Mağaza Bilgileri"
-                           FontSize="18" FontAttributes="Bold"
+                    <Label Text="🏪 Mağaza Bilgileri" FontSize="18" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}"/>
                     <Label Text="Raporlarınızda ve Excel'de görünecek bilgileri girin."
                            TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="13"/>
@@ -63,39 +60,31 @@
                             BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
                             Padding="14,4" HeightRequest="54">
                         <Entry x:Name="TelefonEntry" Placeholder="0544 444 44 44"
-                               Keyboard="Telephone"
-                               BackgroundColor="Transparent" VerticalOptions="Center"
-                               Unfocused="TelefonUnfocused"/>
+                               Keyboard="Telephone" BackgroundColor="Transparent"
+                               VerticalOptions="Center" Unfocused="TelefonUnfocused"/>
                     </Border>
-
                     <Label x:Name="TelefonHataLabel" IsVisible="False"
                            TextColor="{StaticResource Danger}" FontSize="12"/>
 
-                    <Border BackgroundColor="{StaticResource Primary}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="0,16" HeightRequest="54"
-                            Margin="0,8,0,0">
+                    <Border BackgroundColor="{StaticResource Primary}" Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14" Padding="0,16"
+                            HeightRequest="54" Margin="0,8,0,0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Adim1DevamClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="Devam →"
-                               TextColor="White" FontAttributes="Bold" FontSize="15"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="Devam →" TextColor="White" FontAttributes="Bold"
+                               FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Adım 2 — Terazi Ayarı -->
+            <!-- Adım 2 — Terazi -->
             <Border x:Name="Adim2Panel" IsVisible="False"
                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
                     Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="24">
+                    StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="24">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="⚖️ Terazi Ayarı"
-                           FontSize="18" FontAttributes="Bold"
+                    <Label Text="⚖️ Terazi Ayarı" FontSize="18" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}"/>
                     <Label Text="Terazinizden bir ürün tarttırın ve barkodu aşağıya girin."
                            TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="13"/>
@@ -108,29 +97,23 @@
                                BackgroundColor="Transparent" VerticalOptions="Center"/>
                     </Border>
 
-                    <Border BackgroundColor="{StaticResource Primary}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="0,14" HeightRequest="52">
+                    <Border BackgroundColor="{StaticResource Primary}" Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14" Padding="0,14" HeightRequest="52">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="FormatAlgilaClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="🔍 Formatı Algıla"
-                               TextColor="White" FontAttributes="Bold" FontSize="15"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="🔍 Formatı Algıla" TextColor="White" FontAttributes="Bold"
+                               FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
 
                     <Label x:Name="FormatSonucLabel" IsVisible="False" FontSize="13"/>
 
                     <Border x:Name="Adim2DevamBorder"
                             BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="0,14" HeightRequest="52"
-                            Margin="0,8,0,0"
-                            Opacity="0.5">
+                            Stroke="Transparent" StrokeShape="RoundRectangle 14"
+                            Padding="0,14" HeightRequest="52" Margin="0,8,0,0" Opacity="0.5">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer x:Name="Adim2DevamTap" Tapped="Adim2DevamClicked"/>
+                            <TapGestureRecognizer Tapped="Adim2DevamClicked"/>
                         </Border.GestureRecognizers>
                         <Label Text="Devam →"
                                TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
@@ -139,13 +122,12 @@
                     </Border>
 
                     <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
+                            Stroke="Transparent" StrokeShape="RoundRectangle 14"
                             Padding="0,14" HeightRequest="52">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TeraziAtlaClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="⬅ Atla (Terazi yok)"
+                        <Label Text="Atla (Terazi yok)"
                                TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
                                FontAttributes="Bold" FontSize="15"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -153,41 +135,53 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Adım 3 — Admin Şifre -->
+            <!-- Adım 3 — İlk Kullanıcı (admin zorunluluğu YOK) -->
             <Border x:Name="Adim3Panel" IsVisible="False"
                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
                     Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="24">
+                    StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="24">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="🔐 Admin Şifresi"
-                           FontSize="18" FontAttributes="Bold"
+                    <Label Text="👤 İlk Kullanıcı" FontSize="18" FontAttributes="Bold"
                            TextColor="{StaticResource Primary}"/>
-                    <Label Text="Güvenlik için varsayılan şifreyi değiştirin."
+                    <Label Text="Sisteme giriş yapacak ilk kullanıcıyı oluşturun. Daha sonra yeni kullanıcılar ekleyebilirsiniz."
                            TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="13"/>
 
-                    <Label Text="Kullanıcı Adı" FontSize="13" FontAttributes="Bold"
+                    <Label Text="Kullanıcı Adı *" FontSize="13" FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
-                    <Border BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 12"
-                            Padding="14,12">
-                        <Label Text="admin" FontAttributes="Bold"
-                               TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Entry x:Name="KullaniciAdiEntry" Placeholder="Örn: admin, patron,kasiyer"
+                               BackgroundColor="Transparent" VerticalOptions="Center"/>
                     </Border>
-                    <Label Text="⚠️ Kullanıcı adı değiştirilemez, sisteme 'admin' ile giriş yapacaksınız."
-                           TextColor="{StaticResource Warning}" FontSize="11"/>
 
-                    <Label Text="Yeni Şifre *" FontSize="13" FontAttributes="Bold"
+                    <Label Text="Rol *" FontSize="13" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
+                    <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
+                            Padding="14,4" HeightRequest="54">
+                        <Picker x:Name="RolPicker" Title="Rol seçin"
+                                TitleColor="#94A3B8" BackgroundColor="Transparent"
+                                VerticalOptions="Center">
+                            <Picker.Items>
+                                <x:String>Patron</x:String>
+                                <x:String>Müdür</x:String>
+                                <x:String>Kasiyer</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Border>
+
+                    <Label Text="Şifre *" FontSize="13" FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
                     <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
                             StrokeShape="RoundRectangle 14"
                             BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
                             Padding="14,4" HeightRequest="54">
                         <Entry x:Name="YeniSifreEntry" Placeholder="En az 4 karakter"
-                               IsPassword="True"
-                               BackgroundColor="Transparent" VerticalOptions="Center"/>
+                               IsPassword="True" BackgroundColor="Transparent"
+                               VerticalOptions="Center"/>
                     </Border>
 
                     <Label Text="Şifre Tekrar *" FontSize="13" FontAttributes="Bold"
@@ -197,24 +191,21 @@
                             BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}"
                             Padding="14,4" HeightRequest="54">
                         <Entry x:Name="YeniSifreTekrarEntry" Placeholder="Şifreyi tekrar girin"
-                               IsPassword="True"
-                               BackgroundColor="Transparent" VerticalOptions="Center"/>
+                               IsPassword="True" BackgroundColor="Transparent"
+                               VerticalOptions="Center"/>
                     </Border>
 
                     <Label x:Name="SifreHataLabel" IsVisible="False"
                            TextColor="{StaticResource Danger}" FontSize="12"/>
 
-                    <Border BackgroundColor="{StaticResource Primary}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="0,16" HeightRequest="54"
-                            Margin="0,8,0,0">
+                    <Border BackgroundColor="{StaticResource Primary}" Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14" Padding="0,16"
+                            HeightRequest="54" Margin="0,8,0,0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Adim3DevamClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="Devam →"
-                               TextColor="White" FontAttributes="Bold" FontSize="15"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="Devam →" TextColor="White" FontAttributes="Bold"
+                               FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </VerticalStackLayout>
             </Border>
@@ -223,14 +214,10 @@
             <Border x:Name="Adim4Panel" IsVisible="False"
                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
                     Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="24">
+                    StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="24">
                 <VerticalStackLayout Spacing="16">
-                    <Label Text="✅ Kurulum Tamamlandı!"
-                           FontSize="18" FontAttributes="Bold"
-                           TextColor="{StaticResource Success}"
-                           HorizontalOptions="Center"/>
+                    <Label Text="✅ Kurulum Tamamlandı!" FontSize="18" FontAttributes="Bold"
+                           TextColor="{StaticResource Success}" HorizontalOptions="Center"/>
                     <Label x:Name="KurulumOzetLabel"
                            TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"
                            FontSize="13" HorizontalOptions="Center"
@@ -240,17 +227,14 @@
                            FontSize="12" HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"/>
 
-                    <Border BackgroundColor="{StaticResource Success}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="0,16" HeightRequest="54"
-                            Margin="0,8,0,0">
+                    <Border BackgroundColor="{StaticResource Success}" Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14" Padding="0,16"
+                            HeightRequest="54" Margin="0,8,0,0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="BaslayalimClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="🚀 Başlayalım!"
-                               TextColor="White" FontAttributes="Bold" FontSize="15"
-                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="🚀 Başlayalım!" TextColor="White" FontAttributes="Bold"
+                               FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </VerticalStackLayout>
             </Border>

@@ -8,15 +8,15 @@ namespace Saller_System.Views
     {
         private readonly DatabaseService _db;
         private readonly SepetServisi _sepet;
+        private readonly AyarlarServisi _ayarlar;
         private Urun? _bulunanUrun;
-        private decimal _hesaplananFiyat = 0;
 
-        public BarkodSayfa(DatabaseService db, SepetServisi sepet)
+        public BarkodSayfa(DatabaseService db, SepetServisi sepet, AyarlarServisi ayarlar)
         {
             InitializeComponent();
             _db = db;
             _sepet = sepet;
-
+            _ayarlar = ayarlar;
             BarkodOkuyucu.Options = new BarcodeReaderOptions
             {
                 Formats = BarcodeFormat.Ean13 | BarcodeFormat.Ean8 | BarcodeFormat.Code128 | BarcodeFormat.QrCode,
@@ -28,6 +28,16 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if (await ZamanAsimKontrolAsync()) return;
+
+            OturumServisi.AktiviteYenile();
+
+            var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
+            MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
+                ? "KASAP PRO"
+                : magazaAdi.ToUpper();
+
             BarkodOkuyucu.IsDetecting = true;
             MesajBorder.IsVisible = false;
         }
@@ -38,6 +48,16 @@ namespace Saller_System.Views
             BarkodOkuyucu.IsDetecting = false;
         }
 
+        private async Task<bool> ZamanAsimKontrolAsync()
+        {
+            if (!OturumServisi.OturumSuresiDolduMu()) return false;
+
+            OturumServisi.Cikis();
+            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
+            await Shell.Current.GoToAsync("//LoginPage");
+            return true;
+        }
+
         private async void BarkodOkundu(object sender, BarcodeDetectionEventArgs e)
         {
             var result = e.Results.FirstOrDefault();
@@ -45,6 +65,7 @@ namespace Saller_System.Views
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
+                OturumServisi.AktiviteYenile();
                 BarkodEntry.Text = result.Value;
                 await UrunGetirAsync(result.Value);
                 BarkodOkuyucu.IsDetecting = false;
@@ -54,8 +75,9 @@ namespace Saller_System.Views
         private async Task UrunGetirAsync(string barkod)
         {
             if (string.IsNullOrEmpty(barkod)) return;
-            await _db.InitAsync();
 
+            OturumServisi.AktiviteYenile();
+            await _db.InitAsync();
             var urun = await _db.BarkodIleGetirAsync(barkod);
 
             if (urun != null)
@@ -69,8 +91,8 @@ namespace Saller_System.Views
             }
             else
             {
-                // HIZLI EKLEME ÖZELLİĞİ
-                bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{barkod}' sistemde yok. Hemen eklemek ister misiniz?", "Evet", "Hayır");
+                bool ekle = await DisplayAlert("Ürün Bulunamadı",
+                    $"'{barkod}' sistemde yok. Hemen eklemek ister misiniz?", "Evet", "Hayır");
                 if (ekle)
                 {
                     UrunDuzenleServisi.HizliEkleBarkod = barkod;
@@ -82,6 +104,8 @@ namespace Saller_System.Views
         private async void SatisaEkleTapped(object sender, EventArgs e)
         {
             if (_bulunanUrun == null) return;
+
+            OturumServisi.AktiviteYenile();
             _sepet.Ekle(_bulunanUrun, int.Parse(AdetEntry.Text), _bulunanUrun.Fiyat);
 
             MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi!";
@@ -91,9 +115,28 @@ namespace Saller_System.Views
             BarkodOkuyucu.IsDetecting = true;
         }
 
-        private async void UrunGetirTapped(object sender, EventArgs e) => await UrunGetirAsync(BarkodEntry.Text);
-        private async void BarkodEntry_Completed(object sender, EventArgs e) => await UrunGetirAsync(BarkodEntry.Text);
-        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AnaSayfa");
-        private async void SepeteGitClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//SepetSayfa");
+        private async void UrunGetirTapped(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await UrunGetirAsync(BarkodEntry.Text);
+        }
+
+        private async void BarkodEntry_Completed(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await UrunGetirAsync(BarkodEntry.Text);
+        }
+
+        private async void GeriClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
+
+        private async void SepeteGitClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//SepetSayfa");
+        }
     }
 }
