@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:services="clr-namespace:Saller_System.Services"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="Saller_System.Views.Raporlar"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
@@ -62,6 +63,11 @@
                         <Label Grid.Column="1" x:Name="NetKasaLabel" Text="₺0,00" FontSize="18" FontAttributes="Bold" TextColor="#16A34A"/>
                     </Grid>
                 </VerticalStackLayout>
+            </Border>
+
+            <Label Text="GÜNLÜK ÜRÜN SATIŞ DAĞILIMI" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" Margin="4,6,0,0"/>
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="15">
+                <microcharts:ChartView x:Name="SatisDagilimiChart" HeightRequest="220" />
             </Border>
 
             <Label Text="PERSONEL PERFORMANSI" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" Margin="4,6,0,0"/>
