@@ -21,14 +21,21 @@ namespace Saller_System.Views
             base.OnAppearing();
             OturumServisi.AktiviteYenile();
 
-            // Mağaza adını dinamik yükle (Varsayılan ÖZ BİGA ET yapıldı)
             var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
-            MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
-                ? "ÖZ BİGA ET"
-                : magazaAdi.ToUpper();
+
+            if (MagazaAdiLabel != null)
+            {
+                MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
+                    ? "ÖZ BİGA ET"
+                    : magazaAdi.ToUpper();
+            }
 
             var kullanici = OturumServisi.AktifKullanici;
-            HosgeldinLabel.Text = $"Hoş geldin, {kullanici?.KullaniciAdi}";
+
+            if (HosgeldinLabel != null)
+            {
+                HosgeldinLabel.Text = $"Hoş geldin, {kullanici?.KullaniciAdi}";
+            }
 
             bool isPatron = kullanici?.Rol == "Patron" || kullanici?.KullaniciAdi?.ToLower() == "admin";
             bool isYonetici = isPatron || kullanici?.Rol == "Müdür";
@@ -39,7 +46,13 @@ namespace Saller_System.Views
             OzetBilgiGrid.IsVisible = isYonetici;
             KullaniciYonetimiBtn.IsVisible = isPatron;
             SonIslemlerBolumu.IsVisible = isYonetici;
-            VeresiyeBtn.IsVisible = true; // Herkes görebilsin (Kasiyer de borç görebilir)
+            VeresiyeBtn.IsVisible = true;
+
+            // Stok Butonunu Sadece Yönetici ve Patron görsün
+            if (StokBtn != null)
+            {
+                StokBtn.IsVisible = isYonetici;
+            }
 
             UrunListesiAciklamasiniAyarla(isYonetici);
 
@@ -59,7 +72,7 @@ namespace Saller_System.Views
 
             var gunlukSayi = await _db.GunlukSatisSayisiAsync(bugun);
             var gunlukCiro = await _db.GunlukCiroAsync(bugun);
-            GunlukSatisLabel.Text = gunlukSayi.ToString("N1"); // Decimal olduğu için N1 ile gösteriyoruz
+            GunlukSatisLabel.Text = gunlukSayi.ToString("N1");
             GunlukCiroLabel.Text = $"₺{gunlukCiro:N0}";
 
             var bugunkuSatislar = await _db.GunlukSatislerAsync(bugun);
@@ -74,17 +87,36 @@ namespace Saller_System.Views
                 : "Kayıtlı ürün fiyatlarını görüntüle";
         }
 
-        // YENİ EKLEDİĞİMİZ VERESİYE DEFTERİ BUTONU
         private async void VeresiyeDefteriClicked(object sender, EventArgs e)
         {
             OturumServisi.AktiviteYenile();
-            await Shell.Current.GoToAsync("//VeresiyeDefteri");
+            try
+            {
+                await Shell.Current.GoToAsync("VeresiyeDefteri");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Navigasyon Hatası", $"Sayfa açılamadı: {ex.Message}", "Tamam");
+            }
         }
 
         private async void BarkodOkutClicked(object sender, EventArgs e)
         {
             OturumServisi.AktiviteYenile();
             await Shell.Current.GoToAsync("//BarkodSayfa");
+        }
+
+        private async void ToptanSatisClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try
+            {
+                await Shell.Current.GoToAsync("ToptanSatis");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Navigasyon Hatası", $"Sayfa açılamadı: {ex.Message}", "Tamam");
+            }
         }
 
         private async void UrunListesiClicked(object sender, EventArgs e)
@@ -103,6 +135,20 @@ namespace Saller_System.Views
         {
             OturumServisi.AktiviteYenile();
             await Shell.Current.GoToAsync("//KullaniciYonetimi");
+        }
+
+        // YENİ EKLENEN STOK BUTONU OLAYI
+        private async void StokClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try
+            {
+                await Shell.Current.GoToAsync("StokYonetimi");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Stok Sayfası", "Stok sayfası henüz oluşturulmadı, yakında eklenecek!", "Tamam");
+            }
         }
 
         private async void AyarlarClicked(object sender, EventArgs e)

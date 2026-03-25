@@ -1,3 +1,6 @@
+using Microsoft.Maui.Controls;
+using Saller_System.Views; // KIRMIZI HATALARI ÇÖZECEK KRİTİK SATIR
+
 namespace Saller_System
 {
     public partial class AppShell : Shell
@@ -15,11 +18,22 @@ namespace Saller_System
             { "UrunDuzenle",        "//UrunListesi" },
             { "FiyatGecmisiSayfa",  "//UrunListesi" },
             { "SatisGecmisiSayfa",  "//Raporlar" },
+            { "VeresiyeDefteri",    "//AnaSayfa" },
+            
+            // YENİ EKLENENLER:
+            { "ToptanSatis",        "//AnaSayfa" },
+            { "StokYonetimi",       "//AnaSayfa" }
         };
 
         public AppShell()
         {
             InitializeComponent();
+
+            // ÇÖKMEYİ ENGELLEYEN KRİTİK ROTA KAYITLARI BURADA:
+            // "Views." takısını kaldırdık, çünkü yukarıya using ile ekledik.
+            Routing.RegisterRoute("VeresiyeDefteri", typeof(VeresiyeDefteri));
+            Routing.RegisterRoute("ToptanSatis", typeof(ToptanSatis));
+            Routing.RegisterRoute("StokYonetimi", typeof(StokYonetimi));
         }
 
         protected override bool OnBackButtonPressed()

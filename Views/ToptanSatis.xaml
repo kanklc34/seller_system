@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.ToptanSatis"
+             Title="Toptan Satış İşlemi">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Müşteri (Restoran/Otel):" FontAttributes="Bold" FontSize="16" />
+            <Frame BorderColor="LightGray" Padding="5" CornerRadius="8">
+                <Picker x:Name="MusteriPicker" 
+                        ItemDisplayBinding="{Binding AdSoyad}" 
+                        Title="Müşteri Seçiniz..." />
+            </Frame>
+
+            <Label Text="Ürün Ara:" FontAttributes="Bold" FontSize="16" Margin="0,10,0,0" />
+            <SearchBar x:Name="UrunAramaBar" 
+                       Placeholder="Örn: Kıyma, Antrikot..." 
+                       TextChanged="UrunArama_TextChanged" />
+
+            <CollectionView x:Name="UrunlerListesi" 
+                            HeightRequest="200" 
+                            SelectionMode="Single" 
+                            SelectionChanged="UrunSecildi">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="15" Margin="0,5" BorderColor="#EEEEEE" BackgroundColor="#F9F9F9">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Text="{Binding Ad}" FontAttributes="Bold" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Fiyat, StringFormat='₺{0:N2} / Kg'}" TextColor="DarkRed" VerticalOptions="Center" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="Miktar (Kg):" FontAttributes="Bold" FontSize="16" />
+            <Frame BorderColor="LightGray" Padding="0" CornerRadius="8">
+                <Entry x:Name="MiktarEntry" 
+                       Keyboard="Numeric" 
+                       Placeholder="Örn: 15,5" 
+                       ClearButtonVisibility="WhileEditing"
+                       FontSize="18"
+                       HorizontalTextAlignment="Center"/>
+            </Frame>
+
+            <Button x:Name="SatisTamamlaBtn" 
+                    Text="TOPTAN SATIŞI ONAYLA" 
+                    BackgroundColor="#2E8B57" 
+                    TextColor="White" 
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    Margin="0,20,0,0"
+                    HeightRequest="60"
+                    Clicked="SatisTamamla_Clicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Saller_System.Views.StokYonetimi"
+             Title="Stok Yönetimi"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Stok Durumu" FontSize="22" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+        <Label Text="Stoğunu güncellemek istediğiniz ürünün üzerine tıklayın." FontSize="13" TextColor="#94A3B8" Margin="0,-5,0,10"/>
+
+        <Frame BorderColor="#E2E8F0" Padding="0" CornerRadius="12" HasShadow="False">
+            <SearchBar x:Name="UrunAramaBar" 
+                       Placeholder="Ürün Adı veya Barkod Ara..." 
+                       TextChanged="UrunArama_TextChanged" />
+        </Frame>
+
+        <CollectionView x:Name="StokListesi" 
+                        SelectionMode="Single"
+                        SelectionChanged="UrunSecildi">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="#E2E8F0" StrokeShape="RoundRectangle 12" Padding="15" Margin="0,6" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{Binding Ad}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
+                                <Label Text="{Binding Barkod}" FontSize="12" TextColor="#94A3B8" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End">
+                                <Label Text="Mevcut Stok" FontSize="10" TextColor="#94A3B8" HorizontalOptions="End"/>
+                                <Label Text="{Binding StokMiktari, StringFormat='{0:N2} Kg/Adet'}" TextColor="#E31E24" FontAttributes="Bold" FontSize="16" HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

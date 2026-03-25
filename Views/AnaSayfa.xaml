@@ -64,7 +64,7 @@
             <VerticalStackLayout Spacing="12">
                 <Label Text="Ana İşlemler" FontSize="18" FontAttributes="Bold"
                        TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
                     <Border Grid.Column="0" BackgroundColor="#E31E24" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="150">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="BarkodOkutClicked"/>
@@ -74,7 +74,19 @@
                             <Label Text="Barkod Okut" FontSize="20" FontAttributes="Bold" TextColor="White"/>
                         </VerticalStackLayout>
                     </Border>
-                    <Border Grid.Column="1" BackgroundColor="#1F2937" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="150">
+
+                    <Border Grid.Column="1" BackgroundColor="#F59E0B" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="150">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ToptanSatisClicked"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="⚖️" FontSize="34"/>
+                            <Label Text="Toptan Satış" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                            <Label Text="Manuel Kilo Girişi" FontSize="11" TextColor="#FEF3C7"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2" BackgroundColor="#1F2937" StrokeShape="RoundRectangle 24" Padding="18" HeightRequest="150">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="UrunListesiClicked"/>
                         </Border.GestureRecognizers>
@@ -105,11 +117,18 @@
                         <Label Text="📒 Veresiye" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
 
-                    <Border x:Name="KullaniciYonetimiBtn" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" StrokeShape="RoundRectangle 22" Padding="15" HeightRequest="80">
+                    <Border x:Name="KullaniciYonetimiBtn" Grid.Row="1" Grid.Column="0" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" StrokeShape="RoundRectangle 22" Padding="15" HeightRequest="80">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="KullaniciYonetimiClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="👥 Personel Yönetimi" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="👥 Personel" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+
+                    <Border x:Name="StokBtn" Grid.Row="1" Grid.Column="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" StrokeShape="RoundRectangle 22" Padding="15" HeightRequest="80">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="StokClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="📦 Stok Yönetimi" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
                 </Grid>
             </VerticalStackLayout>

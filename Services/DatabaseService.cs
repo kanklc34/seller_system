@@ -29,10 +29,11 @@ namespace Saller_System.Services
             await _db.CreateTableAsync<Kullanici>();
             await _db.CreateTableAsync<ArsivedSatis>();   // Arşiv tablosu
 
-            // YENİ EKLENEN TABLOLAR (Veresiye ve Toptan Satış)
+            // YENİ EKLENEN TABLOLAR (Veresiye)
             await _db.CreateTableAsync<Musteri>();
             await _db.CreateTableAsync<VeresiyeIslem>();
-            await _db.CreateTableAsync<ToptanSatis>();
+
+            // DÜZELTME: ToptanSatis bir arayüz olduğu için buradan SİLİNDİ.
 
             await VarsayilanKullanicilariOlusturAsync();
 
@@ -323,12 +324,7 @@ namespace Saller_System.Services
             });
         }
 
-        // ================================================================
-        // YENİ EKLENEN: TOPTAN SATIŞ İŞLEMLERİ
-        // ================================================================
-        public async Task ToptanSatisKaydetAsync(ToptanSatis toptanSatis) =>
-            await _db!.InsertAsync(toptanSatis);
-
+        // DÜZELTME: ToptanSatisKaydetAsync silindi, çünkü satışları artık Satis tablosuna SatisTipi="TOPTAN" diyerek kaydediyoruz.
     }
 
     // ====================================================================

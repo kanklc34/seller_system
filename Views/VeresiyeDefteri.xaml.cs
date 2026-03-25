@@ -17,6 +17,10 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
             OturumServisi.AktiviteYenile();
+
+            // ÇÖKMEYİ (BEYAZ EKRANI) ENGELLEYEN KRİTİK NEFES PAYI
+            await Task.Delay(100);
+
             await ListeyiGuncelle();
         }
 
@@ -56,6 +60,8 @@ namespace Saller_System.Views
                 if (decimal.TryParse(tutarStr, out decimal tutar) && tutar > 0)
                 {
                     await _db.VeresiyeIslemKaydetAsync(new VeresiyeIslem { MusteriId = m.Id, Tutar = -tutar, Tarih = DateTime.Now, Aciklama = "Elden Tahsilat" });
+
+                    // Tahsilat sonrası listeyi tazelemek için
                     await ListeyiGuncelle();
                 }
             }
