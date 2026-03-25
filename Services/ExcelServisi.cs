@@ -35,10 +35,10 @@ namespace Saller_System.Services
                 row++;
             }
 
-            // 2. SEKME: TOPTAN SATIŞLAR (YENİ)
+            // 2. SEKME: TOPTAN SATIŞLAR (FİRMA ADI EKLENDİ)
             var wsToptan = workbook.Worksheets.Add("Toptan Satışlar");
             wsToptan.Cell(1, 1).Value = "TOPTAN SATIŞ DÖKÜMÜ";
-            string[] tHeaders = { "Ürün Adı", "Miktar", "Toplam Tutar" };
+            string[] tHeaders = { "Ürün Adı", "Miktar (Kg)", "Toplam Tutar", "Alıcı Firma / Kasiyer" };
             for (int i = 0; i < tHeaders.Length; i++) wsToptan.Cell(3, i + 1).Value = tHeaders[i];
 
             var toptanSatislar = satislar.Where(s => s.SatisTipi == "TOPTAN").ToList();
@@ -48,17 +48,18 @@ namespace Saller_System.Services
                 wsToptan.Cell(tRow, 1).Value = s.UrunAd;
                 wsToptan.Cell(tRow, 2).Value = s.Adet;
                 wsToptan.Cell(tRow, 3).Value = (double)s.Fiyat;
+                wsToptan.Cell(tRow, 4).Value = s.KasiyerAd; // Firma adı burada yazacak
                 tRow++;
             }
 
-            // 3. SEKME: GİDERLER (YENİ)
+            // 3. SEKME: GİDERLER
             var wsGider = workbook.Worksheets.Add("Dükkan Giderleri");
             var giderler = await _db.GunlukGiderlerAsync(tarih);
             wsGider.Cell(1, 1).Value = "Gider Başlığı"; wsGider.Cell(1, 2).Value = "Tutar (TL)";
             int gRow = 2;
             foreach (var g in giderler) { wsGider.Cell(gRow, 1).Value = g.Baslik; wsGider.Cell(gRow, 2).Value = (double)g.Tutar; gRow++; }
 
-            // 4. SEKME: NET KAR ÖZETİ (FİNAL)
+            // 4. SEKME: NET KAR ÖZETİ
             var wsOzet = workbook.Worksheets.Add("Net Kar Özeti");
             decimal toplamKar = satislar.Sum(s => s.Kar);
             decimal toplamGider = giderler.Sum(g => g.Tutar);
