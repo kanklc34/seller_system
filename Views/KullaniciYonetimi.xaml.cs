@@ -16,9 +16,7 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
             if (await ZamanAsimKontrolAsync()) return;
-
             OturumServisi.AktiviteYenile();
             await _db.InitAsync();
             await ListeYukle();
@@ -34,7 +32,6 @@ namespace Saller_System.Views
         private async Task<bool> ZamanAsimKontrolAsync()
         {
             if (!OturumServisi.OturumSuresiDolduMu()) return false;
-
             OturumServisi.Cikis();
             await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
             await Shell.Current.GoToAsync("//LoginPage");
@@ -46,6 +43,17 @@ namespace Saller_System.Views
             try
             {
                 var liste = await _db.TumKullanicilariGetirAsync();
+                bool isPatron = OturumServisi.AktifKullanici?.Rol == "Patron";
+
+                // KRİTİK GÜVENLİK: Eğer giren kişi patron değilse şifreleri maskele!
+                if (!isPatron)
+                {
+                    foreach (var k in liste)
+                    {
+                        k.Sifre = "******";
+                    }
+                }
+
                 KullaniciListesi.ItemsSource = liste;
             }
             catch (Exception ex)
@@ -87,6 +95,12 @@ namespace Saller_System.Views
             if (sender is Button btn && btn.CommandParameter is Kullanici kullanici)
             {
                 OturumServisi.AktiviteYenile();
+
+                if (kullanici.Rol == "Patron" && OturumServisi.AktifKullanici?.KullaniciAdi != "admin")
+                {
+                    await DisplayAlert("Yetki Hatası", "Patron hesaplarını sadece Admin silebilir.", "Tamam");
+                    return;
+                }
 
                 string mesaj = kullanici.Rol == "Patron"
                     ? "UYARI: Bir Patron hesabını silmek üzeresiniz. Onaylıyor musunuz?"

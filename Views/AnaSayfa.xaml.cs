@@ -48,6 +48,12 @@ namespace Saller_System.Views
             SonIslemlerBolumu.IsVisible = isYonetici;
             VeresiyeBtn.IsVisible = true;
 
+            // YENİ: Dükkan Masrafları butonunu sadece Patron görebilir
+            if (GiderlerBtn != null)
+            {
+                GiderlerBtn.IsVisible = isPatron;
+            }
+
             if (StokBtn != null)
             {
                 StokBtn.IsVisible = isYonetici;
@@ -69,7 +75,6 @@ namespace Saller_System.Views
             await _db.InitAsync();
             var bugun = DateTime.Today;
 
-            // HATA ÇÖZÜMÜ: GunlukCiroAsync yerine GunlukGercekCiroAsync (Et Satışı) çağrıldı
             var gunlukSayi = await _db.GunlukSatisSayisiAsync(bugun);
             var gunlukCiro = await _db.GunlukGercekCiroAsync(bugun);
 
@@ -130,6 +135,14 @@ namespace Saller_System.Views
         {
             OturumServisi.AktiviteYenile();
             try { await Shell.Current.GoToAsync("StokYonetimi"); }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
+        }
+
+        // YENİ: Masraf (Giderler) Sayfasına Geçiş Metodu
+        private async void GiderlerClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try { await Shell.Current.GoToAsync("GiderlerSayfa"); }
             catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
         }
 

@@ -25,7 +25,6 @@ namespace Saller_System.Views
             await VerileriYukle();
         }
 
-        // YENİ: Geri Dön Butonu İşlemi
         private async void GeriClicked(object sender, TappedEventArgs e)
         {
             OturumServisi.AktiviteYenile();
@@ -73,7 +72,6 @@ namespace Saller_System.Views
                 SecilenUrunLabel.Text = $"Seçilen: {_secilenUrun.Ad}";
                 SecilenUrunLabel.TextColor = Colors.Green;
 
-                // Fiyatları otomatik doldur ama değiştirmesine izin ver
                 decimal alis = _secilenUrun.GramajliMi ? _secilenUrun.KgAlisFiyati : _secilenUrun.AlisFiyati;
                 decimal satis = _secilenUrun.GramajliMi ? _secilenUrun.KgFiyati : _secilenUrun.Fiyat;
 
@@ -112,7 +110,7 @@ namespace Saller_System.Views
                 Fiyat = tutar,
                 AlisFiyati = maliyet * miktar,
                 Kar = kar,
-                SatisTipi = "TOPTAN", // Cirodan Düşmek İçin Etiket
+                SatisTipi = "TOPTAN",
                 Tarih = DateTime.Now,
                 KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Bilinmiyor"
             });
@@ -140,6 +138,13 @@ namespace Saller_System.Views
 
             try
             {
+                // YENİ: Seçilen firmayı sepetin KasiyerAd bilgisine mühürlüyoruz (Excel için)
+                string aktifKasiyer = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Bilinmiyor";
+                foreach (var item in _sepet)
+                {
+                    item.KasiyerAd = $"{aktifKasiyer} (Firma: {musteri.SirketAdi})";
+                }
+
                 await _db.SatisleriTopluKaydetAsync(_sepet);
                 await _db.ToptanMusteriBorcEkleAsync(musteri.Id, _toplamTutar);
 
