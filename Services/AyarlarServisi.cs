@@ -1,4 +1,4 @@
-﻿using Saller_System.Models;
+using Saller_System.Models;
 using SQLite;
 
 namespace Saller_System.Services

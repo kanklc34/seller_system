@@ -1,5 +1,6 @@
 using Saller_System.Services;
-using Saller_System.Models; // Modelleri kullanabilmek için ekledik
+using Saller_System.Models;
+using System.Text;
 
 namespace Saller_System.Views
 {
@@ -8,12 +9,10 @@ namespace Saller_System.Views
         private readonly DatabaseService _db;
         private readonly ExcelServisi _excel;
 
-        // Navigasyon seviyesi: 0=Yıl, 1=Ay, 2=Hafta, 3=Gün
         private int _seviye = 0;
         private int _seciliYil = 0;
         private int _seciliAy = 0;
         private int _seciliHafta = 0;
-        private List<GecmisItem> _mevcutListe = new();
 
         public SatisGecmisiSayfa(DatabaseService db, ExcelServisi excel)
         {
@@ -29,7 +28,6 @@ namespace Saller_System.Views
             await YillariYukle();
         }
 
-        // ANDROID FİZİKSEL GERİ TUŞU DESTEĞİ
         protected override bool OnBackButtonPressed()
         {
             if (_seviye > 0)
@@ -49,7 +47,7 @@ namespace Saller_System.Views
             BreadcrumbLabel.Text = "Tüm Satışlar";
 
             var satislar = await _db.TumSatisleriGetirAsync();
-            _mevcutListe = satislar.GroupBy(s => s.Tarih.Year).OrderByDescending(g => g.Key).Select(g => new GecmisItem
+            GecmisListesi.ItemsSource = satislar.GroupBy(s => s.Tarih.Year).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
                 Baslik = $"📅 {g.Key} Yılı",
                 AltBaslik = "Yıllık Toplam Özet",
@@ -58,7 +56,6 @@ namespace Saller_System.Views
                 SatisSayisi = g.Count(),
                 Anahtar = g.Key
             }).ToList();
-            GecmisListesi.ItemsSource = _mevcutListe;
         }
 
         private async Task AylariYukle(int yil)
@@ -70,16 +67,15 @@ namespace Saller_System.Views
             BreadcrumbLabel.Text = $"Tüm Satışlar › {yil}";
 
             var satislar = await _db.TumSatisleriGetirAsync();
-            _mevcutListe = satislar.Where(s => s.Tarih.Year == yil).GroupBy(s => s.Tarih.Month).OrderByDescending(g => g.Key).Select(g => new GecmisItem
+            GecmisListesi.ItemsSource = satislar.Where(s => s.Tarih.Year == yil).GroupBy(s => s.Tarih.Month).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
-                Baslik = $"🗓 {new DateTime(yil, g.Key, 1):MMMM}",
-                AltBaslik = $"{yil} dönemi",
+                Baslik = $"🗓 {System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key)}",
+                AltBaslik = $"{yil} Dönemi",
                 Ciro = g.Sum(s => s.Fiyat),
                 Kar = g.Sum(s => s.Kar),
                 SatisSayisi = g.Count(),
                 Anahtar = g.Key
             }).ToList();
-            GecmisListesi.ItemsSource = _mevcutListe;
         }
 
         private async Task HaftalariYukle(int yil, int ay)
@@ -87,19 +83,19 @@ namespace Saller_System.Views
             _seviye = 2; _seciliAy = ay;
             UstSeviyeHeader.IsVisible = true;
             ExcelBtn.Text = "📥 Ayı Aktar";
-            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM}";
+            string ayAdi = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(ay);
+            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {ayAdi}";
 
             var satislar = await _db.TumSatisleriGetirAsync();
-            _mevcutListe = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay).GroupBy(s => System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih)).OrderByDescending(g => g.Key).Select(g => new GecmisItem
+            GecmisListesi.ItemsSource = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay).GroupBy(s => System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih)).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
                 Baslik = $"📆 {g.Key}. Hafta",
-                AltBaslik = $"{g.Min(s => s.Tarih):dd MMM} – {g.Max(s => s.Tarih):dd MMM}",
+                AltBaslik = "Haftalık Özet",
                 Ciro = g.Sum(s => s.Fiyat),
                 Kar = g.Sum(s => s.Kar),
                 SatisSayisi = g.Count(),
                 Anahtar = g.Key
             }).ToList();
-            GecmisListesi.ItemsSource = _mevcutListe;
         }
 
         private async Task GunleriYukle(int yil, int ay, int hafta)
@@ -107,10 +103,11 @@ namespace Saller_System.Views
             _seviye = 3; _seciliHafta = hafta;
             UstSeviyeHeader.IsVisible = true;
             ExcelBtn.Text = "📥 Haftayı Aktar";
-            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {new DateTime(yil, ay, 1):MMMM} › {hafta}. Hafta";
+            string ayAdi = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(ay);
+            BreadcrumbLabel.Text = $"Tüm Satışlar › {yil} › {ayAdi} › {hafta}. Hafta";
 
             var satislar = await _db.TumSatisleriGetirAsync();
-            _mevcutListe = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay && System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih) == hafta).GroupBy(s => s.Tarih.Date).OrderByDescending(g => g.Key).Select(g => new GecmisItem
+            GecmisListesi.ItemsSource = satislar.Where(s => s.Tarih.Year == yil && s.Tarih.Month == ay && System.Globalization.ISOWeek.GetWeekOfYear(s.Tarih) == hafta).GroupBy(s => s.Tarih.Date).OrderByDescending(g => g.Key).Select(g => new GecmisItem
             {
                 Baslik = $"📅 {g.Key:dd MMMM dddd}",
                 AltBaslik = "Günlük Detay",
@@ -119,7 +116,6 @@ namespace Saller_System.Views
                 SatisSayisi = g.Count(),
                 Anahtar = g.Key.Day
             }).ToList();
-            GecmisListesi.ItemsSource = _mevcutListe;
         }
 
         private async void OnSecimDegisti(object sender, SelectionChangedEventArgs e)
@@ -139,8 +135,27 @@ namespace Saller_System.Views
         {
             var tarih = new DateTime(_seciliYil, _seciliAy, gun);
             var satislar = await _db.GunlukSatislerAsync(tarih);
-            string detay = satislar.Count == 0 ? "Satış yok." : string.Join("\n", satislar.Select(s => $"• {s.UrunAd}: ₺{s.Fiyat:N2}"));
-            await DisplayAlert($"{tarih:dd MMMM yyyy}", $"Toplam Ciro: ₺{satislar.Sum(s => s.Fiyat):N2}\nToplam Kâr: ₺{satislar.Sum(s => s.Kar):N2}\n\n{detay}", "Tamam");
+
+            if (satislar.Count == 0) return;
+
+            var urunOzetleri = satislar.GroupBy(s => s.UrunAd).Select(g => new {
+                Urun = g.Key,
+                ToplamMiktar = g.Sum(s => s.Adet),
+                ToplamCiro = g.Sum(s => s.Fiyat)
+            }).OrderByDescending(x => x.ToplamCiro);
+
+            var sb = new StringBuilder();
+            sb.AppendLine("📋 ÜRÜN BAZLI ÖZET:");
+            foreach (var item in urunOzetleri)
+            {
+                sb.AppendLine($"• {item.Urun}: {item.ToplamMiktar} Adet/Kez - ₺{item.ToplamCiro:N2}");
+            }
+
+            sb.AppendLine("\n-------------------");
+            sb.AppendLine($"💰 Günlük Toplam: ₺{satislar.Sum(s => s.Fiyat):N2}");
+            sb.AppendLine($"📈 Günlük Kâr: ₺{satislar.Sum(s => s.Kar):N2}");
+
+            await DisplayAlert($"{tarih:dd MMMM yyyy} Raporu", sb.ToString(), "Tamam");
         }
 
         private async void UstSeviyeClicked(object sender, EventArgs e)
@@ -171,7 +186,8 @@ namespace Saller_System.Views
 
             try
             {
-                string dosyaYolu = _excel.RaporOlustur(filtreli, baslik);
+                // DÜZELTME: RaporOlustur metoduna artık 'await' eklendi ve 3. parametre (tarih) gönderildi.
+                string dosyaYolu = await _excel.RaporOlustur(filtreli, baslik, DateTime.Now);
                 await Share.Default.RequestAsync(new ShareFileRequest { Title = baslik, File = new ShareFile(dosyaYolu) });
             }
             catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }

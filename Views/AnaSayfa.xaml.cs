@@ -12,65 +12,151 @@ namespace Saller_System.Views
             InitializeComponent();
             _ayarlar = ayarlar;
             _db = db;
-
-            // XAML'da eklediğimiz Tarih etiketine anlık tarihi basıyoruz
-            TarihLabel.Text = DateTime.Now.ToString("dd.MM.yyyy dddd", new System.Globalization.CultureInfo("tr-TR"));
+            TarihLabel.Text = DateTime.Now.ToString("dd.MM.yyyy dddd",
+                new System.Globalization.CultureInfo("tr-TR"));
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            OturumServisi.AktiviteYenile();
 
-            // "Hoş geldiniz" yerine samimi kurumsal formata ("Hoş geldin") geçtik
-            HosgeldinLabel.Text = $"Hoş geldin, {OturumServisi.AktifKullanici?.KullaniciAdi}";
+            var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
 
-            // Rol bazlı görünürlük
-            RaporlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            KullaniciYonetimiBtn.IsVisible = OturumServisi.AdminMi;
-            AyarlarBtn.IsVisible = OturumServisi.YoneticiMi;
-            YonetimBolumu.IsVisible = OturumServisi.YoneticiMi;
-            OzetBilgiGrid.IsVisible = OturumServisi.YoneticiMi;
+            if (MagazaAdiLabel != null)
+            {
+                MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
+                    ? "ÖZ BİGA ET"
+                    : magazaAdi.ToUpper();
+            }
 
-            UrunListesiAciklamasiniAyarla();
+            var kullanici = OturumServisi.AktifKullanici;
 
-            // Dark mode
+            if (HosgeldinLabel != null)
+            {
+                HosgeldinLabel.Text = $"Hoş geldin, {kullanici?.KullaniciAdi}";
+            }
+
+            bool isPatron = kullanici?.Rol == "Patron" || kullanici?.KullaniciAdi?.ToLower() == "admin";
+            bool isYonetici = isPatron || kullanici?.Rol == "Müdür";
+
+            RaporlarBtn.IsVisible = isYonetici;
+            AyarlarBtn.IsVisible = isYonetici;
+            YonetimBolumu.IsVisible = isYonetici;
+            OzetBilgiGrid.IsVisible = isYonetici;
+            KullaniciYonetimiBtn.IsVisible = isPatron;
+            SonIslemlerBolumu.IsVisible = isYonetici;
+            VeresiyeBtn.IsVisible = true;
+
+            // YENİ: Dükkan Masrafları butonunu sadece Patron görebilir
+            if (GiderlerBtn != null)
+            {
+                GiderlerBtn.IsVisible = isPatron;
+            }
+
+            if (StokBtn != null)
+            {
+                StokBtn.IsVisible = isYonetici;
+            }
+
+            UrunListesiAciklamasiniAyarla(isYonetici);
+
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
 
-            // Özet kartları doldur
-            if (OturumServisi.YoneticiMi)
-                await OzetKartlariniDoldur();
+            if (isYonetici)
+                await VerileriDoldur();
         }
 
-        private async Task OzetKartlariniDoldur()
+        protected override bool OnBackButtonPressed() => true;
+
+        private async Task VerileriDoldur()
         {
             await _db.InitAsync();
-            var gunlukSayi = await _db.GunlukSatisSayisiAsync(DateTime.Today);
-            var gunlukCiro = await _db.GunlukCiroAsync(DateTime.Today);
-            GunlukSatisLabel.Text = gunlukSayi.ToString();
+            var bugun = DateTime.Today;
+
+            var gunlukSayi = await _db.GunlukSatisSayisiAsync(bugun);
+            var gunlukCiro = await _db.GunlukGercekCiroAsync(bugun);
+
+            GunlukSatisLabel.Text = gunlukSayi.ToString("N1");
             GunlukCiroLabel.Text = $"₺{gunlukCiro:N0}";
+
+            var bugunkuSatislar = await _db.GunlukSatislerAsync(bugun);
+            var sonSatislar = bugunkuSatislar.OrderByDescending(s => s.Tarih).Take(4).ToList();
+            BindableLayout.SetItemsSource(SonIslemlerListesi, sonSatislar);
         }
 
-        private void UrunListesiAciklamasiniAyarla()
+        private void UrunListesiAciklamasiniAyarla(bool isYonetici)
         {
-            UrunListesiAciklamaLabel.Text = OturumServisi.YoneticiMi
-                ? "Kayıtlı ürünleri görüntüle ve yönet"
-                : "Kayıtlı ürünleri görüntüle";
+            UrunListesiAciklamaLabel.Text = isYonetici
+                ? "Ürünleri görüntüle, ekle ve fiyatları yönet"
+                : "Kayıtlı ürün fiyatlarını görüntüle";
+        }
+
+        private async void VeresiyeDefteriClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try { await Shell.Current.GoToAsync("VeresiyeDefteri"); }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
         }
 
         private async void BarkodOkutClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//BarkodSayfa");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//BarkodSayfa");
+        }
+
+        private async void ToptanSatisClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try { await Shell.Current.GoToAsync("ToptanSatis"); }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
+        }
+
         private async void UrunListesiClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//UrunListesi");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//UrunListesi");
+        }
+
         private async void RaporlarClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//Raporlar");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//Raporlar");
+        }
+
         private async void KullaniciYonetimiClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//KullaniciYonetimi");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//KullaniciYonetimi");
+        }
+
+        private async void StokClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try { await Shell.Current.GoToAsync("StokYonetimi"); }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
+        }
+
+        // YENİ: Masraf (Giderler) Sayfasına Geçiş Metodu
+        private async void GiderlerClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try { await Shell.Current.GoToAsync("GiderlerSayfa"); }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
+        }
+
         private async void AyarlarClicked(object sender, EventArgs e)
-            => await Shell.Current.GoToAsync("//AyarlarSayfa");
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AyarlarSayfa");
+        }
+
         private async void CikisClicked(object sender, EventArgs e)
         {
-            OturumServisi.AktifKullanici = null;
+            bool onay = await DisplayAlert("Çıkış", "Oturumu kapatmak istiyor musunuz?", "Evet", "Hayır");
+            if (!onay) return;
+            OturumServisi.Cikis();
             await Shell.Current.GoToAsync("//LoginPage");
         }
     }

@@ -14,5 +14,6 @@ namespace Saller_System.Models
         public bool GramajliMi { get; set; } = false;
         public decimal KgFiyati { get; set; } = 0;   // Kg satış fiyatı
         public decimal KgAlisFiyati { get; set; } = 0; // Kg alış fiyatı
+        public decimal StokMiktari { get; set; } = 0; //  Stok Takibi (Eksiye düşmesine izin verilecek)
     }
 }

@@ -3,37 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.SplashSayfa"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#0B1220}">
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
-
-        <Border StrokeThickness="0"
-                BackgroundColor="#1E293B"
-                StrokeShape="RoundRectangle 28"
-                WidthRequest="180" HeightRequest="120"
-                HorizontalOptions="Center">
-
-            <Image Source="appiconfg.png" 
-                   Aspect="AspectFit"
-                   Margin="10"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Center"/>
-        </Border>
-
-        <Label Text="Öz Biga Et"
-               FontSize="32" FontAttributes="Bold"
-               HorizontalOptions="Center"
-               TextColor="White"/>
-
-        <Label Text="Satış ve Stok Takip Sistemi"
-               FontSize="14"
-               HorizontalOptions="Center"
-               TextColor="#64748B"/>
-
-        <ActivityIndicator IsRunning="True"
-                           Color="{StaticResource Primary}"
-                           HorizontalOptions="Center"
-                           Margin="0,15,0,0"/>
-
+        <Image Source="logo.jpg" WidthRequest="220" HeightRequest="220" HorizontalOptions="Center"/>
+        <Label Text="Öz Biga Et" FontSize="32" FontAttributes="Bold" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+        <Label Text="Kasap &amp; Şarküteri Sistemi" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" TextColor="#D4AF37"/>
+        <ActivityIndicator IsRunning="True" Color="#E31E24" HorizontalOptions="Center" Margin="0,15,0,0"/>
     </VerticalStackLayout>
 </ContentPage>
