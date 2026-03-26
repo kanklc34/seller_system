@@ -16,14 +16,25 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            if (await ZamanAsimKontrolAsync()) return;
+            OturumServisi.AktiviteYenile();
             await _db.InitAsync();
             await ListeYukle();
         }
 
-        // TELEFONUN FİZİKSEL GERİ TUŞUNU ÇALIŞTIRAN KOD
         protected override bool OnBackButtonPressed()
         {
+            OturumServisi.AktiviteYenile();
             Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
+            return true;
+        }
+
+        private async Task<bool> ZamanAsimKontrolAsync()
+        {
+            if (!OturumServisi.OturumSuresiDolduMu()) return false;
+            OturumServisi.Cikis();
+            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
+            await Shell.Current.GoToAsync("//LoginPage");
             return true;
         }
 
@@ -32,6 +43,17 @@ namespace Saller_System.Views
             try
             {
                 var liste = await _db.TumKullanicilariGetirAsync();
+                bool isPatron = OturumServisi.AktifKullanici?.Rol == "Patron";
+
+                // KRİTİK GÜVENLİK: Eğer giren kişi patron değilse şifreleri maskele!
+                if (!isPatron)
+                {
+                    foreach (var k in liste)
+                    {
+                        k.Sifre = "******";
+                    }
+                }
+
                 KullaniciListesi.ItemsSource = liste;
             }
             catch (Exception ex)
@@ -50,16 +72,17 @@ namespace Saller_System.Views
                 return;
             }
 
+            OturumServisi.AktiviteYenile();
+
             var yeniKullanici = new Kullanici
             {
                 KullaniciAdi = YeniKullaniciAdiEntry.Text.Trim(),
                 Sifre = YeniSifreEntry.Text.Trim(),
-                Rol = RolPicker.SelectedItem.ToString()
+                Rol = RolPicker.SelectedItem.ToString()!
             };
 
             await _db.KullaniciEkleAsync(yeniKullanici);
 
-            // Giriş alanlarını temizle
             YeniKullaniciAdiEntry.Text = string.Empty;
             YeniSifreEntry.Text = string.Empty;
             RolPicker.SelectedIndex = -1;
@@ -71,7 +94,14 @@ namespace Saller_System.Views
         {
             if (sender is Button btn && btn.CommandParameter is Kullanici kullanici)
             {
-                // Güvenlik kontrolü: Patron silmek onay gerektirir
+                OturumServisi.AktiviteYenile();
+
+                if (kullanici.Rol == "Patron" && OturumServisi.AktifKullanici?.KullaniciAdi != "admin")
+                {
+                    await DisplayAlert("Yetki Hatası", "Patron hesaplarını sadece Admin silebilir.", "Tamam");
+                    return;
+                }
+
                 string mesaj = kullanici.Rol == "Patron"
                     ? "UYARI: Bir Patron hesabını silmek üzeresiniz. Onaylıyor musunuz?"
                     : $"{kullanici.KullaniciAdi} kullanıcısı silinecektir. Onaylıyor musunuz?";
@@ -87,6 +117,7 @@ namespace Saller_System.Views
 
         private async void GeriClicked(object sender, EventArgs e)
         {
+            OturumServisi.AktiviteYenile();
             await Shell.Current.GoToAsync("//AnaSayfa");
         }
     }

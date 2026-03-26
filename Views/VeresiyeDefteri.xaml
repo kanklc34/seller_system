@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:models="clr-namespace:Saller_System.Models" x:Class="Saller_System.Views.VeresiyeDefteri" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20,18,20,10" RowSpacing="14">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+            <Border BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#991B1B}" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="10,8" WidthRequest="44" HeightRequest="44" VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="GeriClicked"/>
+                </Border.GestureRecognizers>
+                <Label Text="⬅" FontSize="18" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+            <Label Grid.Column="1" Text="Veresiye Defteri" FontSize="20" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <Border Grid.Column="0" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Padding="12,4" HeightRequest="48">
+                <SearchBar x:Name="MusteriAraBar" Placeholder="Müşteri ara..." TextChanged="MusteriAraTextChanged" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
+            </Border>
+            <Button Grid.Column="1" Text="➕ Yeni" BackgroundColor="#E31E24" TextColor="White" FontAttributes="Bold" CornerRadius="12" WidthRequest="80" Clicked="YeniMusteriClicked"/>
+        </Grid>
+        <CollectionView Grid.Row="2" x:Name="MusterilerListesi">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                    <Label Text="📒" FontSize="50" HorizontalOptions="Center" Opacity="0.3"/>
+                    <Label Text="Kayıtlı müşteri bulunmuyor." TextColor="#94A3B8" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Musteri">
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" Padding="16" Margin="0,0,0,10" StrokeShape="RoundRectangle 16">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
+                                <Label Text="{Binding AdSoyad}" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" FontAttributes="Bold" FontSize="17"/>
+                                <Label Text="{Binding DurumMetni}" TextColor="{Binding DurumRengi}" FontSize="14" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                <Button Text="📄 Ekstre" BackgroundColor="#3B82F6" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="40" Padding="8,0" Clicked="EkstreClicked" CommandParameter="{Binding .}"/>
+                                <Button Text="💵 Tahsilat" BackgroundColor="#16A34A" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="40" Padding="8,0" Clicked="TahsilatAlClicked" CommandParameter="{Binding .}"/>
+                                <Button Text="🤝 Kapat" BackgroundColor="#E31E24" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="40" Padding="8,0" Clicked="HesabiKapatClicked" CommandParameter="{Binding .}"/>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

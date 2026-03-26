@@ -138,10 +138,9 @@ namespace Saller_System.Views
 
             if (satislar.Count == 0) return;
 
-            // İSTEDİĞİN ÖZET: Neyden ne kadar satıldı?
             var urunOzetleri = satislar.GroupBy(s => s.UrunAd).Select(g => new {
                 Urun = g.Key,
-                ToplamMiktar = g.Sum(s => s.Adet), // Hem adet hem gramajlılar için adet/miktar toplamı
+                ToplamMiktar = g.Sum(s => s.Adet),
                 ToplamCiro = g.Sum(s => s.Fiyat)
             }).OrderByDescending(x => x.ToplamCiro);
 
@@ -187,7 +186,8 @@ namespace Saller_System.Views
 
             try
             {
-                string dosyaYolu = _excel.RaporOlustur(filtreli, baslik);
+                // DÜZELTME: RaporOlustur metoduna artık 'await' eklendi ve 3. parametre (tarih) gönderildi.
+                string dosyaYolu = await _excel.RaporOlustur(filtreli, baslik, DateTime.Now);
                 await Share.Default.RequestAsync(new ShareFileRequest { Title = baslik, File = new ShareFile(dosyaYolu) });
             }
             catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Saller_System.Views.GiderlerSayfa" Title="Gider Yönetimi" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20" RowSpacing="15">
+        <VerticalStackLayout Grid.Row="0" Spacing="15">
+            <Label Text="💸 Yeni Gider Ekle" FontSize="20" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#E31E24, Dark=#E31E24}"/>
+            <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
+                <Entry x:Name="BaslikEntry" Placeholder="Gider Adı (Kira, Elektrik...)" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+            </Border>
+            <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
+                <Entry x:Name="TutarEntry" Placeholder="Tutar (₺)" Keyboard="Numeric" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+            </Border>
+            <Button Text="GİDERİ KAYDET" Clicked="GiderKaydetClicked" BackgroundColor="#E31E24" CornerRadius="10" FontAttributes="Bold" HeightRequest="50" TextColor="White"/>
+            <Label Text="Bugünkü Giderler" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" Margin="0,15,0,0"/>
+        </VerticalStackLayout>
+        <CollectionView Grid.Row="1" x:Name="GiderListesi">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 8" Padding="15" Margin="0,4" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="{Binding Baslik}" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding Tutar, StringFormat='₺{0:N2}'}" TextColor="#E31E24" FontAttributes="Bold" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="0,16" HeightRequest="56">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="GeriClicked"/>
+            </Border.GestureRecognizers>
+            <Label Text="⬅ Geri" TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Border>
+    </Grid>
+</ContentPage>

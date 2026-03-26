@@ -1,78 +1,79 @@
 using Saller_System.Models;
-using System;
 
 namespace Saller_System.Services
 {
     /// <summary>
-    /// Aktif kullanıcı oturumunu ve zamanaşımını yönetir.
-    /// Varsayılan zamanaşımı: 15 dakika hareketsizlik.
+    /// Aktif kullanıcı oturumunu yönetir.
+    /// Uygulama kapanıp açılsa bile oturum korunur (Preferences).
+    /// Çıkış yapılmadıkça hesap açık kalır.
     /// </summary>
     public static class OturumServisi
     {
-        // ----------------------------------------------------------------
-        // Zamanaşımı süresi (dakika)
-        // ----------------------------------------------------------------
+        private const string KullaniciAdiKey = "oturum_kullanici_adi";
+        private const string KullaniciRolKey = "oturum_kullanici_rol";
+        private const string KullaniciIdKey = "oturum_kullanici_id";
+
         public static int ZamanAsimDakika { get; set; } = 15;
 
         private static Kullanici? _aktifKullanici;
         private static DateTime _sonAktivite = DateTime.MinValue;
 
-        // ----------------------------------------------------------------
-        // Aktif kullanıcı — getter oturum süresi kontrolü yapar
-        // ----------------------------------------------------------------
-        public static Kullanici? AktifKullanici
-        {
-            get
-            {
-                if (_aktifKullanici == null) return null;
+        public static Kullanici? AktifKullanici => _aktifKullanici;
 
-                if (OturumSuresiDolduMu())
-                {
-                    Cikis();     // Otomatik çıkış
-                    return null;
-                }
-
-                return _aktifKullanici;
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // Giriş
-        // ----------------------------------------------------------------
+        // Giriş — bellekte ve Preferences'da sakla
         public static void Giris(Kullanici kullanici)
         {
             _aktifKullanici = kullanici;
             _sonAktivite = DateTime.Now;
+
+            Preferences.Set(KullaniciAdiKey, kullanici.KullaniciAdi);
+            Preferences.Set(KullaniciRolKey, kullanici.Rol ?? "");
+            Preferences.Set(KullaniciIdKey, kullanici.Id);
         }
 
-        // ----------------------------------------------------------------
-        // Çıkış
-        // ----------------------------------------------------------------
+        // Uygulama açılışında kaydedilmiş oturumu geri yükle
+        public static bool OturumuGeriYukle()
+        {
+            var adi = Preferences.Get(KullaniciAdiKey, "");
+            var rol = Preferences.Get(KullaniciRolKey, "");
+            var id = Preferences.Get(KullaniciIdKey, 0);
+
+            if (string.IsNullOrEmpty(adi)) return false;
+
+            _aktifKullanici = new Kullanici
+            {
+                Id = id,
+                KullaniciAdi = adi,
+                Rol = rol,
+                Sifre = ""
+            };
+            _sonAktivite = DateTime.Now;
+            return true;
+        }
+
+        // Çıkış — bellekten ve Preferences'dan sil
         public static void Cikis()
         {
             _aktifKullanici = null;
             _sonAktivite = DateTime.MinValue;
+
+            Preferences.Remove(KullaniciAdiKey);
+            Preferences.Remove(KullaniciRolKey);
+            Preferences.Remove(KullaniciIdKey);
         }
 
-        // ----------------------------------------------------------------
-        // Aktiviteyi yenile — her ekran etkileşiminde çağrılmalı
-        // ----------------------------------------------------------------
         public static void AktiviteYenile()
         {
             if (_aktifKullanici != null)
                 _sonAktivite = DateTime.Now;
         }
 
-        // ----------------------------------------------------------------
-        // Zamanaşımı kontrolü
-        // ----------------------------------------------------------------
         public static bool OturumSuresiDolduMu()
         {
             if (_aktifKullanici == null) return false;
             return (DateTime.Now - _sonAktivite).TotalMinutes >= ZamanAsimDakika;
         }
 
-        // Kalan süre (saniye) — UI'da geri sayım için
         public static int KalanSaniye()
         {
             if (_aktifKullanici == null) return 0;
@@ -81,12 +82,9 @@ namespace Saller_System.Services
             return Math.Max(0, (int)(toplam - gecen));
         }
 
-        // ----------------------------------------------------------------
-        // Rol kontrolleri
-        // ----------------------------------------------------------------
-        public static bool GirisYapildiMi => AktifKullanici != null;
-        public static bool AdminMi => AktifKullanici?.Rol is "Patron";
-        public static bool YoneticiMi => AktifKullanici?.Rol is "Patron" or "Müdür";
-        public static bool CalisanMi => AktifKullanici != null;
+        public static bool GirisYapildiMi => _aktifKullanici != null;
+        public static bool AdminMi => _aktifKullanici?.Rol is "Patron";
+        public static bool YoneticiMi => _aktifKullanici?.Rol is "Patron" or "Müdür";
+        public static bool CalisanMi => _aktifKullanici != null;
     }
 }
