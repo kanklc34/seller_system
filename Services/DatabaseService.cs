@@ -33,20 +33,62 @@ namespace Saller_System.Services
         {
             var admin = await _db!.Table<Kullanici>().Where(k => k.KullaniciAdi == "admin").FirstOrDefaultAsync();
             if (admin != null) return;
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "admin", Sifre = "1234", Rol = "Patron" });
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "yonetici", Sifre = "1234", Rol = "Müdür" });
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "kasiyer", Sifre = "1234", Rol = "Kasiyer" });
+
+            // Şifreleri burada da hashleyerek kaydediyoruz ki giriş sistemiyle uyumlu olsun
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "admin",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Patron"
+            });
+
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "yonetici",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Müdür"
+            });
+
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "kasiyer",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Kasiyer"
+            });
         }
 
         public async Task<Kullanici?> GirisKontrolAsync(string ad, string sifre)
         {
-            var kullanici = await _db!.Table<Kullanici>().Where(k => k.KullaniciAdi == ad).FirstOrDefaultAsync();
-            return (kullanici != null && sifre == kullanici.Sifre) ? kullanici : null;
+            await InitAsync();
+
+            // 1. Kullanıcıyı veritabanında bul
+            var kullanici = await _db!.Table<Kullanici>()
+                .FirstOrDefaultAsync(k => k.KullaniciAdi.ToLower() == ad.ToLower());
+
+            if (kullanici == null) return null;
+
+            // 2. KRİTİK DEĞİŞİKLİK BURADA: 
+            // Hashle(sifre) == kullanici.Sifre YAPMA! Çünkü salt her seferinde değişir.
+            // Bunun yerine GuvenlikServisi içindeki Dogrula metodunu kullan:
+
+            bool sifreDogru = GuvenlikServisi.Dogrula(sifre, kullanici.Sifre);
+
+            return sifreDogru ? kullanici : null;
         }
 
         // --- KULLANICI İŞLEMLERİ (KullaniciYonetimi.xaml için) ---
         public async Task<List<Kullanici>> TumKullanicilariGetirAsync() => await _db!.Table<Kullanici>().ToListAsync();
-        public async Task KullaniciEkleAsync(Kullanici k) => await _db!.InsertAsync(k);
+        public async Task<bool> KullaniciEkleAsync(Kullanici k)
+        {
+            // Aynı isimde kullanıcı var mı kontrol et
+            var varMi = await _db!.Table<Kullanici>()
+                .FirstOrDefaultAsync(u => u.KullaniciAdi.ToLower() == k.KullaniciAdi.ToLower());
+
+            if (varMi != null) return false; // Zaten var, ekleme yapma
+
+            await _db!.InsertAsync(k);
+            return true;
+        }
         public async Task KullaniciSilAsync(Kullanici k) => await _db!.DeleteAsync(k);
 
         // --- ÜRÜN İŞLEMLERİ ---

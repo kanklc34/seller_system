@@ -77,19 +77,25 @@ namespace Saller_System.Views
             var yeniKullanici = new Kullanici
             {
                 KullaniciAdi = YeniKullaniciAdiEntry.Text.Trim(),
-                Sifre = YeniSifreEntry.Text.Trim(),
+                // DÜZELTME: Şifreyi hashleyerek oluşturuyoruz
+                Sifre = GuvenlikServisi.Hashle(YeniSifreEntry.Text.Trim()),
                 Rol = RolPicker.SelectedItem.ToString()!
             };
 
-            await _db.KullaniciEkleAsync(yeniKullanici);
+            bool eklendi = await _db.KullaniciEkleAsync(yeniKullanici);
 
-            YeniKullaniciAdiEntry.Text = string.Empty;
-            YeniSifreEntry.Text = string.Empty;
-            RolPicker.SelectedIndex = -1;
-
-            await ListeYukle();
+            if (eklendi)
+            {
+                YeniKullaniciAdiEntry.Text = string.Empty;
+                YeniSifreEntry.Text = string.Empty;
+                RolPicker.SelectedIndex = -1;
+                await ListeYukle();
+            }
+            else
+            {
+                await DisplayAlert("Hata", "Bu kullanıcı adı zaten kullanımda!", "Tamam");
+            }
         }
-
         private async void KullaniciSilClicked(object sender, EventArgs e)
         {
             if (sender is Button btn && btn.CommandParameter is Kullanici kullanici)
