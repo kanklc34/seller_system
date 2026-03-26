@@ -7,13 +7,10 @@
              BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="20,18,20,20" RowSpacing="12">
-
-        <Border Grid.Row="0"
-                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                Stroke="Transparent" StrokeShape="RoundRectangle 20" Padding="20,16">
+        <Border Grid.Row="0" BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#991B1B}" StrokeShape="RoundRectangle 20" Padding="20,16">
             <Grid ColumnDefinitions="*,Auto">
                 <Label Text="🛒 Satış Sepeti" FontSize="22" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
-                <Label Grid.Column="1" Text="Temizle" TextColor="#FCA5A5" VerticalOptions="Center" FontSize="13">
+                <Label Grid.Column="1" Text="Temizle" TextColor="#FCA5A5" VerticalOptions="Center" FontSize="13" FontAttributes="Bold">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="SepetiTemizleTapped"/>
                     </Label.GestureRecognizers>
@@ -24,71 +21,56 @@
         <CollectionView Grid.Row="1" x:Name="SepetListesi">
             <CollectionView.EmptyView>
                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                    <Label Text="🛒" FontSize="50" HorizontalOptions="Center" Opacity="0.3"/>
-                    <Label Text="Sepet şu an boş." TextColor="#94A3B8" HorizontalOptions="Center"/>
+                    <Label Text="🛒" FontSize="50" Opacity="0.3"/>
+                    <Label Text="Sepet şu an boş." TextColor="#94A3B8"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SepetItem">
-                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1" StrokeShape="RoundRectangle 18" Padding="16" Margin="0,6">
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" StrokeShape="RoundRectangle 18" Padding="16" Margin="0,6">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                            <VerticalStackLayout Grid.Column="0" Spacing="6">
-                                <Label Text="{Binding Urun.Ad}" FontSize="17" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding Urun.Ad}" FontSize="17" FontAttributes="Bold"/>
                                 <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="15">
                                     <Label Text="{Binding Adet, StringFormat='Miktar: {0}'}" FontSize="13" TextColor="#94A3B8"/>
                                     <Label Grid.Column="1" Text="{Binding Toplam, StringFormat='₺{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#16A34A"/>
                                 </Grid>
                             </VerticalStackLayout>
-                            <Button Grid.Column="1" Text="🗑️" BackgroundColor="#FEE2E2" TextColor="#B91C1C"
-                                    WidthRequest="50" HeightRequest="50" CornerRadius="14" Clicked="ItemSilTapped"
-                                    CommandParameter="{Binding .}" Padding="0"/>
+                            <Button Grid.Column="1" Text="🗑️" BackgroundColor="#FEE2E2" TextColor="#E31E24" WidthRequest="50" HeightRequest="50" CornerRadius="14" Clicked="ItemSilTapped" CommandParameter="{Binding .}" Padding="0"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                Stroke="Transparent" StrokeShape="RoundRectangle 24" Padding="24" Margin="0,10,0,0">
+        <Border Grid.Row="2" BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}" StrokeShape="RoundRectangle 24" Padding="24" Margin="0,10,0,0">
             <VerticalStackLayout Spacing="18">
-
                 <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="GENEL TOPLAM" TextColor="#94A3B8" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Label Text="GENEL TOPLAM" TextColor="#D4AF37" FontSize="13" FontAttributes="Bold" VerticalOptions="Center"/>
                     <Label Grid.Column="1" x:Name="ToplamLabel" Text="₺0,00" FontSize="26" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
                 </Grid>
-
-                <BoxView HeightRequest="1" Color="#334155" HorizontalOptions="Fill"/>
-
+                <BoxView HeightRequest="1" Color="#334155"/>
                 <Grid x:Name="OdemeButonlariGrid" ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="💵 Nakit" BackgroundColor="#16A34A" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="12" Clicked="NakitOdemeClicked"/>
-                    <Button Grid.Column="1" Text="💳 Kart" BackgroundColor="#2563EB" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="12" Clicked="KartOdemeClicked"/>
-                    <Button Grid.Column="2" Text="📒 Veresiye" BackgroundColor="#D97706" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="12" Clicked="VeresiyeModuAcClicked"/>
+                    <Button Grid.Column="0" Text="💵 Nakit" BackgroundColor="#16A34A" TextColor="White" FontAttributes="Bold" CornerRadius="12" Clicked="NakitOdemeClicked"/>
+                    <Button Grid.Column="1" Text="💳 Kart" BackgroundColor="#2563EB" TextColor="White" FontAttributes="Bold" CornerRadius="12" Clicked="KartOdemeClicked"/>
+                    <Button Grid.Column="2" Text="📒 Veresiye" BackgroundColor="#D4AF37" TextColor="#0F172A" FontAttributes="Bold" CornerRadius="12" Clicked="VeresiyeModuAcClicked"/>
                 </Grid>
 
-                <Border x:Name="VeresiyePaneli" IsVisible="False" BackgroundColor="#1E293B" Stroke="#334155" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15">
+                <Border x:Name="VeresiyePaneli" IsVisible="False" BackgroundColor="#1E293B" Stroke="#D4AF37" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15">
                     <VerticalStackLayout Spacing="12">
-                        <Label Text="Müşteri Seç veya Yeni Ekle" TextColor="#94A3B8" FontSize="12" FontAttributes="Bold"/>
-
+                        <Label Text="Müşteri Seç veya Yeni Ekle" TextColor="#D4AF37" FontSize="12" FontAttributes="Bold"/>
                         <Picker x:Name="MusteriPicker" Title="Kayıtlı Müşteri Seç..." TextColor="White" TitleColor="#CBD5E1" BackgroundColor="#0F172A" ItemDisplayBinding="{Binding AdSoyad}"/>
-                        <Label Text="- VEYA -" TextColor="#64748B" FontSize="10" HorizontalOptions="Center"/>
-
-                        <Border Stroke="#334155" StrokeShape="RoundRectangle 8" BackgroundColor="#0F172A" Padding="10,0" HeightRequest="44">
-                            <Entry x:Name="YeniMusteriEntry" Placeholder="Yeni Müşteri Adı Yazın" TextColor="White" PlaceholderColor="#64748B" BackgroundColor="Transparent"/>
+                        <Border BackgroundColor="#0F172A" Padding="10,0" HeightRequest="44" StrokeShape="RoundRectangle 8">
+                            <Entry x:Name="YeniMusteriEntry" Placeholder="Yeni Müşteri Adı Yazın" BackgroundColor="Transparent"/>
                         </Border>
-
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,5,0,0">
-                            <Button Grid.Column="0" Text="İptal" BackgroundColor="#475569" TextColor="White" CornerRadius="8" HeightRequest="44" Clicked="VeresiyeIptalClicked"/>
-                            <Button Grid.Column="1" Text="Borca Yaz" BackgroundColor="#D97706" TextColor="White" FontAttributes="Bold" CornerRadius="8" HeightRequest="44" Clicked="BorcaYazVeTamamlaClicked"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Text="İptal" BackgroundColor="#475569" TextColor="White" CornerRadius="8" Clicked="VeresiyeIptalClicked"/>
+                            <Button Grid.Column="1" Text="Borca Yaz" BackgroundColor="#E31E24" TextColor="White" FontAttributes="Bold" CornerRadius="8" Clicked="BorcaYazVeTamamlaClicked"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
-
                 <Button Text="⬅ Geri Dön" BackgroundColor="#334155" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="12" Clicked="GeriClicked"/>
-
             </VerticalStackLayout>
         </Border>
-
     </Grid>
 </ContentPage>

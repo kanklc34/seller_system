@@ -8,6 +8,12 @@ namespace Saller_System.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int OrijinalId { get; set; }
+
+        // HATA ÇÖZÜMÜ: Arşivleme sırasında aranan eksik özellikler eklendi
+        public string Barkod { get; set; } = string.Empty;
+        public string Ad { get; set; } = string.Empty;
+        public string SatisTipi { get; set; } = "PERAKENDE";
+
         public string UrunAd { get; set; } = "";
 
         // HATA ÇÖZÜMÜ: int yerine decimal yapıldı (Terazi gramajları için)
@@ -25,6 +31,11 @@ namespace Saller_System.Models
         {
             OrijinalId = s.Id;
             UrunAd = s.UrunAd ?? "";
+
+            // Yeni eklenenlerin eşleştirmesi (Veri kaybı olmasın diye)
+            Barkod = s.Barkod ?? "";
+            Ad = s.Ad ?? "";
+            SatisTipi = s.SatisTipi ?? "PERAKENDE";
 
             // Buradaki atama artık hata vermeyecek
             Adet = s.Adet;

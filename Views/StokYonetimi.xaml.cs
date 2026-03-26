@@ -21,6 +21,13 @@ namespace Saller_System.Views
             await ListeyiGuncelle();
         }
 
+        // YENİ EKLENEN GERİ DÖN METODU
+        private async void GeriClicked(object sender, TappedEventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
+
         private async Task ListeyiGuncelle()
         {
             await _db.InitAsync();
@@ -50,10 +57,8 @@ namespace Saller_System.Views
             var secilenUrun = e.CurrentSelection.FirstOrDefault() as Urun;
             if (secilenUrun == null) return;
 
-            // Seçimi temizle (aynı ürüne tekrar tıklanabilsin diye)
             StokListesi.SelectedItem = null;
 
-            // Klavyeden girilecek yeni stoğu sor
             string sonuc = await DisplayPromptAsync(
                 "Stok Güncelle",
                 $"{secilenUrun.Ad} için yeni stok miktarını girin.\nMevcut Stok: {secilenUrun.StokMiktari:N2}",
@@ -66,8 +71,6 @@ namespace Saller_System.Views
 
             if (!string.IsNullOrWhiteSpace(sonuc) && decimal.TryParse(sonuc, out decimal yeniStok))
             {
-                // UrunGuncelleAsync metodu fiyat değişimi kontrolü için eskiUrun'ü istiyor,
-                // Stok güncellemesi yapacağımız için fiyatları aynı tutan sahte bir eski ürün gönderiyoruz.
                 var eskiUrun = new Urun
                 {
                     Fiyat = secilenUrun.Fiyat,
@@ -80,7 +83,7 @@ namespace Saller_System.Views
                 try
                 {
                     await _db.UrunGuncelleAsync(secilenUrun, eskiUrun);
-                    await ListeyiGuncelle(); // Listeyi tazele
+                    await ListeyiGuncelle();
                 }
                 catch (Exception ex)
                 {

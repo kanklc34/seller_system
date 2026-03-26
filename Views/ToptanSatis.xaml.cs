@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Saller_System.Models;
 using Saller_System.Services;
 
@@ -8,11 +9,14 @@ namespace Saller_System.Views
         private readonly DatabaseService _db;
         private List<Urun> _tumUrunler = new();
         private Urun _secilenUrun;
+        private ObservableCollection<Satis> _sepet = new();
+        private decimal _toplamTutar = 0;
 
         public ToptanSatis(DatabaseService db)
         {
             InitializeComponent();
             _db = db;
+            SepetListesi.ItemsSource = _sepet;
         }
 
         protected override async void OnAppearing()
@@ -21,28 +25,43 @@ namespace Saller_System.Views
             await VerileriYukle();
         }
 
+        private async void GeriClicked(object sender, TappedEventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            await Shell.Current.GoToAsync("//AnaSayfa");
+        }
+
         private async Task VerileriYukle()
         {
             await _db.InitAsync();
-            var musteriler = await _db.TumMusterileriGetirAsync();
-            MusteriPicker.ItemsSource = musteriler.OrderBy(m => m.AdSoyad).ToList();
+            var toptancilar = await _db.TumToptanMusterileriGetirAsync();
+            MusteriPicker.ItemsSource = toptancilar.OrderBy(m => m.SirketAdi).ToList();
             _tumUrunler = await _db.TumUrunleriGetirAsync();
+        }
+
+        private async void YeniMusteri_Clicked(object sender, EventArgs e)
+        {
+            string sonuc = await DisplayPromptAsync("Yeni Firma", "Restoran/Otel Adı:");
+            if (!string.IsNullOrWhiteSpace(sonuc))
+            {
+                await _db.ToptanMusteriEkleAsync(new ToptanMusteri { SirketAdi = sonuc.Trim() });
+                await VerileriYukle();
+            }
         }
 
         private void UrunArama_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.NewTextValue))
             {
-                UrunlerListesi.ItemsSource = null;
+                UrunlerListesi.IsVisible = false;
                 return;
             }
 
-            // Urun.cs içindeki isme uygun olarak u.Ad yapıldı
-            var sonuc = _tumUrunler
-                .Where(u => u.Ad.ToLower().Contains(e.NewTextValue.ToLower()))
-                .ToList();
+            var arama = e.NewTextValue.ToLower();
+            var sonuc = _tumUrunler.Where(u => u.Ad != null && u.Ad.ToLower().Contains(arama)).ToList();
 
             UrunlerListesi.ItemsSource = sonuc;
+            UrunlerListesi.IsVisible = sonuc.Any();
         }
 
         private void UrunSecildi(object sender, SelectionChangedEventArgs e)
@@ -50,64 +69,95 @@ namespace Saller_System.Views
             _secilenUrun = e.CurrentSelection.FirstOrDefault() as Urun;
             if (_secilenUrun != null)
             {
+                SecilenUrunLabel.Text = $"Seçilen: {_secilenUrun.Ad}";
+                SecilenUrunLabel.TextColor = Colors.Green;
+
+                decimal alis = _secilenUrun.GramajliMi ? _secilenUrun.KgAlisFiyati : _secilenUrun.AlisFiyati;
+                decimal satis = _secilenUrun.GramajliMi ? _secilenUrun.KgFiyati : _secilenUrun.Fiyat;
+
+                if (alis == 0) alis = _secilenUrun.AlisFiyati;
+                if (satis == 0) satis = _secilenUrun.Fiyat;
+
+                MaliyetEntry.Text = alis.ToString("0.##");
+                SatisFiyatiEntry.Text = satis.ToString("0.##");
+
+                UrunAramaBar.Text = "";
+                UrunlerListesi.IsVisible = false;
                 MiktarEntry.Focus();
             }
         }
 
-        private async void SatisTamamla_Clicked(object sender, EventArgs e)
+        private void SepeteEkle_Clicked(object sender, EventArgs e)
         {
-            var secilenMusteri = MusteriPicker.SelectedItem as Musteri;
-
-            if (secilenMusteri == null || _secilenUrun == null || string.IsNullOrWhiteSpace(MiktarEntry.Text))
+            if (_secilenUrun == null)
             {
-                await DisplayAlert("Uyarı", "Lütfen Müşteri, Ürün ve Miktar alanlarını doldurun!", "Tamam");
+                DisplayAlert("Uyarı", "Lütfen ürün seçin.", "Tamam");
                 return;
             }
 
-            if (!decimal.TryParse(MiktarEntry.Text, out decimal miktar) || miktar <= 0)
+            if (!decimal.TryParse(MiktarEntry.Text, out decimal miktar) || miktar <= 0) return;
+            if (!decimal.TryParse(MaliyetEntry.Text, out decimal maliyet) || maliyet < 0) return;
+            if (!decimal.TryParse(SatisFiyatiEntry.Text, out decimal satisFiyat) || satisFiyat < 0) return;
+
+            decimal tutar = satisFiyat * miktar;
+            decimal kar = (satisFiyat - maliyet) * miktar;
+
+            _sepet.Add(new Satis
             {
-                await DisplayAlert("Hata", "Geçerli bir miktar giriniz!", "Tamam");
+                UrunId = _secilenUrun.Id,
+                UrunAd = _secilenUrun.Ad,
+                Adet = miktar,
+                Fiyat = tutar,
+                AlisFiyati = maliyet * miktar,
+                Kar = kar,
+                SatisTipi = "TOPTAN",
+                Tarih = DateTime.Now,
+                KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Bilinmiyor"
+            });
+
+            _toplamTutar += tutar;
+            ToplamTutarLabel.Text = $"Toplam: ₺{_toplamTutar:N2}";
+
+            _secilenUrun = null;
+            SecilenUrunLabel.Text = "Seçilen: (Yok)";
+            SecilenUrunLabel.TextColor = Color.FromArgb("#E31E24");
+            MiktarEntry.Text = "";
+            MaliyetEntry.Text = "";
+            SatisFiyatiEntry.Text = "";
+        }
+
+        private async void SatisTamamla_Clicked(object sender, EventArgs e)
+        {
+            var musteri = MusteriPicker.SelectedItem as ToptanMusteri;
+
+            if (musteri == null || !_sepet.Any())
+            {
+                await DisplayAlert("Uyarı", "Firma seçin ve sepete ürün ekleyin.", "Tamam");
                 return;
             }
 
             try
             {
-                decimal toplamTutar = _secilenUrun.Fiyat * miktar;
-
-                // 1. Satışı Kaydet (Senin Satis modelindeki isimlerle)
-                var yeniSatis = new Satis
+                // YENİ: Seçilen firmayı sepetin KasiyerAd bilgisine mühürlüyoruz (Excel için)
+                string aktifKasiyer = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Bilinmiyor";
+                foreach (var item in _sepet)
                 {
-                    UrunId = _secilenUrun.Id,
-                    UrunAd = _secilenUrun.Ad,   // UrunAdi değil UrunAd
-                    Adet = miktar,              // Miktar değil Adet
-                    Fiyat = toplamTutar,        // ToplamFiyat değil Fiyat
-                    Tarih = DateTime.Now,
-                    SatisTipi = "TOPTAN",       // Excel için Toptan etiketi
-                    KasiyerAd = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Bilinmiyor"
-                };
+                    item.KasiyerAd = $"{aktifKasiyer} (Firma: {musteri.SirketAdi})";
+                }
 
-                // ToptanSatisKaydet yerine genel SatisKaydet'i kullanıyoruz
-                await _db.SatisKaydetAsync(yeniSatis);
+                await _db.SatisleriTopluKaydetAsync(_sepet);
+                await _db.ToptanMusteriBorcEkleAsync(musteri.Id, _toplamTutar);
 
-                // 2. Müşterinin Veresiye Borcuna Ekle
-                await _db.VeresiyeIslemKaydetAsync(new VeresiyeIslem
-                {
-                    MusteriId = secilenMusteri.Id,
-                    Tutar = toplamTutar,
-                    Tarih = DateTime.Now,
-                    Aciklama = $"{miktar} kg {_secilenUrun.Ad} (Toptan)"
-                });
+                await DisplayAlert("Başarılı", $"{musteri.SirketAdi} borcuna ₺{_toplamTutar:N2} eklendi.", "Tamam");
 
-                await DisplayAlert("Başarılı", $"{secilenMusteri.AdSoyad} hesabına ₺{toplamTutar:N2} borç kaydedildi.", "Tamam");
-
-                // Formu temizle
-                MiktarEntry.Text = "";
-                UrunAramaBar.Text = "";
-                UrunlerListesi.ItemsSource = null;
+                _sepet.Clear();
+                _toplamTutar = 0;
+                ToplamTutarLabel.Text = "Toplam: ₺0.00";
+                MusteriPicker.SelectedItem = null;
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", "İşlem sırasında hata oluştu: " + ex.Message, "Tamam");
+                await DisplayAlert("Hata", ex.Message, "Tamam");
             }
         }
     }

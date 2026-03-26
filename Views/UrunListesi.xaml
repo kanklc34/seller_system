@@ -1,41 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:Saller_System.Models"
-             x:Class="Saller_System.Views.UrunListesi"
-             x:Name="ThisPage"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
-
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:models="clr-namespace:Saller_System.Models" x:Class="Saller_System.Views.UrunListesi" x:Name="ThisPage" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
     <Grid RowDefinitions="Auto,Auto,*" Padding="20,18,20,10" RowSpacing="14">
-
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-            <Border BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                    Stroke="Transparent" StrokeShape="RoundRectangle 12"
-                    Padding="10,8" WidthRequest="44" HeightRequest="44" VerticalOptions="Center">
+            <Border BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#991B1B}" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="10,8" WidthRequest="44" HeightRequest="44" VerticalOptions="Center">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="GeriClicked"/>
                 </Border.GestureRecognizers>
-                <Label Text="⬅" FontSize="18" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="⬅" FontSize="18" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Border>
-
-            <Label Grid.Column="1" Text="Ürün Yönetimi" FontSize="20" FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center" VerticalOptions="Center"/>
-
+            <Label Grid.Column="1" Text="Ürün Yönetimi" FontSize="20" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label Grid.Column="2" x:Name="TarihLabel" TextColor="#94A3B8" FontSize="12" VerticalOptions="Center"/>
         </Grid>
-
-        <Border Grid.Row="1" x:Name="YeniUrunPaneli"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1"
-                StrokeShape="RoundRectangle 20" Padding="20">
+        <Border Grid.Row="1" x:Name="YeniUrunPaneli" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">
             <VerticalStackLayout Spacing="10">
-                <Label Text="YENİ ÜRÜN EKLE" FontSize="11" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" Margin="2,0"/>
-
+                <Label Text="YENİ ÜRÜN EKLE" FontSize="11" FontAttributes="Bold" TextColor="#D4AF37" Margin="2,0"/>
                 <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 10" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="12,0" HeightRequest="48">
                     <Entry x:Name="AdEntry" Placeholder="Ürün Adı" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
                 </Border>
-
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Border Grid.Column="0" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 10" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="12,0" HeightRequest="48">
                         <Entry x:Name="BarkodEntry" Placeholder="Barkod" Keyboard="Numeric" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
@@ -44,12 +25,10 @@
                         <Entry x:Name="KategoriEntry" Placeholder="Kategori" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
                     </Border>
                 </Grid>
-
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="⚖️ Gramajlı (Kg) Ürün" TextColor="{AppThemeBinding Light=#374151, Dark=#CBD5E1}" VerticalOptions="Center" FontAttributes="Bold"/>
                     <Switch Grid.Column="1" x:Name="GramajliSwitch" OnColor="#E31E24"/>
                 </Grid>
-
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Border Grid.Column="0" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 10" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="12,0" HeightRequest="48">
                         <Entry x:Name="FiyatEntry" Placeholder="Satış ₺" Keyboard="Numeric" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
@@ -58,37 +37,30 @@
                         <Entry x:Name="AlisFiyatiEntry" Placeholder="Alış ₺" Keyboard="Numeric" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
                     </Border>
                 </Grid>
-
                 <Button Text="💾 Kaydet" BackgroundColor="#16A34A" TextColor="White" FontAttributes="Bold" HeightRequest="48" CornerRadius="12" Clicked="KaydetClicked"/>
             </VerticalStackLayout>
         </Border>
-
         <VerticalStackLayout Grid.Row="2" Spacing="10">
             <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Padding="12,4" HeightRequest="48">
                 <SearchBar x:Name="UrunAraBar" Placeholder="Ürün ara..." TextChanged="UrunAraTextChanged" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" PlaceholderColor="#94A3B8"/>
             </Border>
-
             <CollectionView x:Name="UrunlerListesi">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Urun">
                         <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" Padding="16" Margin="0,0,0,8" StrokeShape="RoundRectangle 14">
                             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
-                                <VerticalStackLayout Grid.Column="0">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                     <Label Text="{Binding Ad}" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" FontAttributes="Bold" FontSize="15"/>
-
                                     <Label Text="{Binding Fiyat, StringFormat='₺{0:N2} / Adet'}" TextColor="#16A34A" FontSize="13" FontAttributes="Bold" IsVisible="{Binding GramajliMi, Converter={x:StaticResource InvertedBoolConverter}}"/>
                                     <Label Text="{Binding KgFiyati, StringFormat='₺{0:N2} / Kg'}" TextColor="#E31E24" FontSize="13" FontAttributes="Bold" IsVisible="{Binding GramajliMi}"/>
-
                                 </VerticalStackLayout>
-
-                                <Button Grid.Column="1" Text="✏️" Clicked="UrunDuzenleClicked" CommandParameter="{Binding .}" WidthRequest="42" HeightRequest="42" CornerRadius="10" BackgroundColor="#16A34A" IsVisible="{Binding Source={x:Reference ThisPage}, Path=IsYonetici}"/>
-                                <Button Grid.Column="2" Text="🗑️" Clicked="UrunSilClicked" CommandParameter="{Binding .}" WidthRequest="42" HeightRequest="42" CornerRadius="10" BackgroundColor="#E31E24" IsVisible="{Binding Source={x:Reference ThisPage}, Path=IsYonetici}"/>
+                                <Button Grid.Column="1" Text="✏️" Clicked="UrunDuzenleClicked" CommandParameter="{Binding .}" WidthRequest="42" HeightRequest="42" CornerRadius="10" BackgroundColor="#D4AF37" TextColor="#0F172A" IsVisible="{Binding Source={x:Reference ThisPage}, Path=IsYonetici}"/>
+                                <Button Grid.Column="2" Text="🗑️" Clicked="UrunSilClicked" CommandParameter="{Binding .}" WidthRequest="42" HeightRequest="42" CornerRadius="10" BackgroundColor="#E31E24" TextColor="White" IsVisible="{Binding Source={x:Reference ThisPage}, Path=IsYonetici}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
-
     </Grid>
 </ContentPage>

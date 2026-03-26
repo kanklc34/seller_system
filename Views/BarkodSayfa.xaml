@@ -1,169 +1,66 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-             x:Class="Saller_System.Views.BarkodSayfa"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
-
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls" x:Class="Saller_System.Views.BarkodSayfa" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
     <Grid RowDefinitions="0.45*, 0.55*">
-
-        <!-- Kamera alanı -->
         <Grid Grid.Row="0">
-            <zxing:CameraBarcodeReaderView
-                x:Name="BarkodOkuyucu"
-                IsDetecting="False"
-                BarcodesDetected="BarkodOkundu"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill"/>
-
+            <zxing:CameraBarcodeReaderView x:Name="BarkodOkuyucu" IsDetecting="False" BarcodesDetected="BarkodOkundu" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <BoxView BackgroundColor="#20000000" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-
             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
-                <Label Text="Barkodu çerçeveye hizalayın"
-                       TextColor="White" FontSize="14" FontAttributes="Bold"
-                       HorizontalOptions="Center">
+                <Label Text="Barkodu çerçeveye hizalayın" TextColor="White" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center">
                     <Label.Shadow>
                         <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.8"/>
                     </Label.Shadow>
                 </Label>
-                <Border WidthRequest="220" HeightRequest="130"
-                        Stroke="#E31E24" StrokeThickness="3"
-                        BackgroundColor="Transparent"
-                        StrokeShape="RoundRectangle 16"/>
+                <Border WidthRequest="220" HeightRequest="130" Stroke="#E31E24" StrokeThickness="3" BackgroundColor="Transparent" StrokeShape="RoundRectangle 16"/>
             </VerticalStackLayout>
-
-            <!-- Geri butonu -->
-            <Border HorizontalOptions="Start" VerticalOptions="Start"
-                    Margin="15,50,0,0"
-                    BackgroundColor="#B3000000"
-                    Stroke="Transparent"
-                    StrokeShape="RoundRectangle 20"
-                    Padding="14,8">
+            <Border HorizontalOptions="Start" VerticalOptions="Start" Margin="15,50,0,0" BackgroundColor="#B3000000" Stroke="Transparent" StrokeShape="RoundRectangle 20" Padding="14,8">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="GeriClicked"/>
                 </Border.GestureRecognizers>
                 <Label Text="⬅ Geri" TextColor="White" FontAttributes="Bold" FontSize="14"/>
             </Border>
         </Grid>
-
-        <!-- Alt panel -->
-        <Border Grid.Row="1"
-                Margin="0,-24,0,0"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111827}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 24,24,0,0">
-
+        <Border Grid.Row="1" Margin="0,-24,0,0" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111827}" Stroke="Transparent" StrokeShape="RoundRectangle 24,24,0,0">
             <ScrollView>
                 <VerticalStackLayout Padding="24,28,24,24" Spacing="16">
-
-                    <!-- Dinamik mağaza adı -->
-                    <Label x:Name="MagazaAdiLabel"
-                           Text="KASAP PRO"
-                           FontSize="20" FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
-
-                    <!-- Barkod giriş alanı -->
+                    <Label x:Name="MagazaAdiLabel" Text="ÖZ BİGA ET" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" TextColor="{AppThemeBinding Light=#E31E24, Dark=#E31E24}"/>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                        <Border Grid.Column="0"
-                                Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
-                                StrokeShape="RoundRectangle 16"
-                                BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1E293B}"
-                                Padding="16,4" HeightRequest="56">
-                            <Entry x:Name="BarkodEntry"
-                                   Placeholder="Barkod numarası"
-                                   Keyboard="Numeric"
-                                   BackgroundColor="Transparent"
-                                   VerticalOptions="Center"
-                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
-                                   PlaceholderColor="#94A3B8"
-                                   Completed="BarkodEntry_Completed"/>
+                        <Border Grid.Column="0" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 16" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1E293B}" Padding="16,4" HeightRequest="56">
+                            <Entry x:Name="BarkodEntry" Placeholder="Barkod numarası" Keyboard="Numeric" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" PlaceholderColor="#94A3B8" Completed="BarkodEntry_Completed"/>
                         </Border>
-
-                        <Border Grid.Column="1"
-                                BackgroundColor="#E31E24"
-                                Stroke="Transparent"
-                                StrokeShape="RoundRectangle 16"
-                                HeightRequest="56" WidthRequest="90">
+                        <Border Grid.Column="1" BackgroundColor="#E31E24" Stroke="Transparent" StrokeShape="RoundRectangle 16" HeightRequest="56" WidthRequest="90">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="UrunGetirTapped"/>
                             </Border.GestureRecognizers>
-                            <Label Text="🔍 Bul" TextColor="White" FontAttributes="Bold"
-                                   FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            <Label Text="🔍 Bul" TextColor="White" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                         </Border>
                     </Grid>
-
-                    <!-- Ürün bilgisi -->
-                    <Border x:Name="UrunBilgiFrame"
-                            IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 20"
-                            Padding="20">
+                    <Border x:Name="UrunBilgiFrame" IsVisible="False" BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">
                         <VerticalStackLayout Spacing="10">
-                            <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
+                            <Label x:Name="UrunAdLabel" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"/>
                             <Label x:Name="UrunFiyatLabel" FontSize="16" FontAttributes="Bold" TextColor="#16A34A"/>
-                            <Label x:Name="UrunKategoriLabel" FontSize="13"
-                                   TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
-
+                            <Label x:Name="UrunKategoriLabel" FontSize="13" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="0,6,0,0">
-                                <Border Grid.Column="0"
-                                        Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}"
-                                        StrokeShape="RoundRectangle 14"
-                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#0F172A}"
-                                        Padding="14,4" WidthRequest="80" HeightRequest="52">
-                                    <Entry x:Name="AdetEntry"
-                                           Placeholder="Adet" Keyboard="Numeric" Text="1"
-                                           HorizontalTextAlignment="Center"
-                                           BackgroundColor="Transparent" VerticalOptions="Center"
-                                           TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}"
-                                           PlaceholderColor="#94A3B8"/>
+                                <Border Grid.Column="0" Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#0F172A}" Padding="14,4" WidthRequest="80" HeightRequest="52">
+                                    <Entry x:Name="AdetEntry" Placeholder="Adet" Keyboard="Numeric" Text="1" HorizontalTextAlignment="Center" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" PlaceholderColor="#94A3B8"/>
                                 </Border>
-
-                                <Border Grid.Column="1"
-                                        BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#3B82F6}"
-                                        Stroke="Transparent"
-                                        StrokeShape="RoundRectangle 14"
-                                        HeightRequest="52">
+                                <Border Grid.Column="1" BackgroundColor="#D4AF37" Stroke="Transparent" StrokeShape="RoundRectangle 14" HeightRequest="52">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="SatisaEkleTapped"/>
                                     </Border.GestureRecognizers>
-                                    <Label Text="Sepete Ekle" TextColor="White" FontAttributes="Bold"
-                                           FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Text="Sepete Ekle" TextColor="#0F172A" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
-
-                    <!-- Başarı mesajı -->
-                    <Border x:Name="MesajBorder"
-                            IsVisible="False"
-                            BackgroundColor="{AppThemeBinding Light=#DCFCE7, Dark=#064E3B}"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 14"
-                            Padding="16,12">
-                        <Label x:Name="MesajLabel"
-                               TextColor="{AppThemeBinding Light=#16A34A, Dark=#34D399}"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
+                    <Border x:Name="MesajBorder" IsVisible="False" BackgroundColor="{AppThemeBinding Light=#DCFCE7, Dark=#064E3B}" Stroke="Transparent" StrokeShape="RoundRectangle 14" Padding="16,12">
+                        <Label x:Name="MesajLabel" TextColor="{AppThemeBinding Light=#16A34A, Dark=#34D399}" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                     </Border>
-
-                    <!-- Sepete git -->
-                    <Border BackgroundColor="#16A34A"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 18"
-                            HeightRequest="56">
+                    <Border BackgroundColor="#16A34A" Stroke="Transparent" StrokeShape="RoundRectangle 18" HeightRequest="56">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="SepeteGitClicked"/>
                         </Border.GestureRecognizers>
-                        <Label Text="🛒 Sepete Git" TextColor="White" FontAttributes="Bold"
-                               FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        <Label Text="🛒 Sepete Git" TextColor="White" FontAttributes="Bold" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
-
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
