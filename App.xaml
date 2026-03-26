@@ -2,26 +2,22 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.App">
-
     <Application.Resources>
         <ResourceDictionary>
-
-            <!-- Renkler -->
-            <Color x:Key="Primary">#DC2626</Color>
+            <Color x:Key="Primary">#E31E24</Color>
             <Color x:Key="PrimaryDark">#991B1B</Color>
             <Color x:Key="PrimaryLight">#FEE2E2</Color>
-            <Color x:Key="Accent">#1E3A5C</Color>
+            <Color x:Key="Accent">#D4AF37</Color>
             <Color x:Key="Success">#16A34A</Color>
             <Color x:Key="SuccessLight">#DCFCE7</Color>
-            <Color x:Key="Danger">#DC2626</Color>
-            <Color x:Key="Warning">#D97706</Color>
+            <Color x:Key="Danger">#E31E24</Color>
+            <Color x:Key="Warning">#D4AF37</Color>
             <Color x:Key="PageBg">#F8F9FA</Color>
             <Color x:Key="CardBg">#FFFFFF</Color>
             <Color x:Key="TextPrimary">#0F172A</Color>
             <Color x:Key="TextSecondary">#64748B</Color>
             <Color x:Key="Border">#E2E8F0</Color>
 
-            <!-- Buton stilleri -->
             <Style x:Key="PrimaryBtn" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                 <Setter Property="TextColor" Value="White"/>
@@ -29,100 +25,37 @@
                 <Setter Property="HeightRequest" Value="54"/>
                 <Setter Property="FontSize" Value="15"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="Shadow">
-                    <Setter.Value>
-                        <Shadow Brush="#DC2626" Offset="0,4" Radius="8" Opacity="0.3"/>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
-            <Style x:Key="SuccessBtn" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{StaticResource Success}"/>
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="CornerRadius" Value="12"/>
-                <Setter Property="HeightRequest" Value="54"/>
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="Shadow">
-                    <Setter.Value>
-                        <Shadow Brush="#16A34A" Offset="0,4" Radius="8" Opacity="0.3"/>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="DangerBtn" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{StaticResource Danger}"/>
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="CornerRadius" Value="12"/>
-                <Setter Property="HeightRequest" Value="54"/>
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="FontAttributes" Value="Bold"/>
-            </Style>
-
-            <Style x:Key="GrayBtn" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"/>
-                <Setter Property="TextColor" Value="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"/>
-                <Setter Property="CornerRadius" Value="12"/>
-                <Setter Property="HeightRequest" Value="54"/>
-                <Setter Property="FontSize" Value="15"/>
-            </Style>
-
-            <Style x:Key="AccentBtn" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{StaticResource Accent}"/>
-                <Setter Property="TextColor" Value="White"/>
-                <Setter Property="CornerRadius" Value="12"/>
-                <Setter Property="HeightRequest" Value="54"/>
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="FontAttributes" Value="Bold"/>
-            </Style>
-
-            <!-- Sayfa arka planı -->
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
-                <Setter Property="BackgroundColor"
-                        Value="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F1F5F9, Dark=#0F172A}"/>
             </Style>
-
-            <!-- Label -->
             <Style TargetType="Label">
-                <Setter Property="TextColor"
-                        Value="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
                 <Setter Property="FontSize" Value="14"/>
             </Style>
-
-            <!-- Entry -->
             <Style TargetType="Entry">
-                <Setter Property="BackgroundColor"
-                        Value="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"/>
-                <Setter Property="TextColor"
-                        Value="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
                 <Setter Property="PlaceholderColor" Value="#94A3B8"/>
                 <Setter Property="HeightRequest" Value="50"/>
                 <Setter Property="FontSize" Value="15"/>
-                <Setter Property="MinimumHeightRequest" Value="50"/>
             </Style>
-
-            <!-- CollectionView -->
             <Style TargetType="CollectionView">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
-
-            <!-- ScrollView -->
             <Style TargetType="ScrollView">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
-
             <Style TargetType="VerticalStackLayout">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
-
             <Style TargetType="HorizontalStackLayout">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
-
             <Style TargetType="Grid">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>
