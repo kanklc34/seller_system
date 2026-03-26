@@ -2,96 +2,46 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Saller_System.Views.LoginPage"
-             BackgroundColor="{AppThemeBinding Light=#F4F6F8, Dark=#121212}">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F1F5F9, Dark=#0B1220}">
 
-    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+    <ScrollView>
+        <Grid VerticalOptions="Center" Padding="24,40,24,40" MinimumHeightRequest="500">
+            <VerticalStackLayout Spacing="28" WidthRequest="360" HorizontalOptions="Center">
 
-    <Grid RowDefinitions="*,Auto" Padding="20,0">
-        <ScrollView Grid.Row="0">
-            <Grid Padding="0,50,0,30">
-                <VerticalStackLayout WidthRequest="300" HorizontalOptions="Center" VerticalOptions="Center" Spacing="24">
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Image Source="logo_karanlik.png" WidthRequest="200" HeightRequest="200" Aspect="AspectFit"/>
+                    <Label x:Name="MagazaAdiLabel" Text="KASAP PRO" FontSize="26" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center"/>
+                    <Label Text="KASAP &amp; ŞARKÜTERİ SİSTEMİ" FontSize="12" TextColor="#D4AF37" CharacterSpacing="2" HorizontalOptions="Center" FontAttributes="Bold"/>
+                </VerticalStackLayout>
 
-                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
+                        Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
+                        StrokeThickness="1" StrokeShape="RoundRectangle 24" Padding="24">
+                    <VerticalStackLayout Spacing="14">
 
-                        <Border StrokeThickness="0"
-                                BackgroundColor="Transparent" 
-                                WidthRequest="160"
-                                HeightRequest="120"
-                                HorizontalOptions="Center">
-                            <Grid>
-                                <Image Source="appiconfg.png" 
-                                       Aspect="AspectFit"
-                                       Margin="0"
-                                       HorizontalOptions="Fill"
-                                       VerticalOptions="Fill" />
-                            </Grid>
+                        <Label Text="Kullanıcı Adı" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" HeightRequest="54" Padding="16,0">
+                            <Entry x:Name="KullaniciAdiEntry" Placeholder="Kullanıcı adınızı girin" PlaceholderColor="#94A3B8" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}" BackgroundColor="Transparent" VerticalOptions="Center"/>
                         </Border>
 
-                        <Label Text="Öz Biga Et"
-                               FontSize="30" FontAttributes="Bold"
-                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light=#1A3A5C, Dark=#F3F4F6}" />
+                        <Label Text="Şifre" FontSize="12" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                        <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" HeightRequest="54" Padding="16,0">
+                            <Entry x:Name="SifreEntry" Placeholder="Şifrenizi girin" IsPassword="True" PlaceholderColor="#94A3B8" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}" BackgroundColor="Transparent" VerticalOptions="Center"/>
+                        </Border>
 
-                        <Label Text="Etin En Taze Hali"
-                               FontSize="15"
-                               HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+                        <Button Text="GİRİŞ YAP" Clicked="GirisYapClicked" BackgroundColor="#E31E24" TextColor="White" FontAttributes="Bold" FontSize="15" HeightRequest="54" CornerRadius="14" Margin="0,8,0,0"/>
+
+                        <Border x:Name="HataBorder" IsVisible="False" BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#451A1A}" Stroke="Transparent" StrokeShape="RoundRectangle 10" Padding="12">
+                            <Label x:Name="HataLabel" TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}" FontSize="13" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </Border>
+
                     </VerticalStackLayout>
+                </Border>
 
-                    <Border Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#2A2A2A}"
-                            StrokeThickness="1"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1B1B1B}"
-                            StrokeShape="RoundRectangle 24"
-                            Padding="28"
-                            HorizontalOptions="Fill">
+                <Label x:Name="TelTelLabel" Text="© 2026 Kasap Pro" TextColor="#94A3B8" FontSize="11" HorizontalOptions="Center"/>
 
-                        <VerticalStackLayout Spacing="18" HorizontalOptions="Fill">
-
-                            <VerticalStackLayout Spacing="6">
-                                <Label Text="Hoş geldiniz" FontSize="24" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" />
-                                <Label Text="Devam etmek için giriş yapın" FontSize="14" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
-                            </VerticalStackLayout>
-
-                            <VerticalStackLayout Spacing="8" HorizontalOptions="Fill">
-                                <Label Text="Kullanıcı Adı" FontAttributes="Bold" FontSize="13" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" />
-                                <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#232323}" Padding="14,4" HeightRequest="56" HorizontalOptions="Fill">
-                                    <Grid ColumnDefinitions="30,*" ColumnSpacing="10" HorizontalOptions="Fill">
-                                        <Label Text="👤" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        <Entry Grid.Column="1" x:Name="KullaniciAdiEntry" Placeholder="Kullanıcı adınızı girin" BackgroundColor="Transparent" ClearButtonVisibility="Never" HorizontalOptions="Fill" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
-
-                            <VerticalStackLayout Spacing="8" HorizontalOptions="Fill">
-                                <Label Text="Şifre" FontAttributes="Bold" FontSize="13" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}" />
-                                <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#232323}" Padding="14,4" HeightRequest="56" HorizontalOptions="Fill">
-                                    <Grid ColumnDefinitions="30,*" ColumnSpacing="10" HorizontalOptions="Fill">
-                                        <Label Text="🔒" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        <Entry Grid.Column="1" x:Name="SifreEntry" Placeholder="Şifrenizi girin" IsPassword="True" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#111827, Dark=#F9FAFB}" PlaceholderColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
-
-                            <Button Text="Giriş Yap"
-                                    HeightRequest="54"
-                                    CornerRadius="14"
-                                    FontAttributes="Bold"
-                                    FontSize="16"
-                                    TextColor="White"
-                                    BackgroundColor="{AppThemeBinding Light=#1A73E8, Dark=#2563EB}"
-                                    Margin="0,8,0,0"
-                                    Clicked="GirisYapClicked" />
-
-                            <Border x:Name="HataBorder" IsVisible="False" StrokeThickness="0" BackgroundColor="{AppThemeBinding Light=#FEF2F2, Dark=#3A1F1F}" StrokeShape="RoundRectangle 12" Padding="12,10">
-                                <Label x:Name="HataLabel" TextColor="{AppThemeBinding Light=#B91C1C, Dark=#FCA5A5}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            </Border>
-
-                        </VerticalStackLayout>
-                    </Border>
-                </VerticalStackLayout>
-            </Grid>
-        </ScrollView>
-
-        <Label Grid.Row="1" Text="© Öz Biga Et" HorizontalOptions="Center" Margin="0,0,0,18" FontSize="12" TextColor="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}" />
-    </Grid>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

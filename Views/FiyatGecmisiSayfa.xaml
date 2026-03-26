@@ -1,88 +1,39 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:Saller_System.Models"
-             x:Class="Saller_System.Views.FiyatGecmisiSayfa"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
-
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:models="clr-namespace:Saller_System.Models" x:Class="Saller_System.Views.FiyatGecmisiSayfa" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
     <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,18,20,32" RowSpacing="12">
-
-        <!-- Başlık -->
-        <Border Grid.Row="0"
-                BackgroundColor="{AppThemeBinding Light=#0F172A, Dark=#111827}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 20"
-                Padding="20,16">
-            <Label Text="📈 Fiyat Geçmişi"
-                   FontSize="22" FontAttributes="Bold"
-                   TextColor="White"/>
+        <Border Grid.Row="0" BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#991B1B}" Stroke="Transparent" StrokeShape="RoundRectangle 20" Padding="20,16">
+            <Label Text="📈 Fiyat Geçmişi" FontSize="22" FontAttributes="Bold" TextColor="White"/>
         </Border>
-
-        <!-- Ürün adı -->
-        <Border Grid.Row="1"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 14"
-                Padding="16,12">
-            <Label x:Name="UrunAdLabel"
-                   FontSize="15" FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
+        <Border Grid.Row="1" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="16,12">
+            <Label x:Name="UrunAdLabel" FontSize="15" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F1F5F9}"/>
         </Border>
-
-        <!-- Liste -->
         <CollectionView Grid.Row="2" x:Name="GecmisListesi">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:FiyatGecmisi">
-                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}"
-                            Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 16"
-                            Padding="16" Margin="0,4">
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 16" Padding="16" Margin="0,4">
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                             <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                <Label Text="Eski Fiyat" FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
-                                <Label Text="{Binding EskiFiyat, StringFormat='₺{0:N2}'}"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource Danger}"/>
+                                <Label Text="Eski Fiyat" FontSize="11" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding EskiFiyat, StringFormat='₺{0:N2}'}" FontAttributes="Bold" TextColor="{StaticResource Danger}"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="4">
-                                <Label Text="Yeni Fiyat" FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
-                                <Label Text="{Binding YeniFiyat, StringFormat='₺{0:N2}'}"
-                                       FontAttributes="Bold"
-                                       TextColor="{StaticResource Success}"/>
+                                <Label Text="Yeni Fiyat" FontSize="11" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding YeniFiyat, StringFormat='₺{0:N2}'}" FontAttributes="Bold" TextColor="{StaticResource Success}"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="2" Spacing="4">
-                                <Label Text="{Binding Tarih, StringFormat='{0:dd/MM/yy HH:mm}'}"
-                                       FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
-                                <Label Text="{Binding DegistirenKullanici}"
-                                       FontSize="12"
-                                       TextColor="{StaticResource Primary}"/>
+                                <Label Text="{Binding Tarih, StringFormat='{0:dd/MM/yy HH:mm}'}" FontSize="11" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
+                                <Label Text="{Binding DegistirenKullanici}" FontSize="12" TextColor="#D4AF37"/>
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- Geri -->
-        <Border Grid.Row="3"
-                BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}"
-                Stroke="Transparent"
-                StrokeShape="RoundRectangle 16"
-                Padding="0,16" HeightRequest="56">
+        <Border Grid.Row="3" BackgroundColor="{AppThemeBinding Light=#E2E8F0, Dark=#1E293B}" Stroke="Transparent" StrokeShape="RoundRectangle 16" Padding="0,16" HeightRequest="56">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Tapped="GeriClicked"/>
             </Border.GestureRecognizers>
-            <Label Text="⬅ Geri"
-                   TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}"
-                   FontAttributes="Bold" FontSize="15"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Label Text="⬅ Geri" TextColor="{AppThemeBinding Light=#475569, Dark=#CBD5E1}" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Border>
-
     </Grid>
 </ContentPage>
