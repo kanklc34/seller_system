@@ -7,9 +7,18 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20,40,20,32" Spacing="20">
+
             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
-                <Image Source="logo.jpg" WidthRequest="120" HeightRequest="120" HorizontalOptions="Center"/>
-                <Label Text="Öz Biga Et" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <Border StrokeShape="RoundRectangle 60" 
+                        HeightRequest="120" 
+                        WidthRequest="120" 
+                        HorizontalOptions="Center"
+                        Stroke="Transparent">
+                    <Image x:Name="KurulumGorseli" 
+                           Source="logo.jpg" 
+                           Aspect="AspectFill"/>
+                </Border>
+                <Label Text="KASAP PRO" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center"/>
                 <Label Text="İlk Kurulum" FontSize="14" HorizontalOptions="Center" TextColor="#94A3B8"/>
             </VerticalStackLayout>
 
@@ -23,16 +32,32 @@
             <Border x:Name="Adim1Panel" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" StrokeShape="RoundRectangle 20" Padding="24">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="🏪 Mağaza Bilgileri" FontSize="18" FontAttributes="Bold" TextColor="#E31E24"/>
-                    <Label Text="Raporlarınızda ve Excel'de görünecek bilgileri girin." TextColor="#94A3B8" FontSize="13"/>
-                    <Label Text="Mağaza Adı *" FontSize="13" FontAttributes="Bold"/>
+
+                    <Label Text="📸 Mağaza Görseli" FontSize="13" FontAttributes="Bold" Margin="0,10,0,0"/>
+                    <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                        <Border StrokeShape="RoundRectangle 40" HeightRequest="80" WidthRequest="80" Stroke="Transparent">
+                            <Image x:Name="SecilenGorselOnizleme" Source="logo.jpg" Aspect="AspectFill"/>
+                        </Border>
+                        <Button Text="Resim Seç" 
+                                Clicked="GorselSecClicked" 
+                                BackgroundColor="#334155" 
+                                TextColor="White" 
+                                HeightRequest="44" 
+                                VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="Mağaza Adı *" FontSize="13" FontAttributes="Bold" Margin="0,10,0,0"/>
                     <Border StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">
                         <Entry x:Name="MagazaAdiEntry" Placeholder="Örn: Öz Biga Et" BackgroundColor="Transparent" VerticalOptions="Center"/>
                     </Border>
+
                     <Label Text="Telefon (isteğe bağlı)" FontSize="13" FontAttributes="Bold"/>
                     <Border StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">
                         <Entry x:Name="TelefonEntry" Placeholder="0544 444 44 44" Keyboard="Telephone" BackgroundColor="Transparent" VerticalOptions="Center" Unfocused="TelefonUnfocused"/>
                     </Border>
-                    <Label x:Name="TelefonHataLabel" IsVisible="False" TextColor="{StaticResource Danger}" FontSize="12"/>
+
+                    <Label x:Name="TelefonHataLabel" IsVisible="False" TextColor="Red" FontSize="12"/>
+
                     <Border BackgroundColor="#E31E24" StrokeShape="RoundRectangle 14" Padding="0,16" HeightRequest="54" Margin="0,8,0,0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Adim1DevamClicked"/>
@@ -95,7 +120,7 @@
                     <Border StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">
                         <Entry x:Name="YeniSifreTekrarEntry" Placeholder="Şifreyi tekrar girin" IsPassword="True" BackgroundColor="Transparent" VerticalOptions="Center"/>
                     </Border>
-                    <Label x:Name="SifreHataLabel" IsVisible="False" TextColor="{StaticResource Danger}" FontSize="12"/>
+                    <Label x:Name="SifreHataLabel" IsVisible="False" TextColor="Red" FontSize="12"/>
                     <Border BackgroundColor="#E31E24" StrokeShape="RoundRectangle 14" Padding="0,16" HeightRequest="54" Margin="0,8,0,0">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="Adim3DevamClicked"/>
@@ -117,6 +142,7 @@
                     </Border>
                 </VerticalStackLayout>
             </Border>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

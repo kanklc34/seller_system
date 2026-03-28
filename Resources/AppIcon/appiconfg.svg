@@ -1,28 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+<svg width="1024" height="1024" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+	<circle cx="400" cy="400" r="400" fill="#1a0505"/>
 
-	<rect width="800" height="400" fill="transparent"/>
+	<circle cx="400" cy="400" r="320" fill="none" stroke="#b91c1c" stroke-width="8"/>
+	<circle cx="400" cy="400" r="300" fill="none" stroke="#b91c1c" stroke-width="2"/>
 
-	<g transform="translate(200, 200)">
-		<text x="0" y="40"
-			  font-family="Impact, sans-serif"
-			  font-size="110"
-			  fill="white"
-			  letter-spacing="2">ÖZBİGA</text>
+	<text x="400" y="340" font-family="Arial, sans-serif" font-size="100" font-weight="700" fill="#fff7ed" text-anchor="middle">OZ</text>
+	<text x="400" y="440" font-family="Arial, sans-serif" font-size="100" font-weight="700" fill="#fff7ed" text-anchor="middle">BIGA</text>
+	<text x="400" y="520" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#ef4444" text-anchor="middle" letter-spacing="15">E T</text>
 
-		<text x="315" y="40"
-			  font-family="Impact, sans-serif"
-			  font-size="110"
-			  fill="#e31e24">ET</text>
-
-		<path d="M245,-15 
-                 C245,-15 255,45 350,45 
-                 C445,45 455,-15 455,-15
-                 L465,-15
-                 C465,-15 460,55 350,55
-                 C240,55 235,-15 235,-15 Z"
-			  fill="#e31e24"/>
-
-		<rect x="348" y="-40" width="4" height="100" fill="#333333"/>
-	</g>
+	<line x1="240" y1="465" x2="560" y2="465" stroke="#ef4444" stroke-width="2"/>
 </svg>
