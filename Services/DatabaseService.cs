@@ -103,12 +103,25 @@ namespace Saller_System.Services
         public async Task UrunSilAsync(Urun urun) => await _db!.DeleteAsync(urun);
         public async Task UrunGuncelleAsync(Urun yeniUrun, Urun eskiUrun)
         {
-            bool fiyatDegisti = eskiUrun.Fiyat != yeniUrun.Fiyat || eskiUrun.KgFiyati != yeniUrun.KgFiyati;
+            // Eski veya yeni ürün null ise işlem yapma (Crash önleyici)
+            if (yeniUrun == null || eskiUrun == null) return;
+
+            bool fiyatDegisti = eskiUrun.Fiyat != yeniUrun.Fiyat ||
+                               (yeniUrun.GramajliMi && eskiUrun.KgFiyati != yeniUrun.KgFiyati);
+
             await _db!.RunInTransactionAsync(db =>
             {
                 if (fiyatDegisti)
                 {
-                    db.Insert(new FiyatGecmisi { UrunId = yeniUrun.Id, UrunAd = yeniUrun.Ad, EskiFiyat = eskiUrun.GramajliMi ? eskiUrun.KgFiyati : eskiUrun.Fiyat, YeniFiyat = yeniUrun.GramajliMi ? yeniUrun.KgFiyati : yeniUrun.Fiyat, Tarih = DateTime.Now, DegistirenKullanici = "Sistem" });
+                    db.Insert(new FiyatGecmisi
+                    {
+                        UrunId = yeniUrun.Id,
+                        UrunAd = yeniUrun.Ad,
+                        EskiFiyat = eskiUrun.GramajliMi ? eskiUrun.KgFiyati : eskiUrun.Fiyat,
+                        YeniFiyat = yeniUrun.GramajliMi ? yeniUrun.KgFiyati : yeniUrun.Fiyat,
+                        Tarih = DateTime.Now,
+                        DegistirenKullanici = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Sistem"
+                    });
                 }
                 db.Update(yeniUrun);
             });
