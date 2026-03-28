@@ -37,10 +37,31 @@
                         </Border.GestureRecognizers>
                         <Label Text="💾 Prefix'i Kaydet" TextColor="White" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
+                
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                         <Label Grid.Column="0" Text="Kayıtlı Prefix:" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}"/>
                         <Label Grid.Column="1" x:Name="KayitliPrefixLabel" FontAttributes="Bold" TextColor="#16A34A" VerticalOptions="Center"/>
                     </Grid>
+                </VerticalStackLayout>
+            </Border>
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🖼️ Görsel Ayarları" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#E31E24, Dark=#D4AF37}"/>
+                    <Label Text="Ana sayfada görünecek dükkan görselini buradan değiştirebilirsiniz." TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="13"/>
+
+                    <Border BackgroundColor="#E31E24" Stroke="Transparent" StrokeShape="RoundRectangle 14" Padding="0,14" HeightRequest="52">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ArkaPlanResmiSecClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="📸 Yeni Görsel Seç" TextColor="White" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+
+                    <Border BackgroundColor="Transparent" Stroke="#E31E24" StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="0,14" HeightRequest="52">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="VarsayilanResmeDonClicked"/>
+                        </Border.GestureRecognizers>
+                        <Label Text="🔄 Varsayılan Görsele Dön" TextColor="#E31E24" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
                 </VerticalStackLayout>
             </Border>
             <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">

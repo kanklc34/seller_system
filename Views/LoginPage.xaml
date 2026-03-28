@@ -10,7 +10,19 @@
             <VerticalStackLayout Spacing="28" WidthRequest="360" HorizontalOptions="Center">
 
                 <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
-                    <Image Source="logo_karanlik.png" WidthRequest="200" HeightRequest="200" Aspect="AspectFit"/>
+                    <Border StrokeShape="RoundRectangle 100" 
+            Stroke="Transparent"
+            HeightRequest="180" 
+            WidthRequest="180" 
+            HorizontalOptions="Center"
+            Padding="0">
+                        <Grid>
+                            <Image x:Name="LoginArkaPlanGorseli" 
+                   Aspect="AspectFill"
+                   Opacity="1.0"/>
+                        </Grid>
+                    </Border>
+
                     <Label x:Name="MagazaAdiLabel" Text="KASAP PRO" FontSize="26" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" HorizontalOptions="Center"/>
                     <Label Text="KASAP &amp; ŞARKÜTERİ SİSTEMİ" FontSize="12" TextColor="#D4AF37" CharacterSpacing="2" HorizontalOptions="Center" FontAttributes="Bold"/>
                 </VerticalStackLayout>

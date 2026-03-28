@@ -6,16 +6,21 @@ namespace Saller_System.Views
     public partial class UrunListesi : ContentPage
     {
         private readonly DatabaseService _db;
-        public bool IsYonetici { get; set; }
 
-        // Debounce için
+        private bool _isYonetici;
+        public bool IsYonetici
+        {
+            get => _isYonetici;
+            set { _isYonetici = value; OnPropertyChanged(); }
+        }
+
         private CancellationTokenSource? _aramaCts;
 
         public UrunListesi(DatabaseService db)
         {
             InitializeComponent();
             _db = db;
-            TarihLabel.Text = DateTime.Now.ToString("yyyy");
+            TarihLabel.Text = DateTime.Now.Year.ToString();
             BindingContext = this;
         }
 
@@ -23,12 +28,19 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
 
-            if (await ZamanAsimKontrolAsync()) return;
+            // Güvenlik Kontrolü
+            if (OturumServisi.OturumSuresiDolduMu())
+            {
+                OturumServisi.Cikis();
+                await Shell.Current.GoToAsync("//LoginPage");
+                return;
+            }
 
             OturumServisi.AktiviteYenile();
             await _db.InitAsync();
             await ListeYukle();
 
+            // Hızlı Ekleme Kontrolü
             if (!string.IsNullOrEmpty(UrunDuzenleServisi.HizliEkleBarkod))
             {
                 BarkodEntry.Text = UrunDuzenleServisi.HizliEkleBarkod;
@@ -36,45 +48,32 @@ namespace Saller_System.Views
                 AdEntry.Focus();
             }
 
+            // Yetki Kontrolü
             var rol = OturumServisi.AktifKullanici?.Rol;
-            bool yoneticiMi = rol == "Patron" || rol == "Müdür"
-                           || OturumServisi.AktifKullanici?.KullaniciAdi == "admin";
-
-            YeniUrunPaneli.IsVisible = true;
-            IsYonetici = yoneticiMi;
-            OnPropertyChanged(nameof(IsYonetici));
+            IsYonetici = rol == "Patron" || rol == "Müdür" || OturumServisi.AktifKullanici?.KullaniciAdi == "admin";
         }
 
-        protected override bool OnBackButtonPressed()
+        private async Task ListeYukle()
         {
-            OturumServisi.AktiviteYenile();
-            Dispatcher.Dispatch(async () => await Shell.Current.GoToAsync("//AnaSayfa"));
-            return true;
+            try
+            {
+                var urunler = await _db.TumUrunleriGetirAsync();
+                UrunlerListesi.ItemsSource = urunler;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Liste yüklenirken sorun oluştu: " + ex.Message, "Tamam");
+            }
         }
-
-        private async Task<bool> ZamanAsimKontrolAsync()
-        {
-            if (!OturumServisi.OturumSuresiDolduMu()) return false;
-            OturumServisi.Cikis();
-            await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
-            await Shell.Current.GoToAsync("//LoginPage");
-            return true;
-        }
-
-        private async Task ListeYukle() =>
-            UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
 
         private async void KaydetClicked(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(AdEntry.Text))
             {
-                await DisplayAlert("Hata", "Lütfen en azından bir ürün adı girin.", "Tamam");
+                await DisplayAlert("Hata", "Lütfen ürün adı girin.", "Tamam");
                 return;
             }
 
-            OturumServisi.AktiviteYenile();
-
-            // Fiyatları sayıya güvenli bir şekilde çevir
             decimal.TryParse(FiyatEntry.Text, out decimal girilenSatis);
             decimal.TryParse(AlisFiyatiEntry.Text, out decimal girilenAlis);
             bool isGramajli = GramajliSwitch.IsToggled;
@@ -85,30 +84,24 @@ namespace Saller_System.Views
                 Barkod = BarkodEntry.Text,
                 Kategori = KategoriEntry.Text,
                 GramajliMi = isGramajli,
-
-                // YENİ MANTIK: Eğer gramajlıysa değerleri Kg kısmına, değilse Normal kısma at.
                 Fiyat = isGramajli ? 0 : girilenSatis,
                 AlisFiyati = isGramajli ? 0 : girilenAlis,
                 KgFiyati = isGramajli ? girilenSatis : 0,
                 KgAlisFiyati = isGramajli ? girilenAlis : 0,
-
-                StokMiktari = 0 // Yeni ürün stoğu her zaman 0 başlar
+                StokMiktari = 0
             };
 
             await _db.UrunEkleAsync(urun);
 
-            // Formu temizle
+            // Temizlik
             AdEntry.Text = BarkodEntry.Text = KategoriEntry.Text = FiyatEntry.Text = AlisFiyatiEntry.Text = "";
             GramajliSwitch.IsToggled = false;
 
             await ListeYukle();
         }
 
-        // Debounce — 300ms bekle, sonra ara
         private async void UrunAraTextChanged(object sender, TextChangedEventArgs e)
         {
-            OturumServisi.AktiviteYenile();
-
             _aramaCts?.Cancel();
             _aramaCts = new CancellationTokenSource();
             var token = _aramaCts.Token;
@@ -116,29 +109,19 @@ namespace Saller_System.Views
             try
             {
                 await Task.Delay(300, token);
+                var aramaMetni = e.NewTextValue?.Trim().ToLower() ?? "";
+                var tumUrunler = await _db.TumUrunleriGetirAsync();
 
-                var aramaMetni = e.NewTextValue?.Trim() ?? "";
                 if (string.IsNullOrEmpty(aramaMetni))
-                {
-                    UrunlerListesi.ItemsSource = await _db.TumUrunleriGetirAsync();
-                }
+                    UrunlerListesi.ItemsSource = tumUrunler;
                 else
-                {
-                    var liste = await _db.TumUrunleriGetirAsync();
-                    UrunlerListesi.ItemsSource = liste
-                        .Where(u => u.Ad.ToLower().Contains(aramaMetni.ToLower())
-                                 || (u.Barkod?.Contains(aramaMetni) ?? false));
-                }
+                    UrunlerListesi.ItemsSource = tumUrunler.Where(u => u.Ad.ToLower().Contains(aramaMetni) || (u.Barkod?.Contains(aramaMetni) ?? false));
             }
-            catch (TaskCanceledException)
-            {
-                // Yeni tuşa basıldı, bu arama iptal edildi — normal
-            }
+            catch (TaskCanceledException) { }
         }
 
         private async void UrunSilClicked(object sender, EventArgs e)
         {
-            OturumServisi.AktiviteYenile();
             if (((Button)sender).CommandParameter is Urun urun)
             {
                 if (await DisplayAlert("SİL", $"{urun.Ad} silinsin mi?", "Evet", "Hayır"))
@@ -151,7 +134,6 @@ namespace Saller_System.Views
 
         private async void UrunDuzenleClicked(object sender, EventArgs e)
         {
-            OturumServisi.AktiviteYenile();
             if (((Button)sender).CommandParameter is Urun secilenUrun)
             {
                 UrunDuzenleServisi.SeciliUrun = secilenUrun;
@@ -159,10 +141,6 @@ namespace Saller_System.Views
             }
         }
 
-        private async void GeriClicked(object sender, EventArgs e)
-        {
-            OturumServisi.AktiviteYenile();
-            await Shell.Current.GoToAsync("//AnaSayfa");
-        }
+        private async void GeriClicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("//AnaSayfa");
     }
 }
