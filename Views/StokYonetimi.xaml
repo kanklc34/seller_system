@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Saller_System.Views.StokYonetimi" Title="Stok Yönetimi" Shell.NavBarIsVisible="False" BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
-    <VerticalStackLayout Padding="20" Spacing="15">
-        <Grid ColumnDefinitions="Auto,*">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Saller_System.Models"
+             x:Class="Saller_System.Views.StokYonetimi"
+             Title="Stok Yönetimi"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#F4F7FB, Dark=#0B1220}">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="20" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
             <Border BackgroundColor="{AppThemeBinding Light=#E31E24, Dark=#991B1B}" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="10,8" WidthRequest="44" HeightRequest="44" VerticalOptions="Center">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="GeriClicked"/>
@@ -10,19 +18,33 @@
             </Border>
             <Label Grid.Column="1" Text="Stok Yönetimi" FontSize="22" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" VerticalOptions="Center" Margin="15,0,0,0"/>
         </Grid>
-        <Label Text="Stoğunu güncellemek istediğiniz ürünün üzerine tıklayın." FontSize="13" TextColor="#94A3B8" Margin="0,-5,0,10"/>
-        <Frame BorderColor="#E2E8F0" Padding="0" CornerRadius="12" HasShadow="False" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
-            <SearchBar x:Name="UrunAramaBar" Placeholder="Ürün Adı veya Barkod Ara..." TextChanged="UrunArama_TextChanged" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
-        </Frame>
-        <CollectionView x:Name="StokListesi" SelectionMode="Single" SelectionChanged="UrunSecildi">
+
+        <Label Grid.Row="1" Text="Stoğunu güncellemek istediğiniz ürünün üzerine tıklayın." FontSize="13" TextColor="#94A3B8" Margin="0,5,0,5"/>
+
+        <Border Grid.Row="2" 
+                Stroke="#E2E8F0" 
+                StrokeShape="RoundRectangle 12" 
+                StrokeThickness="1"
+                Padding="0" 
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" 
+                Margin="0,0,0,10">
+            <SearchBar x:Name="UrunAramaBar" 
+                       Placeholder="Ürün Adı veya Barkod Ara..." 
+                       TextChanged="UrunArama_TextChanged" 
+                       TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"
+                       BackgroundColor="Transparent"/>
+        </Border>
+
+        <CollectionView Grid.Row="3" x:Name="StokListesi" SelectionMode="Single" SelectionChanged="UrunSecildi">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Urun">
                     <Border Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeShape="RoundRectangle 12" Padding="15" Margin="0,6" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}">
                         <Grid ColumnDefinitions="*, Auto">
                             <VerticalStackLayout VerticalOptions="Center">
                                 <Label Text="{Binding Ad}" FontAttributes="Bold" FontSize="16" TextColor="{AppThemeBinding Light=#0F172A, Dark=#F8FAFC}" />
                                 <Label Text="{Binding Barkod}" FontSize="12" TextColor="#94A3B8" />
                             </VerticalStackLayout>
+
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End">
                                 <Label Text="Mevcut Stok" FontSize="10" TextColor="#94A3B8" HorizontalOptions="End"/>
                                 <Label Text="{Binding StokMiktari, StringFormat='{0:N2} Kg/Adet'}" TextColor="#E31E24" FontAttributes="Bold" FontSize="16" HorizontalOptions="End"/>
@@ -32,5 +54,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+
+    </Grid>
 </ContentPage>

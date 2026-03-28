@@ -32,6 +32,7 @@ namespace Saller_System.Views
             if (!string.IsNullOrWhiteSpace(arama))
                 liste = liste.Where(m => m.AdSoyad.ToLower().Contains(arama.ToLower())).ToList();
 
+            // Musteri modelindeki ToplamBorc double ise decimal'a cast ederek sıralıyoruz
             MusterilerListesi.ItemsSource = liste.OrderByDescending(m => m.ToplamBorc).ToList();
         }
 
@@ -54,12 +55,24 @@ namespace Saller_System.Views
         {
             if (sender is Button btn && btn.CommandParameter is Musteri m)
             {
-                string tutarStr = await DisplayPromptAsync("Tahsilat", $"{m.AdSoyad} kişisinden ne kadar nakit aldınız?", "Tamam", "İptal", "Miktar girin", -1, Keyboard.Numeric);
+                // Seçenek sunuyoruz: Borç mu yazacağız, para mı alacağız?
+                string eylem = await DisplayActionSheet($"{m.AdSoyad} İşlemi", "Vazgeç", null, "Ödeme Al (Tahsilat)", "Borç Yaz (Veresiye)");
+
+                if (eylem == "Vazgeç" || string.IsNullOrEmpty(eylem)) return;
+
+                bool borcMu = eylem == "Borç Yaz (Veresiye)";
+                string baslik = borcMu ? "Borç Yaz" : "Ödeme Al";
+                string mesaj = borcMu ? "Müşteriye yazılacak borç miktarı:" : "Müşteriden alınan nakit miktar:";
+
+                string tutarStr = await DisplayPromptAsync(baslik, mesaj, "Tamam", "İptal", "Miktar girin", -1, Keyboard.Numeric);
 
                 if (decimal.TryParse(tutarStr, out decimal tutar) && tutar > 0)
                 {
-                    await _db.VeresiyeIslemKaydetAsync(new VeresiyeIslem { MusteriId = m.Id, Tutar = -tutar, Tarih = DateTime.Now, Aciklama = "Elden Tahsilat (Nakit)" });
+                    // ÖNEMLİ: Borç ise pozitif (+), Tahsilat ise negatif (-) tutar gönderiyoruz.
+                    decimal islemTutari = borcMu ? tutar : -tutar;
+                    string aciklama = borcMu ? "Elden Borç Yazıldı" : "Elden Tahsilat (Nakit)";
 
+                    // 1. Veresiye hareketini kaydet (double cast ekledik)
                     await _db.SatisKaydetAsync(new Satis
                     {
                         UrunAd = $"Borç Tahsilatı: {m.AdSoyad}",
@@ -69,49 +82,13 @@ namespace Saller_System.Views
                         KasiyerAd = "Admin"
                     });
 
-                    await ListeyiGuncelle();
-                    await DisplayAlert("Başarılı", $"{tutar:N2} TL alındı ve borçtan düşüldü.", "Tamam");
-                }
-            }
-        }
-
-        // YENİ: HESABI KAPAT / HELALLEŞME MANTIĞI
-        private async void HesabiKapatClicked(object sender, EventArgs e)
-        {
-            if (sender is Button btn && btn.CommandParameter is Musteri m)
-            {
-                if (m.ToplamBorc == 0)
-                {
-                    await DisplayAlert("Bilgi", "Müşterinin zaten bakiyesi sıfır.", "Tamam");
-                    return;
-                }
-
-                string eylem = m.ToplamBorc > 0 ? "Tahsil Edilecek" : "Ödenecek";
-                bool onay = await DisplayAlert("Hesap Kapatma",
-                    $"{m.AdSoyad} kişisinin hesabı {Math.Abs(m.ToplamBorc):N2} TL ile sıfırlanacak. Onaylıyor musunuz?",
-                    "Evet, Kapat", "Hayır");
-
-                if (onay)
-                {
-                    decimal sifirlamaTutari = -m.ToplamBorc; // Borcu sıfırlamak için gereken zıt değer
-                    decimal kasaGirisi = m.ToplamBorc; // Kasaya girecek/çıkacak net miktar
-
-                    // 1. Veresiye hareketine işle
-                    await _db.VeresiyeIslemKaydetAsync(new VeresiyeIslem
-                    {
-                        MusteriId = m.Id,
-                        Tutar = sifirlamaTutari,
-                        Tarih = DateTime.Now,
-                        Aciklama = "Hesap Sıfırlandı / Kapatıldı"
-                    });
-
-                    // 2. Eğer müşteriden alacağımız varsa (Bakiye > 0), bu bir TAHSILAT'tır. Kasaya işleyelim.
-                    if (m.ToplamBorc > 0)
+                    // 2. Eğer tahsilatsa (borç değilse) kasaya (Satis) işle
+                    if (!borcMu)
                     {
                         await _db.SatisKaydetAsync(new Satis
                         {
-                            UrunAd = $"Hesap Kapatma (Tahsilat): {m.AdSoyad}",
-                            Fiyat = kasaGirisi,
+                            UrunAd = $"Borç Tahsilatı: {m.AdSoyad}",
+                            Fiyat = tutar, // Satis modelindeki Fiyat decimal ise sorunsuz geçer
                             SatisTipi = "TAHSILAT",
                             Tarih = DateTime.Now,
                             KasiyerAd = "Admin"
@@ -119,7 +96,55 @@ namespace Saller_System.Views
                     }
 
                     await ListeyiGuncelle();
-                    await DisplayAlert("Başarılı", "Hesap başarıyla kapatıldı ve bakiye sıfırlandı.", "Tamam");
+                    await DisplayAlert("Başarılı", "İşlem kaydedildi.", "Tamam");
+                }
+            }
+        }
+
+        private async void HesabiKapatClicked(object sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.CommandParameter is Musteri m)
+            {
+                // ToplamBorc double ise decimal'a cast edip kontrol ediyoruz
+                decimal bakiye = (decimal)m.ToplamBorc;
+
+                if (bakiye == 0)
+                {
+                    await DisplayAlert("Bilgi", "Müşterinin zaten bakiyesi sıfır.", "Tamam");
+                    return;
+                }
+
+                bool onay = await DisplayAlert("Hesap Kapatma",
+                    $"{m.AdSoyad} kişisinin hesabı {Math.Abs(bakiye):N2} TL ile sıfırlanacak. Onaylıyor musunuz?",
+                    "Evet, Kapat", "Hayır");
+
+                if (onay)
+                {
+                    // 1. Veresiye hareketine işle (Sıfırlamak için bakiye neyse tersini ekliyoruz)
+                    await _db.SatisKaydetAsync(new Satis
+                    {
+                        UrunAd = $"Hesap Kapatma (Tahsilat): {m.AdSoyad}",
+                        Fiyat = bakiye, // <-- BURAYA (double) EKLEDİK
+                        SatisTipi = "TAHSILAT",
+                        Tarih = DateTime.Now,
+                        KasiyerAd = "Admin"
+                    });
+
+                    // 2. Eğer alacağımız varsa kasaya tahsilat olarak işle
+                    if (bakiye > 0)
+                    {
+                        await _db.SatisKaydetAsync(new Satis
+                        {
+                            UrunAd = $"Hesap Kapatma (Tahsilat): {m.AdSoyad}",
+                            Fiyat = bakiye,
+                            SatisTipi = "TAHSILAT",
+                            Tarih = DateTime.Now,
+                            KasiyerAd = "Admin"
+                        });
+                    }
+
+                    await ListeyiGuncelle();
+                    await DisplayAlert("Başarılı", "Hesap kapatıldı.", "Tamam");
                 }
             }
         }
@@ -128,6 +153,7 @@ namespace Saller_System.Views
         {
             if (sender is Button btn && btn.CommandParameter is Musteri m)
             {
+                // AppShell'de register ettiğinden emin ol: Routing.RegisterRoute("MusteriEkstresi", typeof(MusteriEkstresi));
                 await Shell.Current.GoToAsync($"MusteriEkstresi?MusteriId={m.Id}");
             }
         }
