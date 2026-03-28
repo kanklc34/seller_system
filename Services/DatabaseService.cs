@@ -94,10 +94,21 @@ namespace Saller_System.Services
         // --- ÜRÜN İŞLEMLERİ ---
         public async Task<List<Urun>> TumUrunleriGetirAsync() => await _db!.Table<Urun>().ToListAsync();
         public async Task<Urun?> BarkodIleGetirAsync(string barkod) => await _db!.Table<Urun>().Where(u => u.Barkod == barkod).FirstOrDefaultAsync();
+        public async Task<List<Urun>> BarkodIleTumunuGetirAsync(string barkod)
+        {
+            await InitAsync(); // Veritabanı bağlantısını kontrol et
+            return await _db!.Table<Urun>().Where(u => u.Barkod == barkod).ToListAsync();
+        }
         public async Task<List<Urun>> UrunAraAsync(string aramaMetni, int sayfa = 0, int boyut = SayfaBoyutu)
         {
-            var metin = aramaMetni.ToLower();
-            return await _db!.Table<Urun>().Where(u => u.Ad.ToLower().Contains(metin) || u.Barkod.Contains(aramaMetni)).Skip(sayfa * boyut).Take(boyut).ToListAsync();
+            await InitAsync();
+            // SQLite varsayılan olarak büyük/küçük harf duyarsız arama yapabilir 
+            // veya veriyi çekip bellek üzerinde filtrelemek gerekebilir.
+            return await _db!.Table<Urun>()
+                .Where(u => u.Ad.Contains(aramaMetni) || u.Barkod.Contains(aramaMetni))
+                .Skip(sayfa * boyut)
+                .Take(boyut)
+                .ToListAsync();
         }
         public async Task UrunEkleAsync(Urun urun) => await _db!.InsertAsync(urun);
         public async Task UrunSilAsync(Urun urun) => await _db!.DeleteAsync(urun);

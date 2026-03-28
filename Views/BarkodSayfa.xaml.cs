@@ -87,7 +87,7 @@ namespace Saller_System.Views
         {
             if (string.IsNullOrEmpty(okunanBarkod))
             {
-                BarkodOkuyucu.IsDetecting = true; // Boşsa geri aç
+                BarkodOkuyucu.IsDetecting = true;
                 return;
             }
 
@@ -101,7 +101,7 @@ namespace Saller_System.Views
                 bool teraziUrunuMu = false;
                 string prefix = await _ayarlar.GetAsync("TeraziPrefix", "27");
 
-                // TERAZİ AYRIŞTIRMA MANTIĞI
+                // 1. TERAZİ AYRIŞTIRMA MANTIĞI
                 if (okunanBarkod.Length == 13 && okunanBarkod.StartsWith(prefix))
                 {
                     teraziUrunuMu = true;
@@ -111,47 +111,55 @@ namespace Saller_System.Views
                         okunanMiktar = miktar / 1000m;
                 }
 
-                var urun = await _db.BarkodIleGetirAsync(aranacakBarkod);
+                // 2. VERİTABANINDAN TÜM EŞLEŞENLERİ GETİR
+                // Not: DatabaseService içinde BarkodIleTumunuGetirAsync metodunu yazmıştık
+                var urunler = await _db.BarkodIleTumunuGetirAsync(aranacakBarkod);
 
-                // Sıfır silme/ekleme toleransı
-                if (urun == null) urun = await _db.BarkodIleGetirAsync(aranacakBarkod.TrimStart('0'));
-                if (urun == null) urun = await _db.BarkodIleGetirAsync("0" + aranacakBarkod);
+                // Sıfır toleransı (Liste boşsa alternatifleri dene)
+                if (urunler == null || urunler.Count == 0)
+                    urunler = await _db.BarkodIleTumunuGetirAsync(aranacakBarkod.TrimStart('0'));
+                if (urunler == null || urunler.Count == 0)
+                    urunler = await _db.BarkodIleTumunuGetirAsync("0" + aranacakBarkod);
 
-                if (urun != null)
+                // 3. ÇAKIŞMA KONTROLÜ
+                if (urunler != null && urunler.Count > 1)
                 {
-                    _bulunanUrun = urun;
+                    // Birden fazla ürün bulundu: Butonları oluştur
+                    CakismaButonlariFlex.Children.Clear();
+                    CakismaPaneli.IsVisible = true;
+                    UrunBilgiFrame.IsVisible = false;
+                    MesajBorder.IsVisible = false;
 
-                    if (urun.GramajliMi || teraziUrunuMu)
+                    foreach (var urun in urunler)
                     {
-                        // Gramajlı ürün: Bilgileri göster, onay bekle
-                        UrunAdLabel.Text = urun.Ad;
-                        UrunFiyatLabel.Text = $"Birim: ₺{urun.KgFiyati:N2} / Kg";
-                        UrunKategoriLabel.Text = $"Kategori: {urun.Kategori}";
-                        AdetEntry.Text = okunanMiktar.ToString("0.###");
-                        UrunBilgiFrame.IsVisible = true;
-                        MesajBorder.IsVisible = false;
-                        // NOT: Burada IsDetecting bilerek FALSE kalır, kullanıcı butona basınca TRUE olur.
-                    }
-                    else
-                    {
-                        // Normal ürün: Direkt sepete at
-                        _sepet.Ekle(urun, 1, urun.Fiyat);
-                        await BipCal();
-                        HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+                        var btn = new Button
+                        {
+                            Text = urun.Ad,
+                            Margin = new Thickness(5),
+                            BackgroundColor = Color.FromArgb("#1E293B"), // Koyu SaaS temasına uygun
+                            TextColor = Colors.White,
+                            CornerRadius = 12,
+                            FontSize = 13,
+                            HeightRequest = 42,
+                            Padding = new Thickness(15, 0)
+                        };
 
-                        MesajLabel.Text = $"✅ {urun.Ad} eklendi!";
-                        MesajBorder.IsVisible = true;
-                        UrunBilgiFrame.IsVisible = false;
-                        BarkodEntry.Text = "";
+                        // Butona basıldığında seçilen ürünü yansıt
+                        btn.Clicked += (s, e) => UrunuSecVeYansit(urun, okunanMiktar, teraziUrunuMu);
 
-                        await Task.Delay(1000);
-                        BarkodOkuyucu.IsDetecting = true; // Yeniden okumaya hazır
+                        CakismaButonlariFlex.Children.Add(btn);
                     }
+                }
+                else if (urunler != null && urunler.Count == 1)
+                {
+                    // Tek ürün bulundu: Direkt yansıt
+                    CakismaPaneli.IsVisible = false;
+                    UrunuSecVeYansit(urunler[0], okunanMiktar, teraziUrunuMu);
                 }
                 else
                 {
-                    // Ürün Yoksa
-                    bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{okunanBarkod}' yok. Eklensin mi?", "Evet", "Hayır");
+                    // Ürün hiç yoksa
+                    bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{okunanBarkod}' bulunamadı. Eklensin mi?", "Evet", "Hayır");
                     if (ekle)
                     {
                         UrunDuzenleServisi.HizliEkleBarkod = okunanBarkod;
@@ -165,11 +173,44 @@ namespace Saller_System.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", "Barkod işlenirken hata oluştu: " + ex.Message, "Tamam");
+                await DisplayAlert("Hata", "İşlem hatası: " + ex.Message, "Tamam");
                 BarkodOkuyucu.IsDetecting = true;
             }
         }
+        private async void UrunuSecVeYansit(Urun urun, decimal miktar, bool teraziMi)
+        {
+            _bulunanUrun = urun;
+            CakismaPaneli.IsVisible = false; // Seçim yapıldığı için paneli kapat
 
+            if (urun.GramajliMi || teraziMi)
+            {
+                // Gramajlı ürün: Bilgileri göster, onay bekle
+                UrunAdLabel.Text = urun.Ad;
+                UrunFiyatLabel.Text = $"Birim: ₺{urun.KgFiyati:N2} / Kg";
+                UrunKategoriLabel.Text = $"Kategori: {urun.Kategori}";
+                AdetEntry.Text = miktar.ToString("0.###");
+
+                UrunBilgiFrame.IsVisible = true;
+                MesajBorder.IsVisible = false;
+                BarkodOkuyucu.IsDetecting = false; // Kullanıcı onaylayana kadar okumayı durdur
+            }
+            else
+            {
+                // Normal ürün: Direkt sepete at
+                _sepet.Ekle(urun, 1, urun.Fiyat);
+                await BipCal();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+
+                MesajLabel.Text = $"✅ {urun.Ad} eklendi!";
+                MesajBorder.IsVisible = true;
+                UrunBilgiFrame.IsVisible = false;
+                BarkodEntry.Text = "";
+
+                // Kısa bir bekleme sonrası kamerayı tekrar aç
+                await Task.Delay(1000);
+                BarkodOkuyucu.IsDetecting = true;
+            }
+        }
         private async void SatisaEkleTapped(object sender, EventArgs e)
         {
             if (_bulunanUrun == null) return;
