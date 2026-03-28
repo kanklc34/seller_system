@@ -11,7 +11,9 @@
 
             <Border BackgroundColor="Transparent" Stroke="Transparent" StrokeShape="RoundRectangle 28" Padding="0" HeightRequest="210">
                 <Grid>
-                    <Image Source="dukkan_fotogece.jpg" Aspect="AspectFill" Opacity="0.85">
+                    <Image x:Name="DukkanArkaPlanGorseli" 
+       Aspect="AspectFill" 
+       Opacity="0.85">
                         <Image.Clip>
                             <RoundRectangleGeometry CornerRadius="28" Rect="0,0,350,210"/>
                         </Image.Clip>

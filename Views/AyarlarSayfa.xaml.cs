@@ -89,7 +89,36 @@ namespace Saller_System.Views
             KayitliPrefixLabel.Text = _algılananPrefix;
             await DisplayAlert("Başarılı", $"Prefix '{_algılananPrefix}' kaydedildi!", "Tamam");
         }
+        private async void ArkaPlanResmiSecClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try
+            {
+                // 1. Telefonun galerisini açar
+                var result = await MediaPicker.Default.PickPhotoAsync();
 
+                if (result != null)
+                {
+                    // 🔥 KRİTİK NOKTA: Sabit yazıyı sildik, seçilen resmin gerçek yolunu kaydediyoruz.
+                    // Bu yol şuna benzer: "/storage/emulated/0/DCIM/Camera/resim.jpg"
+                    await _ayarlar.SetAsync("DukkanArkaPlan", result.FullPath);
+
+                    await DisplayAlert("Başarılı", "Dükkan görseli güncellendi! Değişiklikleri görmek için sayfaları yenileyin.", "Tamam");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Görsel seçilemedi: " + ex.Message, "Tamam");
+            }
+        }
+
+        private async void VarsayilanResmeDonClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            // "DukkanArkaPlanPath" olan ismi "DukkanArkaPlan" olarak güncelledik
+            await _ayarlar.SetAsync("DukkanArkaPlan", "dukkan_fotogece.jpg");
+            await DisplayAlert("Bilgi", "Varsayılan dükkan görseline dönüldü.", "Tamam");
+        }
         private async void BilgileriKaydetClicked(object sender, EventArgs e)
         {
             OturumServisi.AktiviteYenile();
