@@ -12,6 +12,9 @@ namespace Saller_System.Views
         private readonly SepetServisi _sepet;
         private readonly AyarlarServisi _ayarlar;
         private readonly IAudioManager _audioManager;
+        bool _bipCalAktifMi;
+        bool _manuelBipAktifMi;
+        bool _sonIslemManuelMi = false;
         private Urun? _bulunanUrun;
 
         public BarkodSayfa(DatabaseService db, SepetServisi sepet, AyarlarServisi ayarlar, IAudioManager audioManager)
@@ -32,6 +35,10 @@ namespace Saller_System.Views
 
         private async Task BipCal()
         {
+            if (!_bipCalAktifMi) return;
+
+            if (_sonIslemManuelMi && !_manuelBipAktifMi) return;
+
             try
             {
                 var player = _audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("bip.wav"));
@@ -52,6 +59,8 @@ namespace Saller_System.Views
             MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi) ? "ÖZ BİGA ET" : magazaAdi.ToUpper();
             BarkodOkuyucu.IsDetecting = true;
             MesajBorder.IsVisible = false;
+            _bipCalAktifMi = await _ayarlar.GetAsync("BipCal", "1") == "1";
+            _manuelBipAktifMi = await _ayarlar.GetAsync("ManuelBip", "1") == "1";
         }
 
         protected override void OnDisappearing()
@@ -79,6 +88,8 @@ namespace Saller_System.Views
                 OturumServisi.AktiviteYenile();
                 BarkodEntry.Text = result.Value;
                 BarkodOkuyucu.IsDetecting = false;
+
+                _sonIslemManuelMi = false;
                 await UrunGetirAsync(result.Value);
             });
         }
@@ -232,8 +243,16 @@ namespace Saller_System.Views
             BarkodOkuyucu.IsDetecting = true;
         }
 
-        private async void UrunGetirTapped(object sender, EventArgs e) { await UrunGetirAsync(BarkodEntry.Text); }
-        private async void BarkodEntry_Completed(object sender, EventArgs e) { await UrunGetirAsync(BarkodEntry.Text); }
+        private async void UrunGetirTapped(object sender, EventArgs e) 
+        { 
+            _sonIslemManuelMi = true;
+            await UrunGetirAsync(BarkodEntry.Text); 
+        }
+        private async void BarkodEntry_Completed(object sender, EventArgs e) 
+        { 
+            _sonIslemManuelMi = true;
+            await UrunGetirAsync(BarkodEntry.Text); 
+        }
         private async void GeriClicked(object sender, EventArgs e) { await Shell.Current.GoToAsync("//AnaSayfa"); }
         private async void SepeteGitClicked(object sender, EventArgs e) { await Shell.Current.GoToAsync("//SepetSayfa"); }
     }
