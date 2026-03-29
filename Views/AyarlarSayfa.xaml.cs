@@ -25,8 +25,11 @@ namespace Saller_System.Views
             _temaYukleniyor = true;
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
-            Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
-            
+            if (Application.Current != null)
+            {
+                Application.Current.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            }
+
             var bipCal = await _ayarlar.GetAsync("BipCal", "1"); 
             var manuelBip = await _ayarlar.GetAsync("ManuelBip", "1");
 
@@ -60,11 +63,13 @@ namespace Saller_System.Views
             await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
         }
 
-        private async void BipCalToggled(object sender, ToggledEventArgs e) {
-            if (_temaYukleniyor) return; 
+        private async void BipCalToggled(object sender, ToggledEventArgs e)
+        {
+            // _temaYukleniyor kontrolünün yanına ManuelBipContainer kontrolünü de ekle
+            if (_temaYukleniyor || ManuelBipContainer == null) return;
 
             OturumServisi.AktiviteYenile();
-            ManuelBipContainer.IsVisible = e.Value; 
+            ManuelBipContainer.IsVisible = e.Value;
             await _ayarlar.SetAsync("BipCal", e.Value ? "1" : "0");
         }
 
