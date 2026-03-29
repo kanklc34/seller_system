@@ -47,6 +47,9 @@ This project is developed by a dedicated team of Software Engineering students:
 
 ## ⚙️ Installation & Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/kanklc34/seller_system.git](https://github.com/kanklc34/seller_system.git)
+### Kurulum
+
+Projeyi bilgisayarınıza klonlamak için aşağıdaki komutu kullanabilirsiniz:
+
+```bash
+git clone https://github.com/kanklc34/seller_system.git
