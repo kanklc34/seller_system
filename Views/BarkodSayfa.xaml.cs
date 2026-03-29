@@ -12,6 +12,7 @@ namespace Saller_System.Views
         private readonly SepetServisi _sepet;
         private readonly AyarlarServisi _ayarlar;
         private readonly IAudioManager _audioManager;
+        private IDispatcherTimer? _flasZamanlayici;
         bool _bipCalAktifMi;
         bool _manuelBipAktifMi;
         bool _sonIslemManuelMi = false;
@@ -61,10 +62,17 @@ namespace Saller_System.Views
             MesajBorder.IsVisible = false;
             _bipCalAktifMi = await _ayarlar.GetAsync("BipCal", "1") == "1";
             _manuelBipAktifMi = await _ayarlar.GetAsync("ManuelBip", "1") == "1";
+
+            if (_flasZamanlayici == null) {
+                _flasZamanlayici = Dispatcher.CreateTimer();
+                _flasZamanlayici.Interval = TimeSpan.FromSeconds(30);
+                _flasZamanlayici.Tick += (s, e) => FlasKapat();
+            }
         }
 
         protected override void OnDisappearing()
         {
+            FlasKapat();
             base.OnDisappearing();
             BarkodOkuyucu.IsDetecting = false;
         }
@@ -72,6 +80,7 @@ namespace Saller_System.Views
         private async Task<bool> ZamanAsimKontrolAsync()
         {
             if (!OturumServisi.OturumSuresiDolduMu()) return false;
+            FlasKapat();
             OturumServisi.Cikis();
             await DisplayAlert("Oturum Süresi Doldu", "Güvenlik nedeniyle oturumunuz sonlandırıldı.", "Tamam");
             await Shell.Current.GoToAsync("//LoginPage");
@@ -90,8 +99,32 @@ namespace Saller_System.Views
                 BarkodOkuyucu.IsDetecting = false;
 
                 _sonIslemManuelMi = false;
+
+                if (BarkodOkuyucu.IsTorchOn) {
+                    _flasZamanlayici?.Stop();
+                    _flasZamanlayici?.Start();
+                }
+
                 await UrunGetirAsync(result.Value);
             });
+        }
+
+        private void FlasTapped(object sender, EventArgs e) 
+        {
+            if (BarkodOkuyucu.IsTorchOn) {
+                FlasKapat();
+            } else {
+                BarkodOkuyucu.IsTorchOn = true;
+                FlasBorder.BackgroundColor = Color.FromArgb("#D4AF37");
+                _flasZamanlayici?.Start();
+            }
+        }
+
+        private void FlasKapat() 
+        {
+            BarkodOkuyucu.IsTorchOn = false;
+            FlasBorder.BackgroundColor = Color.FromArgb("#B3000000"); 
+            _flasZamanlayici?.Stop();
         }
 
         private async Task UrunGetirAsync(string okunanBarkod)
@@ -173,6 +206,7 @@ namespace Saller_System.Views
                     bool ekle = await DisplayAlert("Ürün Bulunamadı", $"'{okunanBarkod}' bulunamadı. Eklensin mi?", "Evet", "Hayır");
                     if (ekle)
                     {
+                        FlasKapat();
                         UrunDuzenleServisi.HizliEkleBarkod = okunanBarkod;
                         await Shell.Current.GoToAsync("//UrunListesi");
                     }
@@ -253,7 +287,15 @@ namespace Saller_System.Views
             _sonIslemManuelMi = true;
             await UrunGetirAsync(BarkodEntry.Text); 
         }
-        private async void GeriClicked(object sender, EventArgs e) { await Shell.Current.GoToAsync("//AnaSayfa"); }
-        private async void SepeteGitClicked(object sender, EventArgs e) { await Shell.Current.GoToAsync("//SepetSayfa"); }
+        private async void GeriClicked(object sender, EventArgs e) 
+        { 
+            FlasKapat();
+            await Shell.Current.GoToAsync("//AnaSayfa"); 
+        }
+        private async void SepeteGitClicked(object sender, EventArgs e) 
+        { 
+            FlasKapat();
+            await Shell.Current.GoToAsync("//SepetSayfa"); 
+        }
     }
 }

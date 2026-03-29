@@ -31,6 +31,13 @@
                 </Border.GestureRecognizers>
                 <Label Text="⬅ Geri" TextColor="White" FontAttributes="Bold" FontSize="14"/>
             </Border>
+            
+            <Border x:Name="FlasBorder" HorizontalOptions="End" VerticalOptions="Start" Margin="0,50,15,0" WidthRequest="46" HeightRequest="46" BackgroundColor="#B3000000" Stroke="Transparent" StrokeShape="RoundRectangle 12" Padding="0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="FlasTapped"/>
+                </Border.GestureRecognizers>
+                <Label Text="🔦" HorizontalOptions="Center" VerticalOptions="Center" FontSize="22"/>
+            </Border>
         </Grid>
 
         <Border Grid.Row="1" Margin="0,-24,0,0" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111827}" Stroke="Transparent" StrokeShape="RoundRectangle 24,24,0,0">
