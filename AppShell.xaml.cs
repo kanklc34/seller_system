@@ -21,7 +21,7 @@ namespace Saller_System
             { "VeresiyeDefteri",    "//AnaSayfa" },
             { "ToptanSatis",        "//AnaSayfa" },
             { "StokYonetimi",       "//AnaSayfa" },
-            { "MusteriEkstresi",    "//AnaSayfa" },
+            { "MusteriEkstresi", "VeresiyeDefteri" },
             { "GiderlerSayfa",      "//Raporlar" } // YENİ EKLENDİ: Giderden Raporlara döner
         };
 
@@ -32,8 +32,7 @@ namespace Saller_System
             Routing.RegisterRoute("VeresiyeDefteri", typeof(VeresiyeDefteri));
             Routing.RegisterRoute("ToptanSatis", typeof(ToptanSatis));
             Routing.RegisterRoute("StokYonetimi", typeof(StokYonetimi));
-            Routing.RegisterRoute("MusteriEkstresi", typeof(MusteriEkstresi));
-
+            Routing.RegisterRoute("MusteriEkstresi", typeof(Saller_System.Views.MusteriEkstresi));
             // ÇÖKMEYİ ENGELLEYEN SATIR:
             Routing.RegisterRoute("GiderlerSayfa", typeof(GiderlerSayfa));
         }
@@ -64,6 +63,7 @@ namespace Saller_System
                     await Shell.Current.GoToAsync(hedef));
                 return true;
             }
+
 
             MainThread.BeginInvokeOnMainThread(async () =>
                 await Shell.Current.GoToAsync("//AnaSayfa"));

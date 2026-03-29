@@ -37,6 +37,7 @@
     <ShellContent Route="SatisGecmisiSayfa"
               ContentTemplate="{DataTemplate views:SatisGecmisiSayfa}"/>
     <Shell.Resources>
+        
         <ResourceDictionary>
             <Style TargetType="Shell" ApplyToDerivedTypes="True">
                 <Setter Property="Shell.NavBarIsVisible" Value="False"/>
