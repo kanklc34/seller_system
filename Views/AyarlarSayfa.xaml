@@ -16,6 +16,21 @@
             </Border>
             <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">
                 <VerticalStackLayout Spacing="12">
+                    <Label Text="🔊 Ses Ayarları" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#E31E24, Dark=#D4AF37}"/>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Barkod Okuma Sesi" VerticalOptions="Center" FontSize="15" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+                        <Switch Grid.Column="1" x:Name="BipCalSwitch" OnColor="#E31E24" Toggled="BipCalToggled"/>
+                    </Grid>
+
+                    <Grid x:Name="ManuelBipContainer" ColumnDefinitions="*,Auto" IsVisible="False">
+                        <Label Grid.Column="0" Text="Manuel Girişlerde Ses Çal" VerticalOptions="Center" FontSize="15" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+                        <Switch Grid.Column="1" x:Name="ManuelBipSwitch" OnColor="#E31E24" Toggled="ManuelBipToggled"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E293B}" Stroke="{AppThemeBinding Light=#E2E8F0, Dark=#334155}" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="20">
+                <VerticalStackLayout Spacing="12">
                     <Label Text="🔧 Terazi Ayarları" FontSize="16" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#E31E24, Dark=#D4AF37}"/>
                     <Label Text="Terazinizin ürettiği bir barkodu okutun, sistem prefix'i otomatik algılar." TextColor="{AppThemeBinding Light=#64748B, Dark=#94A3B8}" FontSize="13"/>
                     <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">

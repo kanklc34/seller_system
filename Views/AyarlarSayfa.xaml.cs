@@ -26,6 +26,14 @@ namespace Saller_System.Views
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            
+            var bipCal = await _ayarlar.GetAsync("BipCal", "1"); 
+            var manuelBip = await _ayarlar.GetAsync("ManuelBip", "1");
+
+            BipCalSwitch.IsToggled = bipCal == "1";
+            ManuelBipSwitch.IsToggled = manuelBip == "1";
+            ManuelBipContainer.IsVisible = BipCalSwitch.IsToggled;
+
             _temaYukleniyor = false;
 
             KayitliPrefixLabel.Text = await _ayarlar.GetAsync("TaraziPrefix", "Tanımsız");
@@ -50,6 +58,21 @@ namespace Saller_System.Views
             OturumServisi.AktiviteYenile();
             Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
             await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
+        }
+
+        private async void BipCalToggled(object sender, ToggledEventArgs e) {
+            if (_temaYukleniyor) return; 
+
+            OturumServisi.AktiviteYenile();
+            ManuelBipContainer.IsVisible = e.Value; 
+            await _ayarlar.SetAsync("BipCal", e.Value ? "1" : "0");
+        }
+
+        private async void ManuelBipToggled(object sender, ToggledEventArgs e) {
+            if (_temaYukleniyor) return;
+
+            OturumServisi.AktiviteYenile();
+            await _ayarlar.SetAsync("ManuelBip", e.Value ? "1" : "0");
         }
 
         private void PrefixAlgilaClicked(object sender, EventArgs e)
