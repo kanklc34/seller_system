@@ -20,13 +20,29 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
             OturumServisi.AktiviteYenile();
+            // --- YENİ EKLENEN KISIM: GÖRSELİ YÜKLE ---
+            // Ayarlar servisinden "DukkanArkaPlan" anahtarını oku, yoksa varsayılan resmi getir.
+            var kaydedilenGorsel = await _ayarlar.GetAsync("DukkanArkaPlan", "dukkan_fotogece.jpg");
+
+            if (DukkanArkaPlanGorseli != null)
+            {
+                // Eğer gelen veri varsayılan resim adı değilse, bunun bir dosya yolu olduğunu belirtiyoruz
+                if (kaydedilenGorsel != "dukkan_fotogece.jpg")
+                {
+                    DukkanArkaPlanGorseli.Source = ImageSource.FromFile(kaydedilenGorsel);
+                }
+                else
+                {
+                    DukkanArkaPlanGorseli.Source = kaydedilenGorsel;
+                }
+            }
 
             var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
 
             if (MagazaAdiLabel != null)
             {
                 MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
-                    ? "ÖZ BİGA ET"
+                    ? "Kasap Pro"
                     : magazaAdi.ToUpper();
             }
 
@@ -67,7 +83,25 @@ namespace Saller_System.Views
             if (isYonetici)
                 await VerileriDoldur();
         }
+        private async void ResimSecVeKaydetClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                // Galeriyi aç
+                var result = await MediaPicker.Default.PickPhotoAsync();
+                if (result != null)
+                {
+                    // Senin AyarlarServisi üzerinden "DukkanArkaPlan" olarak kaydet
+                    await _ayarlar.SetAsync("DukkanArkaPlan", result.FullPath);
 
+                    await DisplayAlert("Başarılı", "Dükkan resmi güncellendi!", "Tamam");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Resim seçilemedi: " + ex.Message, "Tamam");
+            }
+        }
         protected override bool OnBackButtonPressed() => true;
 
         private async Task VerileriDoldur()

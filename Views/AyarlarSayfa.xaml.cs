@@ -26,6 +26,14 @@ namespace Saller_System.Views
             var darkMode = await _ayarlar.GetAsync("DarkMode", "0");
             DarkModeSwitch.IsToggled = darkMode == "1";
             Application.Current!.UserAppTheme = darkMode == "1" ? AppTheme.Dark : AppTheme.Light;
+            
+            var bipCal = await _ayarlar.GetAsync("BipCal", "1"); 
+            var manuelBip = await _ayarlar.GetAsync("ManuelBip", "1");
+
+            BipCalSwitch.IsToggled = bipCal == "1";
+            ManuelBipSwitch.IsToggled = manuelBip == "1";
+            ManuelBipContainer.IsVisible = BipCalSwitch.IsToggled;
+
             _temaYukleniyor = false;
 
             KayitliPrefixLabel.Text = await _ayarlar.GetAsync("TaraziPrefix", "Tanımsız");
@@ -50,6 +58,21 @@ namespace Saller_System.Views
             OturumServisi.AktiviteYenile();
             Application.Current!.UserAppTheme = e.Value ? AppTheme.Dark : AppTheme.Light;
             await _ayarlar.SetAsync("DarkMode", e.Value ? "1" : "0");
+        }
+
+        private async void BipCalToggled(object sender, ToggledEventArgs e) {
+            if (_temaYukleniyor) return; 
+
+            OturumServisi.AktiviteYenile();
+            ManuelBipContainer.IsVisible = e.Value; 
+            await _ayarlar.SetAsync("BipCal", e.Value ? "1" : "0");
+        }
+
+        private async void ManuelBipToggled(object sender, ToggledEventArgs e) {
+            if (_temaYukleniyor) return;
+
+            OturumServisi.AktiviteYenile();
+            await _ayarlar.SetAsync("ManuelBip", e.Value ? "1" : "0");
         }
 
         private void PrefixAlgilaClicked(object sender, EventArgs e)
@@ -89,7 +112,36 @@ namespace Saller_System.Views
             KayitliPrefixLabel.Text = _algılananPrefix;
             await DisplayAlert("Başarılı", $"Prefix '{_algılananPrefix}' kaydedildi!", "Tamam");
         }
+        private async void ArkaPlanResmiSecClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            try
+            {
+                // 1. Telefonun galerisini açar
+                var result = await MediaPicker.Default.PickPhotoAsync();
 
+                if (result != null)
+                {
+                    // 🔥 KRİTİK NOKTA: Sabit yazıyı sildik, seçilen resmin gerçek yolunu kaydediyoruz.
+                    // Bu yol şuna benzer: "/storage/emulated/0/DCIM/Camera/resim.jpg"
+                    await _ayarlar.SetAsync("DukkanArkaPlan", result.FullPath);
+
+                    await DisplayAlert("Başarılı", "Dükkan görseli güncellendi! Değişiklikleri görmek için sayfaları yenileyin.", "Tamam");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Görsel seçilemedi: " + ex.Message, "Tamam");
+            }
+        }
+
+        private async void VarsayilanResmeDonClicked(object sender, EventArgs e)
+        {
+            OturumServisi.AktiviteYenile();
+            // "DukkanArkaPlanPath" olan ismi "DukkanArkaPlan" olarak güncelledik
+            await _ayarlar.SetAsync("DukkanArkaPlan", "dukkan_fotogece.jpg");
+            await DisplayAlert("Bilgi", "Varsayılan dükkan görseline dönüldü.", "Tamam");
+        }
         private async void BilgileriKaydetClicked(object sender, EventArgs e)
         {
             OturumServisi.AktiviteYenile();

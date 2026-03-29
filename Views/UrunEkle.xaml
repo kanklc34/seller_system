@@ -16,9 +16,22 @@
                     <VerticalStackLayout Spacing="6">
                         <Label Text="🔢 Barkod" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
                         <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">
-                            <Entry x:Name="BarkodEntry" Placeholder="Barkod okutun veya yazın" BackgroundColor="Transparent" VerticalOptions="Center" TextColor="{AppThemeBinding Light=#0F172A, Dark=White}"/>
+                            <Entry x:Name="BarkodEntry" 
+               Placeholder="Barkod okutun veya yazın" 
+               BackgroundColor="Transparent" 
+               VerticalOptions="Center" 
+               TextColor="{AppThemeBinding Light=#0F172A, Dark=White}" 
+               TextChanged="BarkodEntry_TextChanged"/>
                         </Border>
+
+                        <Label x:Name="TeraziBilgiLabel" 
+           Text="ℹ️ Terazi ürünleri için sadece 5 haneli ürün kodunu giriniz (Örn: 00001)." 
+           FontSize="11" 
+           TextColor="#E31E24" 
+           Margin="4,2,0,0" 
+           IsVisible="False" />
                     </VerticalStackLayout>
+
                     <VerticalStackLayout Spacing="6">
                         <Label Text="📂 Kategori" FontSize="13" FontAttributes="Bold" TextColor="{AppThemeBinding Light=#4B5563, Dark=#D1D5DB}"/>
                         <Border Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#374151}" StrokeShape="RoundRectangle 14" BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#0F172A}" Padding="14,4" HeightRequest="54">

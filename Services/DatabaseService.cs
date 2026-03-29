@@ -33,40 +33,106 @@ namespace Saller_System.Services
         {
             var admin = await _db!.Table<Kullanici>().Where(k => k.KullaniciAdi == "admin").FirstOrDefaultAsync();
             if (admin != null) return;
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "admin", Sifre = "1234", Rol = "Patron" });
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "yonetici", Sifre = "1234", Rol = "Müdür" });
-            await _db.InsertAsync(new Kullanici { KullaniciAdi = "kasiyer", Sifre = "1234", Rol = "Kasiyer" });
+
+            // Şifreleri burada da hashleyerek kaydediyoruz ki giriş sistemiyle uyumlu olsun
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "admin",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Patron"
+            });
+
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "yonetici",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Müdür"
+            });
+
+            await _db.InsertAsync(new Kullanici
+            {
+                KullaniciAdi = "kasiyer",
+                Sifre = GuvenlikServisi.Hashle("1234"),
+                Rol = "Kasiyer"
+            });
         }
 
         public async Task<Kullanici?> GirisKontrolAsync(string ad, string sifre)
         {
-            var kullanici = await _db!.Table<Kullanici>().Where(k => k.KullaniciAdi == ad).FirstOrDefaultAsync();
-            return (kullanici != null && sifre == kullanici.Sifre) ? kullanici : null;
+            await InitAsync();
+
+            // 1. Kullanıcıyı veritabanında bul
+            var kullanici = await _db!.Table<Kullanici>()
+                .FirstOrDefaultAsync(k => k.KullaniciAdi.ToLower() == ad.ToLower());
+
+            if (kullanici == null) return null;
+
+            // 2. KRİTİK DEĞİŞİKLİK BURADA: 
+            // Hashle(sifre) == kullanici.Sifre YAPMA! Çünkü salt her seferinde değişir.
+            // Bunun yerine GuvenlikServisi içindeki Dogrula metodunu kullan:
+
+            bool sifreDogru = GuvenlikServisi.Dogrula(sifre, kullanici.Sifre);
+
+            return sifreDogru ? kullanici : null;
         }
 
         // --- KULLANICI İŞLEMLERİ (KullaniciYonetimi.xaml için) ---
         public async Task<List<Kullanici>> TumKullanicilariGetirAsync() => await _db!.Table<Kullanici>().ToListAsync();
-        public async Task KullaniciEkleAsync(Kullanici k) => await _db!.InsertAsync(k);
+        public async Task<bool> KullaniciEkleAsync(Kullanici k)
+        {
+            // Aynı isimde kullanıcı var mı kontrol et
+            var varMi = await _db!.Table<Kullanici>()
+                .FirstOrDefaultAsync(u => u.KullaniciAdi.ToLower() == k.KullaniciAdi.ToLower());
+
+            if (varMi != null) return false; // Zaten var, ekleme yapma
+
+            await _db!.InsertAsync(k);
+            return true;
+        }
         public async Task KullaniciSilAsync(Kullanici k) => await _db!.DeleteAsync(k);
 
         // --- ÜRÜN İŞLEMLERİ ---
         public async Task<List<Urun>> TumUrunleriGetirAsync() => await _db!.Table<Urun>().ToListAsync();
         public async Task<Urun?> BarkodIleGetirAsync(string barkod) => await _db!.Table<Urun>().Where(u => u.Barkod == barkod).FirstOrDefaultAsync();
+        public async Task<List<Urun>> BarkodIleTumunuGetirAsync(string barkod)
+        {
+            await InitAsync(); // Veritabanı bağlantısını kontrol et
+            return await _db!.Table<Urun>().Where(u => u.Barkod == barkod).ToListAsync();
+        }
         public async Task<List<Urun>> UrunAraAsync(string aramaMetni, int sayfa = 0, int boyut = SayfaBoyutu)
         {
-            var metin = aramaMetni.ToLower();
-            return await _db!.Table<Urun>().Where(u => u.Ad.ToLower().Contains(metin) || u.Barkod.Contains(aramaMetni)).Skip(sayfa * boyut).Take(boyut).ToListAsync();
+            await InitAsync();
+            // SQLite varsayılan olarak büyük/küçük harf duyarsız arama yapabilir 
+            // veya veriyi çekip bellek üzerinde filtrelemek gerekebilir.
+            return await _db!.Table<Urun>()
+                .Where(u => u.Ad.Contains(aramaMetni) || u.Barkod.Contains(aramaMetni))
+                .Skip(sayfa * boyut)
+                .Take(boyut)
+                .ToListAsync();
         }
         public async Task UrunEkleAsync(Urun urun) => await _db!.InsertAsync(urun);
         public async Task UrunSilAsync(Urun urun) => await _db!.DeleteAsync(urun);
         public async Task UrunGuncelleAsync(Urun yeniUrun, Urun eskiUrun)
         {
-            bool fiyatDegisti = eskiUrun.Fiyat != yeniUrun.Fiyat || eskiUrun.KgFiyati != yeniUrun.KgFiyati;
+            // Eski veya yeni ürün null ise işlem yapma (Crash önleyici)
+            if (yeniUrun == null || eskiUrun == null) return;
+
+            bool fiyatDegisti = eskiUrun.Fiyat != yeniUrun.Fiyat ||
+                               (yeniUrun.GramajliMi && eskiUrun.KgFiyati != yeniUrun.KgFiyati);
+
             await _db!.RunInTransactionAsync(db =>
             {
                 if (fiyatDegisti)
                 {
-                    db.Insert(new FiyatGecmisi { UrunId = yeniUrun.Id, UrunAd = yeniUrun.Ad, EskiFiyat = eskiUrun.GramajliMi ? eskiUrun.KgFiyati : eskiUrun.Fiyat, YeniFiyat = yeniUrun.GramajliMi ? yeniUrun.KgFiyati : yeniUrun.Fiyat, Tarih = DateTime.Now, DegistirenKullanici = "Sistem" });
+                    db.Insert(new FiyatGecmisi
+                    {
+                        UrunId = yeniUrun.Id,
+                        UrunAd = yeniUrun.Ad,
+                        EskiFiyat = eskiUrun.GramajliMi ? eskiUrun.KgFiyati : eskiUrun.Fiyat,
+                        YeniFiyat = yeniUrun.GramajliMi ? yeniUrun.KgFiyati : yeniUrun.Fiyat,
+                        Tarih = DateTime.Now,
+                        DegistirenKullanici = OturumServisi.AktifKullanici?.KullaniciAdi ?? "Sistem"
+                    });
                 }
                 db.Update(yeniUrun);
             });

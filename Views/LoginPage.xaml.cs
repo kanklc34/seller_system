@@ -23,6 +23,24 @@ namespace Saller_System.Views
         {
             base.OnAppearing();
 
+            // 🖼️ GÖRSELİ YÜKLE
+            var kaydedilenGorsel = await _ayarlar.GetAsync("DukkanArkaPlan", "dukkan_fotogece.jpg");
+
+            if (LoginArkaPlanGorseli != null)
+            {
+                // Eğer varsayılan değer değilse, galeriden gelen bir yoldur (FromFile kullanmalıyız)
+                if (kaydedilenGorsel != "dukkan_fotogece.jpg")
+                {
+                    // Dosya yolundan yüklediğimizi sisteme kesin olarak belirtiyoruz
+                    LoginArkaPlanGorseli.Source = ImageSource.FromFile(kaydedilenGorsel);
+                }
+                else
+                {
+                    // Resources/Images içindeki varsayılan resmi yükle
+                    LoginArkaPlanGorseli.Source = ImageSource.FromFile("dukkan_fotogece.jpg");
+                }
+            }
+
             var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
             MagazaAdiLabel.Text = string.IsNullOrWhiteSpace(magazaAdi)
                 ? "KASAP PRO" : magazaAdi.ToUpper();

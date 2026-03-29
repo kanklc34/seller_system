@@ -28,7 +28,7 @@ namespace Saller_System.Models
 
         // EKRANDA GÖRÜNECEK RENK
         [Ignore]
-        public Color DurumRengi => ToplamBorc >= 0 ? Color.FromArgb("#16A34A") : Color.FromArgb("#E31E24");
+        public Color DurumRengi => ToplamBorc > 0 ? Color.FromArgb("#E31E24") : (ToplamBorc < 0 ? Color.FromArgb("#16A34A") : Colors.Gray);
     }
 
     public class VeresiyeIslem

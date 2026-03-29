@@ -8,7 +8,7 @@ namespace Saller_System.Views
         private readonly AyarlarServisi _ayarlar;
         private readonly DatabaseService _db;
         private string? _algılananPrefix;
-
+        private string _secilenGorselYolu = "logo.jpg";
         public KurulumSihirbazi(AyarlarServisi ayarlar, DatabaseService db)
         {
             InitializeComponent();
@@ -19,6 +19,30 @@ namespace Saller_System.Views
         // ----------------------------------------------------------------
         // Adım 1 — Mağaza bilgileri
         // ----------------------------------------------------------------
+        private async void GorselSecClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var result = await FilePicker.Default.PickAsync(new PickOptions
+                {
+                    PickerTitle = "Mağaza Görseli Seçin",
+                    FileTypes = FilePickerFileType.Images
+                });
+
+                if (result != null)
+                {
+                    _secilenGorselYolu = result.FullPath;
+                    SecilenGorselOnizleme.Source = ImageSource.FromFile(_secilenGorselYolu);
+
+                    // Üstteki büyük görseli de anında güncellemek istersen:
+                    KurulumGorseli.Source = ImageSource.FromFile(_secilenGorselYolu);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", "Görsel seçilemedi: " + ex.Message, "Tamam");
+            }
+        }
         private async void Adim1DevamClicked(object sender, EventArgs e)
         {
             string magazaAdi = MagazaAdiEntry.Text?.Trim() ?? "";
@@ -41,7 +65,7 @@ namespace Saller_System.Views
             await _ayarlar.SetAsync("MagazaAdi", magazaAdi);
             await _ayarlar.SetAsync("Telefon", string.IsNullOrEmpty(telefon) ? "" :
                 telefon[..4] + " " + telefon[4..7] + " " + telefon[7..9] + " " + telefon[9..]);
-
+            await _ayarlar.SetAsync("DukkanArkaPlan", _secilenGorselYolu);
             Adim1Panel.IsVisible = false;
             Adim2Panel.IsVisible = true;
             Adim1Dot.Fill = new SolidColorBrush(Color.FromArgb("#166534"));
