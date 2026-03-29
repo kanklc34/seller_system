@@ -53,6 +53,7 @@ namespace Saller_System.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             if (await ZamanAsimKontrolAsync()) return;
             OturumServisi.AktiviteYenile();
             var magazaAdi = await _ayarlar.GetAsync("MagazaAdi", "");
@@ -227,15 +228,21 @@ namespace Saller_System.Views
             if (_bulunanUrun == null) return;
             OturumServisi.AktiviteYenile();
 
-            decimal eklenecekFiyat = _bulunanUrun.GramajliMi ? _bulunanUrun.KgFiyati : _bulunanUrun.Fiyat;
-            decimal girilenMiktar = decimal.Parse(AdetEntry.Text);
+            // ÇÖKMEYİ ENGELLEYEN KISIM: decimal.Parse yerine TryParse
+            if (!decimal.TryParse(AdetEntry.Text, out decimal girilenMiktar))
+            {
+                await DisplayAlert("Hata", "Lütfen geçerli bir miktar (sayı) girin.", "Tamam");
+                return;
+            }
 
+            decimal eklenecekFiyat = _bulunanUrun.GramajliMi ? _bulunanUrun.KgFiyati : _bulunanUrun.Fiyat;
             _sepet.Ekle(_bulunanUrun, girilenMiktar, eklenecekFiyat);
 
-            // SES ÇIKAR: Onay butonuna basıldı ve ürün sepete girdi
-            await BipCal();
+            // SES ÇIKAR
+            await BipCal(); // Eğer bir önceki tavsiyemdeki gibi düzenlediysen await gerekmez
             HapticFeedback.Default.Perform(HapticFeedbackType.Click);
 
+            // Mesaj ve Temizlik
             MesajLabel.Text = $"✅ {_bulunanUrun.Ad} sepete eklendi!";
             MesajBorder.IsVisible = true;
             UrunBilgiFrame.IsVisible = false;
